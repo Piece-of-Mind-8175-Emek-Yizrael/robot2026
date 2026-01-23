@@ -7,7 +7,6 @@ public interface TransferIO {
     public static class TransferIOInputs {
         public double velocity;
         public double voltage;
-        public double current;
     }
 
     public void updateInputs(TransferIOInputs inputs);

@@ -9,12 +9,12 @@ public class TransferIOReal implements TransferIO{
 
     public TransferIOReal() {
         motor = new SparkMax(TransferConstants.TRANSFER_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
-        // some motor = new some motor type;
     }
 
     @Override
     public void updateInputs(TransferIOInputs inputs) {
-
+        inputs.velocity = motor.getEncoder().getVelocity();
+        inputs.voltage = (motor.getAppliedOutput() * motor.getBusVoltage());
     }
 
     @Override
