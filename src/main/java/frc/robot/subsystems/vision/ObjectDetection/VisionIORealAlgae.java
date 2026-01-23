@@ -89,6 +89,7 @@ public class VisionIORealAlgae implements ObjectDetectionVisionIO {
     }
 
     // calculated by dist = (focal length * real width) / perceived width
+    // TODO: check if photonvision provides camera matrices for object detection cameras (or even lets them to be calibrated)
     private double getDistanceToFuelMeters(double targetWidthInPixels) {
         if(camera.getCameraMatrix().isPresent())
             return (camera.getCameraMatrix().get().get(0,0)
