@@ -21,9 +21,9 @@ import edu.wpi.first.math.geometry.*;
 public class VisionConstants {
 
     public static enum TargetType {
-        ALGAE(0), CORAL(1);
+        FUEL(0);
 
-        int classId;
+        final int classId;
 
         private TargetType(int classId) {
             this.classId = classId;
@@ -69,7 +69,7 @@ public class VisionConstants {
     public static double angularStdDevMegatag2Factor = Double.POSITIVE_INFINITY; // No rotation data available
 
     public static class ObjectDetectionConstants {
-        public static double ALGAE_DIAMETER_METERS = 0.413;
+        public static double FUEL_DIAMETER_METERS = 0.150114;
 
         public static Pose3d OBJECT_DETECTION_CAMERA_RIGHT_POSE = null;
         public static Pose3d OBJECT_DETECTION_CAMERA_LEFT_POSE = null;
