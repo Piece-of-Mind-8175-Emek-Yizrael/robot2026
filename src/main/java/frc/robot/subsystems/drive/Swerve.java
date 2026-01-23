@@ -138,8 +138,8 @@ public class Swerve extends SubsystemBase {
         PushSwerveData();
         Field2d field = new Field2d();
         for (int i = 0; i < 6; i += 1) {
-            field.getObject("left" + i).setPose(FieldConstants.Reef.redLeftBranches[i]);
-            field.getObject("right" + i).setPose(FieldConstants.Reef.redRightBranches[i]);
+            // field.getObject("left" + i).setPose(FieldConstants.Reef.redLeftBranches[i]);
+            // field.getObject("right" + i).setPose(FieldConstants.Reef.redRightBranches[i]);
         }
         SmartDashboard.putData("Field", field);
     }
