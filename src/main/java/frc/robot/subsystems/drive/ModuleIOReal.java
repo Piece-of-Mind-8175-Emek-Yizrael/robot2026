@@ -193,6 +193,7 @@ public class ModuleIOReal implements ModuleIO {
         inputs.driveConnected = driveConnectedDebounce.calculate(driveStatus.isOK());
 
         // update turn inputs
+        
         sparkStickyFault = false;
         ifOk(
                 turnMotor,

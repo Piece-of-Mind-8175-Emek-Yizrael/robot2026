@@ -69,7 +69,7 @@ public class Swerve extends SubsystemBase {
             AlertType.kError);
 
     public static double ODOMETRY_FREQUENCY = 0.0;
-    private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
+    private SwerveDriveKinematics kinematics =   new SwerveDriveKinematics(moduleTranslations);
     private Rotation2d rawGyroRotation = new Rotation2d();
     private SwerveModulePosition[] lastModulePositions = // For delta tracking
             new SwerveModulePosition[] {
