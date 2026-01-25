@@ -5,12 +5,12 @@ import com.revrobotics.RelativeEncoder;
 import frc.robot.POM_lib.Motors.POMSparkMax;
 
 public class IntakeIOSparkMax implements IntakeIO{
-    private final POMSparkMax intakeNEO;
+    private final POMSparkMax motor;
     private RelativeEncoder encoder;
 
     public IntakeIOSparkMax(){
-        intakeNEO = new POMSparkMax(0);
-        encoder = intakeNEO.getEncoder();
+        motor = new POMSparkMax(0);
+        encoder = motor.getEncoder();
     }
 
     @Override
