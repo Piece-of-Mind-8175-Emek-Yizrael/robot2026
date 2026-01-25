@@ -23,6 +23,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
+import frc.robot.commands.SwerveCommands;
+import frc.robot.subsystems.drive.GyroIOPigeon;
+import frc.robot.subsystems.drive.ModuleIOReal;
+import frc.robot.subsystems.drive.Swerve;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -40,6 +44,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
         // Subsystems
+        Swerve swerve;
 
         // Controller
         private final PS5Controller driverController = new PS5Controller(0);
@@ -57,6 +62,11 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
+                                swerve = new Swerve(new GyroIOPigeon(),
+                                new ModuleIOReal(0),
+                                new ModuleIOReal(1),
+                                new ModuleIOReal(2),
+                                new ModuleIOReal(3));
                                 break;
 
                         case SIM:
@@ -64,10 +74,12 @@ public class RobotContainer {
 
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
 
+                                swerve = null;
                                 break;
 
                         default:
                                 // Replayed robot, disable IO implementations
+                                swerve = null;
                                 break;
                 }
 
@@ -92,6 +104,13 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
+
+                swerve.setDefaultCommand(
+                        SwerveCommands.joystickDrive(swerve,
+                        () -> driverController.getLeftX() * 0.35,
+                         () -> driverController.getLeftY() * 0.35,
+                          () -> driverController.getRightX() * 0.35)
+                );
                 
         }
 
