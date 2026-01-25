@@ -7,11 +7,11 @@ import frc.robot.POM_lib.Motors.POMTalonFX;
 import static frc.robot.subsystems.intake.IntakeConstants.MOTOR_ID;
 
 public class IntakeIOKraken implements IntakeIO{
-    private final POMTalonFX intakeKraken;
+    private final POMTalonFX motor;
     private final TalonFXConfiguration config = new TalonFXConfiguration();
 
     public IntakeIOKraken(){
-        intakeKraken = new POMTalonFX(MOTOR_ID);
+        motor = new POMTalonFX(MOTOR_ID);
     }
 
     @Override
