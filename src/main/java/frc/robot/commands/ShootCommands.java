@@ -15,5 +15,24 @@ public class ShootCommands {
     public Command stopBoth(Shoot shoot) {
         return Commands.runOnce(() -> shoot.getIO().stopBoth(), shoot);
     }
+
+    public Command setHoodGoal(double goal, Shoot shoot) {
+        return new Command() {
+            @Override
+            public void initialize() {
+                shoot.getIO().setGoal(goal);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                shoot.getIO().stopHood();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return shoot.getIO().atGoal();
+            }
+        };
+    }
     
 }

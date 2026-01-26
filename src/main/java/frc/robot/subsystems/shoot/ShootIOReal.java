@@ -1,28 +1,23 @@
 package frc.robot.subsystems.shoot;
 
-import static frc.robot.subsystems.shoot.ShootConstants.LEFT_HOOD_MOTOR_ID;
-import static frc.robot.subsystems.shoot.ShootConstants.RIGHT_HOOD_MOTOR_ID;
-import static frc.robot.subsystems.shoot.ShootConstants.TRANSFER_MOTOR_ID;
-import static frc.robot.subsystems.shoot.ShootConstants.encoderPositionFactor;
-import static frc.robot.subsystems.shoot.ShootConstants.rampRate;
-import static frc.robot.subsystems.shoot.ShootConstants.slipCurrent;
-import static frc.robot.subsystems.shoot.ShootConstants.transferCurrentLimit;
-
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
-
-
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import static frc.robot.util.SparkUtil.tryUntilOk;
+import static frc.robot.subsystems.shoot.ShootConstants.*;
 
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
+
+
+import static frc.robot.util.SparkUtil.tryUntilOk;
+
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.POM_lib.Motors.POMSparkMax;
 import frc.robot.POM_lib.Motors.POMTalonFX;
@@ -38,6 +33,10 @@ public class ShootIOReal implements ShootIO {
     private final SparkMaxConfig transferConfig;
     private final TalonFXConfiguration hoodConfig;
 
+    private double goalVelocity = 0.0;
+
+    private final VelocityVoltage velocityVoltage = new VelocityVoltage(0.0);
+
     public ShootIOReal() {
         leftHoodMotor = new POMTalonFX(LEFT_HOOD_MOTOR_ID);
         rightHoodMotor = new POMTalonFX(RIGHT_HOOD_MOTOR_ID);
@@ -46,6 +45,14 @@ public class ShootIOReal implements ShootIO {
 
         hoodConfig = new TalonFXConfiguration();
         transferConfig = new SparkMaxConfig();
+
+        Slot0Configs hoodSlot0 = new Slot0Configs()
+        .withKV(kv).withKS(ks).withKP(kp).withKI(ki).withKD(kd);
+    
+
+        hoodConfig.Slot0 = hoodSlot0;
+        hoodConfig.MotionMagic.MotionMagicCruiseVelocity = 10.0; //max velocity rot per sec
+        hoodConfig.MotionMagic.MotionMagicAcceleration = 10.0; //max accel rot per sec
 
         hoodConfig.Feedback.SensorToMechanismRatio = encoderPositionFactor;
         hoodConfig.TorqueCurrent.PeakForwardTorqueCurrent = slipCurrent;
@@ -142,5 +149,18 @@ public class ShootIOReal implements ShootIO {
     public void stopBoth() {
         stopHood();
         stopTransfer();
+    }
+
+    @Override
+    public void setGoal(double targetVelocity) {
+        goalVelocity = targetVelocity;
+        rightHoodMotor.setControl(velocityVoltage.withVelocity(targetVelocity));
+    }
+
+    @Override
+    public boolean atGoal() {
+        double currentVelocity = rightHoodMotor.getVelocity().getValueAsDouble();
+        double tolerance = 50.0; //TODO change tolerance value
+        return Math.abs(currentVelocity - goalVelocity) <= tolerance;
     }
 }

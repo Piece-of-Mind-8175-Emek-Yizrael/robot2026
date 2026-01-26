@@ -47,5 +47,14 @@ public interface ShootIO {
     public default void stopBoth() {
     }
 
+    public default void setGoal(double goal){
+    }
+
+    public default boolean atGoal(){
+        return false;
+    }
+
+    
+
     
 }
