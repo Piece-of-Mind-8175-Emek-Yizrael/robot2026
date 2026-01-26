@@ -1,36 +1,38 @@
 package frc.robot.subsystems.intake;
 
-import com.revrobotics.RelativeEncoder;
+
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.POM_lib.Motors.POMSparkMax;
 
 public class IntakeIOSparkMax implements IntakeIO{
-    private final POMSparkMax intakeNEO;
-    private RelativeEncoder encoder;
+    private final POMSparkMax motor;
+    private final SparkMaxConfig config;
+    
 
     public IntakeIOSparkMax(){
-        intakeNEO = new POMSparkMax(0);
-        encoder = intakeNEO.getEncoder();
+        motor = new POMSparkMax(0);
+        config = new SparkMaxConfig();
+        config.idleMode(IdleMode.kCoast);
+        motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        
     }
 
     @Override
     public void updateInputs(IntakeIOInputs inputs){
-        inputs.intakeVelocity = encoder.getVelocity();
-        inputs.intakeVelocity = encoder.getVelocity();
+        inputs.intakeVoltage = motor.getAppliedOutput();
     }
 
     @Override
     public void setVoltage(double Voltage) {
-        IntakeIO.super.setVoltage(Voltage);
+        motor.setVoltage(Voltage);
     }
 
     @Override
-    public void SetVelocity(double Velocity) {
-        IntakeIO.super.SetVelocity(Velocity);
-    }
-
-    @Override
-    public void stopMotor() {
-        IntakeIO.super.stopMotor();
+    public void StopMotor() {
+        motor.stop();
     }
 }

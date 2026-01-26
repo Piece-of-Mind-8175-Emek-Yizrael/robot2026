@@ -13,10 +13,8 @@ public class IntakeCommands {
     }
 
     public Command intake(Intake intake) {
-        return Commands.startEnd(
-            () -> intake.setVoltage(4),
-            () -> intake.setVoltage(0),
-            intake
-        );
+        return Commands.runEnd(() -> intake.getIO().setVoltage(5) ,
+        () -> intake.getIO().setVoltage(0), 
+        intake);
     }
 }

@@ -12,21 +12,14 @@ public class Intake extends SubsystemBase{
         this.io = io;
     }
 
+    public IntakeIO getIO(){
+        return io;
+    }
+    
     @Override
-    public void periodic() {
+    public void periodic(){
         io.updateInpunts(inputs);
         Logger.processInputs("Intake", inputs);
     }
-
-    public void setVoltage(double voltage){
-        io.setVoltage(voltage);
-    }
-
-    public void SetVelocity(double Velocity){
-        io.SetVelocity(Velocity);
-    }
-    
-    public void stopMotor(){
-        io.stopMotor();
-    }
 }
+
