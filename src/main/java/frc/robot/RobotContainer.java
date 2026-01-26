@@ -100,11 +100,10 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                operatorController.a().onTrue(cartridgeCommands.openCartridgeClosedLoop());
-                operatorController.b().onTrue(cartridgeCommands.closeCartridgeClosedLoop());
-                operatorController.x().onTrue(cartridgeCommands.closeCartridgeOpenLoop());
                 operatorController.rightTrigger().whileTrue(cartridgeCommands.setVoltage(2));
                 operatorController.leftTrigger().whileTrue(cartridgeCommands.setVoltage(-2));
+                operatorController.a().onTrue(cartridgeCommands.openCartridge());
+                operatorController.b().onTrue(cartridgeCommands.closeCartridge());
 
         }
 
