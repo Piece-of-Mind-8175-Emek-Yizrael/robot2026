@@ -25,7 +25,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
 import frc.robot.commands.SwerveCommands;
 import frc.robot.subsystems.drive.GyroIOPigeon;
+import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIOReal;
+import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.Swerve;
 
 import org.ironmaple.simulation.SimulatedArena;
@@ -74,7 +76,12 @@ public class RobotContainer {
 
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
 
-                                swerve = null;
+                                swerve = new Swerve(
+                                                new GyroIOSim(this.driveSimulation.getGyroSimulation()),
+                                                new ModuleIOSim(this.driveSimulation.getModules()[0]),
+                                                new ModuleIOSim(this.driveSimulation.getModules()[1]),
+                                                new ModuleIOSim(this.driveSimulation.getModules()[2]),
+                                                new ModuleIOSim(this.driveSimulation.getModules()[3]));
                                 break;
 
                         default:
