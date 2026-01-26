@@ -12,7 +12,7 @@ public interface cartridgeIO {
         public double output;
         public double postion;
         public boolean isInnerPressed;
-        public boolean isOutterPressed;
+        public boolean isOuterPressed;
     }
 
     public default void updateInputs(cartridgeIOInputs inputs) {
@@ -31,7 +31,7 @@ public interface cartridgeIO {
         return false;
     }
 
-    public default boolean isOutterPressed() {
+    public default boolean isOuterPressed() {
         return false;
     }
 
