@@ -20,7 +20,7 @@ public class cartridgeCommands extends Command {
     public Command openCartridge() {
         return Commands
                 .runEnd(() -> cartridge.getIO().setVoltage(MOVING_VOLTAGE), () -> cartridge.getIO().stop(), cartridge)
-                .until(() -> cartridge.getIO().isOutterPressed());
+                .until(() -> cartridge.getIO().isOuterPressed());
     }
 
     public Command closeCartridge() {

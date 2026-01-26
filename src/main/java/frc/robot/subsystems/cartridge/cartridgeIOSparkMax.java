@@ -17,7 +17,7 @@ public class cartridgeIOSparkMax implements cartridgeIO {
     public cartridgeIOSparkMax() {
         motor = new POMSparkMax(MOTOR_ID);
         innerSwitch = new POMDigitalInput(INNER_SWITCH_CHANNEL, INNER_NORMALLY_OPEN);
-        outerSwitch = new POMDigitalInput(OUTTER_SWITCH_CHANNEL, OUTTER_NORMALLY_OPEN);
+        outerSwitch = new POMDigitalInput(OUTER_SWITCH_CHANNEL, OUTER_NORMALLY_OPEN);
         config = new SparkMaxConfig();
 
         config.idleMode(IdleMode.kBrake)
@@ -32,7 +32,7 @@ public class cartridgeIOSparkMax implements cartridgeIO {
         inputs.voltage = motor.getAppliedOutput() * motor.getBusVoltage();
         inputs.output = motor.getAppliedOutput();
         inputs.isInnerPressed = isInnerPressed();
-        inputs.isOutterPressed = isOutterPressed();
+        inputs.isOuterPressed = isOuterPressed();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class cartridgeIOSparkMax implements cartridgeIO {
     }
 
     @Override
-    public boolean isOutterPressed() {
+    public boolean isOuterPressed() {
         return outerSwitch.get();
     }
 
