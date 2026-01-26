@@ -6,8 +6,8 @@ import frc.robot.subsystems.shoot.Shoot;
 
 public class ShootCommands {
 
-    public Command setVoltage(double hoodVoltage, double transferVoltage, Shoot shoot) {
-        return Commands.runEnd(() -> shoot.getIO().setVoltage(hoodVoltage, transferVoltage),
+    public Command setVoltage(double hoodVoltage, double feedVoltage, Shoot shoot) {
+        return Commands.runEnd(() -> shoot.getIO().setBoth(hoodVoltage, feedVoltage),
                                 shoot.getIO()::stopBoth,
                                 shoot);
     }
@@ -18,19 +18,34 @@ public class ShootCommands {
 
     public Command setHoodGoal(double goal, Shoot shoot) {
         return new Command() {
+            private boolean feedStarted = false;
+            
+            {
+                addRequirements(shoot);
+            }
+
             @Override
             public void initialize() {
+                addRequirements(shoot);
                 shoot.getIO().setGoal(goal);
             }
 
             @Override
+            public void execute() {
+                if(shoot.getIO().atGoal() && !feedStarted) {
+                    shoot.getIO().setFeedVoltage(4);
+                    feedStarted = true;
+                }
+            }
+
+            @Override
             public void end(boolean interrupted) {
-                shoot.getIO().stopHood();
+                shoot.getIO().stopBoth();
             }
 
             @Override
             public boolean isFinished() {
-                return shoot.getIO().atGoal();
+                return false;
             }
         };
     }
