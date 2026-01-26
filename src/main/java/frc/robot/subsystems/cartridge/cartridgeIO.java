@@ -24,26 +24,12 @@ public interface cartridgeIO {
     public default void stop() {
     }
 
-    public default void goToPosition(double goal) {
-    }
-
     public default boolean isInnerPressed() {
         return false;
     }
 
     public default boolean isOuterPressed() {
         return false;
-    }
-
-    public default double getPosition() {
-        return 0;
-    }
-
-    public default boolean atGoal() {
-        return false;
-    }
-
-    public default void setPIDValues() {
     }
 
 }
