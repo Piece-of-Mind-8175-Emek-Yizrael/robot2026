@@ -14,18 +14,18 @@ public class cartridgeCommands extends Command {
     }
 
     public Command setVoltage(double voltage) {
-        return Commands.runEnd(() -> cartridge.getIO().setVoltage(voltage), () -> cartridge.getIO().stop(), cartridge);
+        return Commands.runEnd(() -> cartridge.getIO().setVoltage(voltage), cartridge.getIO()::stop, cartridge);
     }
 
     public Command openCartridge() {
         return Commands
-                .runEnd(() -> cartridge.getIO().setVoltage(MOVING_VOLTAGE), () -> cartridge.getIO().stop(), cartridge)
+                .runEnd(() -> cartridge.getIO().setVoltage(MOVING_VOLTAGE), cartridge.getIO()::stop, cartridge)
                 .until(() -> cartridge.getIO().isOuterPressed());
     }
 
     public Command closeCartridge() {
         return Commands
-                .runEnd(() -> cartridge.getIO().setVoltage(MOVING_VOLTAGE), () -> cartridge.getIO().stop(), cartridge)
+                .runEnd(() -> cartridge.getIO().setVoltage(MOVING_VOLTAGE), cartridge.getIO()::stop, cartridge)
                 .until(() -> cartridge.getIO().isInnerPressed());
     }
 
