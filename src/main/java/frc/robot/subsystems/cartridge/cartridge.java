@@ -19,6 +19,5 @@ public class cartridge extends SubsystemBase {
     @Override
     public void periodic() {
         Logger.processInputs("cartridge", inputs);
-        getIO().setPIDValues();
     }
 }
