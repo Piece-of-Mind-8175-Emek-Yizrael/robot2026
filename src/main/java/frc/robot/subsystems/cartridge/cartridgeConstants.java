@@ -6,13 +6,6 @@ public class cartridgeConstants {
     public static final int OUTTER_SWITCH_CHANNEL = 0;
     public static final boolean INNER_NORMALLY_OPEN = false;
     public static final boolean OUTTER_NORMALLY_OPEN = false;
-    public static final int kP = 0;
-    public static final int kI = 0;
-    public static final int kD = 0;
     public static final double MOVING_VOLTAGE = 0;
-    public static final double POSITION_CONVERSIN_FACTOR = 0;
-    public static final double VELOCITY_CONVERSIN_FACTOR = 0;
-    public static final double MAX_VELOCITY = 0;
-    public static final double MAX_ACCELERATION = 0;
     public static final int STALL_LIMIT = 0;
 }
