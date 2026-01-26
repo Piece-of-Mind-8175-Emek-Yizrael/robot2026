@@ -19,10 +19,10 @@ public interface ShootIO {
         public double rightAppliedVoltage = 0.0;
 
         //transfer motor
-        public boolean transferConnected = false;
-        public double transferVoltage = 0.0;
-        public double transferVelocity = 0.0;
-        public double transferAppliedVoltage = 0.0;
+        public boolean feedConnected = false;
+        public double feedVoltage = 0.0;
+        public double feedVelocity = 0.0;
+        public double feedAppliedVoltage = 0.0;
 
     }
 
@@ -32,16 +32,16 @@ public interface ShootIO {
     public default void setHoodVoltage(double voltage) {
     }
 
-    public default void setTransferVoltage(double voltage) {
+    public default void setFeedVoltage(double voltage) {
     }
 
     public default void stopHood() {
     }
 
-    public default void stopTransfer() {
+    public default void stopFeed() {
     }
 
-    public default void setVoltage(double hoodVoltage, double transferVoltage) {
+    public default void setBoth(double hoodVoltage, double transferVoltage) {
     }
 
     public default void stopBoth() {
