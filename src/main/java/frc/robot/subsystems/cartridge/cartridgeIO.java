@@ -11,7 +11,8 @@ public interface cartridgeIO {
         public double velocity;
         public double output;
         public double postion;
-        public boolean isPressed;
+        public boolean isInnerPressed;
+        public boolean isOutterPressed;
     }
 
     public default void updateInputs(cartridgeIOInputs inputs) {
@@ -26,7 +27,19 @@ public interface cartridgeIO {
     public default void goToPosition(double goal) {
     }
 
-    public default boolean isPressed() {
+    public default boolean isInnerPressed() {
+        return false;
+    }
+
+    public default boolean isOutterPressed() {
+        return false;
+    }
+
+    public default double getPosition() {
+        return 0;
+    }
+
+    public default boolean atGoal() {
         return false;
     }
 

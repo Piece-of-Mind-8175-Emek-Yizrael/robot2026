@@ -17,22 +17,16 @@ public class cartridgeCommands extends Command {
         return Commands.runEnd(() -> cartridge.getIO().setVoltage(voltage), () -> cartridge.getIO().stop(), cartridge);
     }
 
-    public Command openCartridgeClosedLoop() {
-        return Commands.runEnd(() -> cartridge.getIO().goToPosition(OPEN_POS), () -> cartridge.getIO().stop(),
-                cartridge);
+    public Command openCartridge() {
+        return Commands
+                .runEnd(() -> cartridge.getIO().setVoltage(MOVING_VOLTAGE), () -> cartridge.getIO().stop(), cartridge)
+                .until(() -> cartridge.getIO().isOutterPressed());
     }
 
-    public Command closeCartridgeOpenLoop() {
+    public Command closeCartridge() {
         return Commands
-                .runEnd(() -> cartridge.getIO().setVoltage(CLOSING_VOLTAGE), () -> cartridge.getIO().stop(), cartridge)
-                .until(() -> cartridge.getIO().isPressed());
-    }
-
-    public Command closeCartridgeClosedLoop() {
-        return Commands
-                .runEnd(() -> cartridge.getIO().goToPosition(0),
-                        () -> cartridge.getIO().setVoltage(SLOW_CLOSING_VOLTAGE), cartridge)
-                .until(() -> cartridge.getIO().isPressed()).andThen(() -> cartridge.getIO().stop());
+                .runEnd(() -> cartridge.getIO().setVoltage(MOVING_VOLTAGE), () -> cartridge.getIO().stop(), cartridge)
+                .until(() -> cartridge.getIO().isInnerPressed());
     }
 
 }
