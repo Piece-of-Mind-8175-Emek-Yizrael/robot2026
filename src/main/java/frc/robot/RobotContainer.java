@@ -13,27 +13,23 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
 import frc.robot.commands.SwerveCommands;
-import frc.robot.subsystems.drive.GyroIOPigeon;
+import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.Swerve;
-
-import org.ironmaple.simulation.SimulatedArena;
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -64,7 +60,7 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
-                                swerve = new Swerve(new GyroIOPigeon(),
+                                swerve = new Swerve(new GyroIOPigeon2(),
                                 new ModuleIOReal(0),
                                 new ModuleIOReal(1),
                                 new ModuleIOReal(2),
@@ -114,8 +110,8 @@ public class RobotContainer {
 
                 swerve.setDefaultCommand(
                         SwerveCommands.joystickDrive(swerve,
-                        () -> driverController.getLeftX() * 0.35,
-                         () -> driverController.getLeftY() * 0.35,
+                        () -> driverController.getLeftY() * -0.35,
+                         () -> driverController.getLeftX() * -0.35,
                           () -> driverController.getRightX() * 0.35)
                 );
                 
