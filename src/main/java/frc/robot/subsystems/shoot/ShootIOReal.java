@@ -34,7 +34,7 @@ public class ShootIOReal implements ShootIO {
     private final SparkMaxConfig feedConfig;
     private final TalonFXConfiguration hoodConfig;
 
-    private double goalVelocity = 0.0;
+    private double goalHoodVelocity = 0.0;
 
     private final VelocityVoltage velocityVoltage = new VelocityVoltage(0.0);
 
@@ -60,12 +60,13 @@ public class ShootIOReal implements ShootIO {
         hoodConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         hoodConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = rampRate;
         hoodConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = rampRate;
-        hoodConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        hoodConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        hoodConfig.MotorOutput.withInverted(HOOD_DIRECTION);
 
         tryUntilOk(5, () -> leftHoodMotor.getConfigurator().apply(hoodConfig, 0.25));
         tryUntilOk(5, () -> rightHoodMotor.getConfigurator().apply(hoodConfig, 0.25));
         
-        leftHoodMotor.setControl(new Follower(rightHoodMotor.getDeviceID(), MotorAlignmentValue.Aligned));
+        leftHoodMotor.setControl(new Follower(rightHoodMotor.getDeviceID(), MotorAlignmentValue.Opposed));
 
 
         feedConfig
@@ -74,15 +75,14 @@ public class ShootIOReal implements ShootIO {
                 .voltageCompensation(12.0)
                 .openLoopRampRate(rampRate)
                 .closedLoopRampRate(rampRate)
-                .inverted(false);
+                .inverted(feedInverted);
 
         
         feedConfig.encoder
-                .inverted(false)
+                .inverted(feedInverted)
                 .positionConversionFactor(feedGearRatio)
                 .velocityConversionFactor(feedEncoderVelocityFactor)
-                .uvwMeasurementPeriod(10)
-                .uvwAverageDepth(2);
+                .uvwMeasurementPeriod(20);
 
         
         tryUntilOk(
@@ -98,6 +98,9 @@ public class ShootIOReal implements ShootIO {
 
     @Override
     public void updateInputs(ShootIOInputs inputs) {
+        
+        inputs.goalHoodVelocity = goalHoodVelocity;
+        
         //left hood motor
         inputs.leftHoodConnected = leftHoodMotor.isConnected();
         inputs.leftVoltage = leftHoodMotor.getMotorVoltage().getValueAsDouble();
@@ -120,7 +123,7 @@ public class ShootIOReal implements ShootIO {
 
     @Override
     public void setHoodVoltage(double voltage) {
-        goalVelocity = voltage;
+        goalHoodVelocity = 0.0;
         rightHoodMotor.setControl(new VoltageOut(voltage));
     }
 
@@ -131,13 +134,13 @@ public class ShootIOReal implements ShootIO {
 
     @Override
     public void stopHood() {
-        goalVelocity = 0.0;
+        goalHoodVelocity = 0.0;
         setHoodVoltage(0);
     }
 
     @Override
     public void stopFeed() {
-        feedMotor.setVoltage(0.0);
+        setFeedVoltage(0);
     }
 
     @Override
@@ -153,15 +156,14 @@ public class ShootIOReal implements ShootIO {
     }
 
     @Override
-    public void setGoal(double targetVelocity) {
-        goalVelocity = targetVelocity;
+    public void setHoodSetpoint(double targetVelocity) {
+        goalHoodVelocity = targetVelocity;
         rightHoodMotor.setControl(velocityVoltage.withVelocity(targetVelocity));
     }
 
     @Override
     public boolean atGoal() {
         double currentVelocity = rightHoodMotor.getVelocity().getValueAsDouble();
-        double tolerance = 0.2; //TODO change tolerance value
-        return Math.abs(currentVelocity - goalVelocity) <= tolerance;
+        return Math.abs(currentVelocity - goalHoodVelocity) <= hoodTolerance;
     }
 }
