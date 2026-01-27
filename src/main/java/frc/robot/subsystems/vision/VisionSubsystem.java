@@ -50,7 +50,7 @@ public class VisionSubsystem extends SubsystemBase {
     private final ObjectDetectionVisionIO[] objectDetectionIO;
     private final ObjectDetectionVisionIOInputsAutoLogged[] objectDetectionInputs;
     private final List<Detection> detections = new ArrayList<>();
-    private boolean updatingDetections = false;
+    private volatile boolean updatingDetections = false;
 
     public VisionSubsystem(VisionConsumer consumer, ApriltagVisionIO[] apriltagVisionIO,
             ObjectDetectionVisionIO[] objectDetectionIO) {
@@ -233,7 +233,7 @@ public class VisionSubsystem extends SubsystemBase {
     // TODO: Add logic to compare results between both cameras and find duplicates
     public List<Detection> getAllObjectDetections() {
         while (updatingDetections)
-            ;
+            Thread.onSpinWait();
         return detections;
     }
 
