@@ -6,6 +6,8 @@ public interface ShootIO {
 
     @AutoLog
     public static class ShootIOInputs {
+
+        public double goalHoodVelocity = 0.0;
         //left hood motor
         public boolean leftHoodConnected = false;
         public double leftVoltage = 0.0;
@@ -47,14 +49,11 @@ public interface ShootIO {
     public default void stopBoth() {
     }
 
-    public default void setGoal(double goal){
+    public default void setHoodSetpoint(double goal){
     }
 
     public default boolean atGoal(){
         return false;
     }
-
-    
-
     
 }
