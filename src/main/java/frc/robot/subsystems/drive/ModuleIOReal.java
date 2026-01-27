@@ -100,7 +100,7 @@ public class ModuleIOReal implements ModuleIO {
         turnEncoder = new CANcoder(swerveBaseID + 2 + swerveModuleIDsCount * module);
 
         var encoderConfig = new CANcoderConfiguration();
-        encoderConfig.MagnetSensor.SensorDirection = module == 1 ? SensorDirectionValue.CounterClockwise_Positive
+        encoderConfig.MagnetSensor.SensorDirection = module == 3 ? SensorDirectionValue.CounterClockwise_Positive
                 : SensorDirectionValue.Clockwise_Positive;
 
         encoderConfig.MagnetSensor.MagnetOffset = zeroRotation.getRotations();
