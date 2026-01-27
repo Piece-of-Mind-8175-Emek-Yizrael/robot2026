@@ -11,5 +11,5 @@ public interface IntakeIO {
 
     public default void setVoltage(double Voltage){} 
 
-    public default void StopMotor(){}
+    public default void stopMotor(){}
 }
