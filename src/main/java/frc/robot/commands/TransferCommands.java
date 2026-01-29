@@ -7,7 +7,7 @@ import frc.robot.subsystems.transfer.TransferConstants;
 
 public class TransferCommands {
     public static Command setVoltage(Transfer subsystem, double voltage) {
-        return Commands.runOnce(() -> subsystem.getIO().setVoltage(voltage));
+        return Commands.runEnd(() -> subsystem.getIO().setVoltage(voltage), () -> subsystem.getIO().setVoltage(0), subsystem);
     }
 
     public static Command stopMotor(Transfer subsystem) {
