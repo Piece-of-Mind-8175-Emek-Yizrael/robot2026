@@ -2,7 +2,14 @@ package frc.robot.util.BallisticCalculator;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+
+import java.io.IOException;
 
 @JsonPropertyOrder({"distance", "velocity", "angle"})
 public class BallisticCalculatorEntry {
@@ -46,5 +53,23 @@ public class BallisticCalculatorEntry {
     @Override
     public String toString() {
         return "distance: " + distanceFromHubX + "[m], angle: " + shooterAngle + "[deg], velocity: " + projectileVelocity + "[m/s]";
+    }
+}
+
+class BallisticTableDeserializer extends StdDeserializer<BallisticCalculatorEntry> {
+
+    public BallisticTableDeserializer() {
+        this(null);
+    }
+
+    protected BallisticTableDeserializer(Class<?> vc) {
+        super(vc);
+    }
+
+    // TODO: implement the deserialization function
+    @Override
+    public BallisticCalculatorEntry deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
+        JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+        return null;
     }
 }
