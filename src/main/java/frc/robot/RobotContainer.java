@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
 import frc.robot.commands.cartridgeCommands;
 import frc.robot.subsystems.cartridge.cartridge;
-import frc.robot.subsystems.cartridge.cartridgeIO;
 import frc.robot.subsystems.cartridge.cartridgeIOSparkMax;
 
 import org.ironmaple.simulation.SimulatedArena;

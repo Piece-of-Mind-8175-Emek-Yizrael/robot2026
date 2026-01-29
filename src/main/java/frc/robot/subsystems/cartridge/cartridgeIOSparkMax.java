@@ -22,7 +22,8 @@ public class cartridgeIOSparkMax implements cartridgeIO {
 
         config.idleMode(IdleMode.kBrake)
                 .smartCurrentLimit(STALL_LIMIT)
-                .voltageCompensation(12);
+                .voltageCompensation(12)
+                .inverted(INVERTED);
 
         motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
