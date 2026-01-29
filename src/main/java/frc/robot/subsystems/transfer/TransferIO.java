@@ -9,6 +9,7 @@ public interface TransferIO {
         public double voltage;
     }
 
+    public void stopMotor();
     public void updateInputs(TransferIOInputs inputs);
     public void setVoltage(double voltage);
     public void setPercentOfSpeed(double percentage);

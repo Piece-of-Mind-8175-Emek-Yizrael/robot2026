@@ -22,8 +22,4 @@ public class Transfer extends SubsystemBase {
         return io;
     }
 
-    public Command toggleTransfer(boolean on) {
-        if (on) return runOnce(() -> io.setPercentOfSpeed(TransferConstants.TRANSFER_SPEED));
-        return runOnce(() -> io.setPercentOfSpeed(0));
-    }
 }
