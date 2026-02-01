@@ -13,4 +13,20 @@ public interface climbIO {
         public static boolean isPressed;
     }
 
+    public default void updateInputs(climbIOInputs inputs) {
+    }
+
+    public default void setMotorVoltage(double voltage) {
+    }
+
+    public default void stopMotor() {
+    }
+
+    public default void setServoAngle(double angle) {
+    }
+
+    public default boolean isPressed() {
+        return false;
+    }
+
 }
