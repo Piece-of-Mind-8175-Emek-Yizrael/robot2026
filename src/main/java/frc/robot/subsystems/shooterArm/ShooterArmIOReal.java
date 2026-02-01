@@ -1,12 +1,27 @@
 package frc.robot.subsystems.shooterArm;
 
-import static frc.robot.subsystems.shooterArm.ShooterArmConstants.*;
+import static frc.robot.subsystems.shooterArm.ShooterArmConstants.MAX_ACCELERATION;
+import static frc.robot.subsystems.shooterArm.ShooterArmConstants.MAX_VELOCITY;
+import static frc.robot.subsystems.shooterArm.ShooterArmConstants.MOTOR_ID;
+import static frc.robot.subsystems.shooterArm.ShooterArmConstants.currentLimit;
+import static frc.robot.subsystems.shooterArm.ShooterArmConstants.gearRatio;
+import static frc.robot.subsystems.shooterArm.ShooterArmConstants.kd;
+import static frc.robot.subsystems.shooterArm.ShooterArmConstants.kg;
+import static frc.robot.subsystems.shooterArm.ShooterArmConstants.ki;
+import static frc.robot.subsystems.shooterArm.ShooterArmConstants.kp;
+import static frc.robot.subsystems.shooterArm.ShooterArmConstants.ks;
+import static frc.robot.subsystems.shooterArm.ShooterArmConstants.kv;
+import static frc.robot.subsystems.shooterArm.ShooterArmConstants.velocityConversionFactor;
+import static frc.robot.subsystems.shooterArm.ShooterArmConstants.voltageCompensation;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
