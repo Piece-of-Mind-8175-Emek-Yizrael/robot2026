@@ -6,14 +6,14 @@ public interface ClimbIO {
 
     @AutoLog
 
-    public static class climbIOInputs {
+    public static class ClimbIOInputs {
         public static double voltage;
         public static double output;
         public static double angle;
         public static boolean isPressed;
     }
 
-    public default void updateInputs(climbIOInputs inputs) {
+    public default void updateInputs(ClimbIOInputs inputs) {
     }
 
     public default void setMotorVoltage(double voltage) {
