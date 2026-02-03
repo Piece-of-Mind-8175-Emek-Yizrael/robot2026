@@ -31,7 +31,8 @@ public class ClimbCommands extends Command {
 
     public Command openClimb(double voltage, BooleanSupplier buttonPressed) {
         return Commands.runOnce(() -> climb.getIO().setServoAngle(CLOSE_CLIMB_SERVO_ANGLE), climb)
-                .andThen(() -> climb.getIO().setMotorVoltage(voltage), climb).until(buttonPressed);// need to cheack
+                .withTimeout(OPEN_SWITCH_DELAY).andThen(() -> climb.getIO().setMotorVoltage(voltage), climb)
+                .until(buttonPressed).andThen(() -> climb.getIO().stopMotor(), climb);// need to cheack
 
     }
 }
