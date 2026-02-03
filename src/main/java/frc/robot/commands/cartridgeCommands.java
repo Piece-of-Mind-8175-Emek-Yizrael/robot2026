@@ -2,14 +2,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.subsystems.cartridge.cartridge;
-import static frc.robot.subsystems.cartridge.cartridgeConstants.*;
+import frc.robot.subsystems.cartridge.Cartridge;
+import static frc.robot.subsystems.cartridge.CartridgeConstants.*;
 
-public class cartridgeCommands extends Command {
+public class CartridgeCommands extends Command {
 
-    cartridge cartridge;
+    Cartridge cartridge;
 
-    public cartridgeCommands(cartridge cartridge) {
+    public CartridgeCommands(Cartridge cartridge) {
         this.cartridge = cartridge;
     }
 

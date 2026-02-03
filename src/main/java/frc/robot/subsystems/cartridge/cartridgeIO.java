@@ -2,11 +2,11 @@ package frc.robot.subsystems.cartridge;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public interface cartridgeIO {
+public interface CartridgeIO {
 
     @AutoLog
 
-    public static class cartridgeIOInputs {
+    public static class CartridgeIOInputs {
         public double voltage;
         public double velocity;
         public double output;
@@ -15,7 +15,7 @@ public interface cartridgeIO {
         public boolean isOuterPressed;
     }
 
-    public default void updateInputs(cartridgeIOInputs inputs) {
+    public default void updateInputs(CartridgeIOInputs inputs) {
     }
 
     public default void setVoltage(double voltage) {
