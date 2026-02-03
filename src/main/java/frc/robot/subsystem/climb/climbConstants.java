@@ -10,4 +10,5 @@ public class ClimbConstants {
     public static final int CLOSE_CLIMB_SERVO_ANGLE = 0;
     public static final boolean IS_NORAMLLY_OPEN = false;
     public static final int LIMIT = 0;
+    public static final double OPEN_SWITCH_DELAY = 0;
 }
