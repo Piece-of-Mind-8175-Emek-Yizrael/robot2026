@@ -4,15 +4,15 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class climb extends SubsystemBase {
-    climbIOInputsAutoLogged climbIOInputs = new climbIOInputsAutoLogged();
-    climbIO io;
+public class Climb extends SubsystemBase {
+    ClimbIOInputsAutoLogged climbIOInputs = new ClimbIOInputsAutoLogged();
+    ClimbIO io;
 
-    public climb(climbIO io) {
+    public Climb(ClimbIO io) {
         this.io = io;
     }
 
-    public climbIO getIO() {
+    public ClimbIO getIO() {
         return io;
     }
 

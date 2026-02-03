@@ -9,15 +9,15 @@ import com.revrobotics.servohub.ServoHub;
 import edu.wpi.first.wpilibj.Servo;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
 
-import static frc.robot.subsystem.climb.climbConstants.*;
+import static frc.robot.subsystem.climb.ClimbConstants.*;
 
-public class climbIOReal implements climbIO {
+public class ClimbIOReal implements ClimbIO {
     private final TalonFX motor;
     private final Servo servo;
     private final POMDigitalInput limitSwitch;
     private final MotorOutputConfigs configs;
 
-    public climbIOReal() {
+    public ClimbIOReal() {
         motor = new TalonFX(MOTOR_ID);
         servo = new Servo(SERVO_CHANNEL);
         limitSwitch = new POMDigitalInput(LIMIT_SWITCH_CHANNEL, IS_NORAMLLY_OPEN);
