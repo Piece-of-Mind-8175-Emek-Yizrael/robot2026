@@ -17,7 +17,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 /** IO implementation for real PhotonVision hardware. */
 public class ApriltagVisionIOReal implements ApriltagVisionIO {
   protected final PhotonCamera camera;
-  protected final Transform3d robotToCamera;
+  protected Transform3d robotToCamera;
   final String name;
 
   /**
@@ -29,6 +29,16 @@ public class ApriltagVisionIOReal implements ApriltagVisionIO {
   public ApriltagVisionIOReal(String name, Transform3d robotToCamera) {
     this.name = name;
     camera = new PhotonCamera(name);
+    this.robotToCamera = robotToCamera;
+  }
+
+  @Override
+  public String getPipelineName() {
+    return name;
+  }
+
+  @Override
+  public void setRobotToCamera(Transform3d robotToCamera) {
     this.robotToCamera = robotToCamera;
   }
 

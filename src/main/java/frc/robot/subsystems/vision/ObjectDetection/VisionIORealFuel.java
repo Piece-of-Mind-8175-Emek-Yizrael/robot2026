@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class VisionIORealAlgae implements ObjectDetectionVisionIO {
+public class VisionIORealFuel implements ObjectDetectionVisionIO {
     final PhotonCamera camera;
     final String name;
 
-    public VisionIORealAlgae(String name) {
+    public VisionIORealFuel(String name) {
         this.name = name;
         camera = new PhotonCamera(name);
     }

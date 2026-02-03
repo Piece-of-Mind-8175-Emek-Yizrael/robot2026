@@ -38,6 +38,10 @@ public interface ApriltagVisionIO {
     PHOTONVISION
   }
 
+  public String getPipelineName();
+
+  public void setRobotToCamera(Transform3d robotToCamera);
+
   public default void updateInputs(ApriltagVisionIOInputs inputs) {
   }
 }

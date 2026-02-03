@@ -34,6 +34,7 @@ import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIO.PoseObservationType
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIOInputsAutoLogged;
 import frc.robot.subsystems.vision.ObjectDetection.Detection;
@@ -235,6 +236,21 @@ public class VisionSubsystem extends SubsystemBase {
         while (updatingDetections)
             Thread.onSpinWait();
         return detections;
+    }
+
+    public void updateShooterRotation(double shooterAngle, double shooterRotationRadius) {
+        for (ApriltagVisionIO io : apriltagVisionIO) {
+            for (String affected : CAMERAS_AFFECTED_BY_SHOOTER_ROTATION) {
+                if (Objects.equals(io.getPipelineName(), affected)) {
+                    // TODO: some awesome calculations to update the bloody thing
+                }
+            }
+        }
+    }
+
+    @FunctionalInterface
+    public static interface ShooterAngleConsumer {
+        public void accept(double shooterRotation, double shooterRotationRadius);
     }
 
     @FunctionalInterface
