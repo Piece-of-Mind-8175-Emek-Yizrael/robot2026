@@ -18,7 +18,7 @@ public class Cartridge extends SubsystemBase {
 
     @Override
     public void periodic() {
-        io.updCateInputs(inputs);
+        io.updateInputs(inputs);
         Logger.processInputs("cartridge", inputs);
     }
 }
