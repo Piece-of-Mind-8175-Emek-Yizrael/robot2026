@@ -23,9 +23,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
-import frc.robot.commands.cartridgeCommands;
-import frc.robot.subsystems.cartridge.cartridge;
-import frc.robot.subsystems.cartridge.cartridgeIOSparkMax;
+import frc.robot.commands.CartridgeCommands;
+import frc.robot.subsystems.cartridge.Cartridge;
+import frc.robot.subsystems.cartridge.CartridgeIOSparkMax;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -44,8 +44,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
         // Subsystems
-        cartridge cartridge;
-        cartridgeCommands cartridgeCommands;
+        Cartridge cartridge;
+        CartridgeCommands cartridgeCommands;
         // Controller
         private final PS5Controller driverController = new PS5Controller(0);
         private final PomXboxController operatorController = new PomXboxController(1);
@@ -62,8 +62,8 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
-                                cartridge = new cartridge(new cartridgeIOSparkMax());
-                                cartridgeCommands = new cartridgeCommands(cartridge);
+                                cartridge = new Cartridge(new CartridgeIOSparkMax());
+                                cartridgeCommands = new CartridgeCommands(cartridge);
                                 break;
 
                         case SIM:

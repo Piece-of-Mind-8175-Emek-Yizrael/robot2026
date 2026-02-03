@@ -4,21 +4,21 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class cartridge extends SubsystemBase {
-    cartridgeIOInputsAutoLogged inputs = new cartridgeIOInputsAutoLogged();
-    cartridgeIO io;
+public class Cartridge extends SubsystemBase {
+    CartridgeIOInputsAutoLogged inputs = new CartridgeIOInputsAutoLogged();
+    CartridgeIO io;
 
-    public cartridge(cartridgeIO io) {
+    public Cartridge(CartridgeIO io) {
         this.io = io;
     }
 
-    public cartridgeIO getIO() {
+    public CartridgeIO getIO() {
         return io;
     }
 
     @Override
     public void periodic() {
-        io.updateInputs(inputs);
+        io.updCateInputs(inputs);
         Logger.processInputs("cartridge", inputs);
     }
 }

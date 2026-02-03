@@ -6,15 +6,15 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import frc.robot.POM_lib.Motors.POMSparkMax;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
-import static frc.robot.subsystems.cartridge.cartridgeConstants.*;
+import static frc.robot.subsystems.cartridge.CartridgeConstants.*;
 
-public class cartridgeIOSparkMax implements cartridgeIO {
+public class CartridgeIOSparkMax implements CartridgeIO {
     private final POMSparkMax motor;
     private final POMDigitalInput innerSwitch;
     private final POMDigitalInput outerSwitch;
     private final SparkMaxConfig config;
 
-    public cartridgeIOSparkMax() {
+    public CartridgeIOSparkMax() {
         motor = new POMSparkMax(MOTOR_ID);
         innerSwitch = new POMDigitalInput(INNER_SWITCH_CHANNEL, INNER_NORMALLY_OPEN);
         outerSwitch = new POMDigitalInput(OUTER_SWITCH_CHANNEL, OUTER_NORMALLY_OPEN);
@@ -29,7 +29,7 @@ public class cartridgeIOSparkMax implements cartridgeIO {
     }
 
     @Override
-    public void updateInputs(cartridgeIOInputs inputs) {
+    public void updateInputs(CartridgeIOInputs inputs) {
         inputs.voltage = motor.getAppliedOutput() * motor.getBusVoltage();
         inputs.output = motor.getAppliedOutput();
         inputs.isInnerPressed = isInnerPressed();
