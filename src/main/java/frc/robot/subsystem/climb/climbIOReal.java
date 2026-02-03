@@ -28,7 +28,7 @@ public class ClimbIOReal implements ClimbIO {
     }
 
     @Override
-    public void updateInputs(climbIOInputs inputs) {
+    public void updateInputs(ClimbIOInputs inputs) {
         inputs.voltage = motor.getMotorVoltage().getValueAsDouble();
         inputs.output = motor.getMotorOutputStatus().getValueAsDouble();
         inputs.angle = servo.getAngle();
