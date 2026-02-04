@@ -25,8 +25,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
 import frc.robot.commands.CartridgeCommands;
 import frc.robot.subsystems.cartridge.Cartridge;
-import frc.robot.subsystems.cartridge.CartridgeIOSparkMax;
-
+import frc.robot.subsystems.cartridge.CartridgeIOReal;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -62,7 +61,7 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
-                                cartridge = new Cartridge(new CartridgeIOSparkMax());
+                                cartridge = new Cartridge(new CartridgeIOReal());
                                 cartridgeCommands = new CartridgeCommands(cartridge);
                                 break;
 

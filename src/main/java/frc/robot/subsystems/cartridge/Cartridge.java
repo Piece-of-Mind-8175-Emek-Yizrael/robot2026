@@ -3,11 +3,12 @@ package frc.robot.subsystems.cartridge;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.cartridge.CartridgeIO.CartridgeIOInputs;
 
 
 public class Cartridge extends SubsystemBase {
-    CartridgeIOInputsAutoLogged inputs = new CartridgeIOInputsAutoLogged();
-    CartridgeIO io;
+    private final CartridgeIOInputsAutoLogged inputs = new CartridgeIOInputsAutoLogged();
+    private CartridgeIO io;
 
     public Cartridge(CartridgeIO io) {
         this.io = io;
