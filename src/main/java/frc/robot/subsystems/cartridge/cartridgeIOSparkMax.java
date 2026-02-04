@@ -1,13 +1,20 @@
 package frc.robot.subsystems.cartridge;
 
+import static frc.robot.subsystems.cartridge.CartridgeConstants.INNER_NORMALLY_OPEN;
+import static frc.robot.subsystems.cartridge.CartridgeConstants.INNER_SWITCH_CHANNEL;
+import static frc.robot.subsystems.cartridge.CartridgeConstants.INVERTED;
+import static frc.robot.subsystems.cartridge.CartridgeConstants.MOTOR_ID;
+import static frc.robot.subsystems.cartridge.CartridgeConstants.OUTER_NORMALLY_OPEN;
+import static frc.robot.subsystems.cartridge.CartridgeConstants.OUTER_SWITCH_CHANNEL;
+import static frc.robot.subsystems.cartridge.CartridgeConstants.STALL_LIMIT;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
 import frc.robot.POM_lib.Motors.POMSparkMax;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
-import static frc.robot.subsystems.cartridge.CartridgeConstants.*;
-
 public class CartridgeIOSparkMax implements CartridgeIO {
     private final POMSparkMax motor;
     private final POMDigitalInput innerSwitch;
@@ -55,5 +62,5 @@ public class CartridgeIOSparkMax implements CartridgeIO {
     public boolean isOuterPressed() {
         return outerSwitch.get();
     }
-
+    
 }

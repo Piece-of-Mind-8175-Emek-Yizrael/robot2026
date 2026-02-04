@@ -4,8 +4,8 @@ import org.littletonrobotics.junction.AutoLog;
 
 public interface CartridgeIO {
 
+    
     @AutoLog
-
     public static class CartridgeIOInputs {
         public double voltage;
         public double velocity;
