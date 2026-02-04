@@ -15,13 +15,14 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.POM_lib.Motors.POMSparkMax;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
-public class CartridgeIOSparkMax implements CartridgeIO {
+
+public class CartridgeIOReal implements CartridgeIO {
     private final POMSparkMax motor;
     private final POMDigitalInput innerSwitch;
     private final POMDigitalInput outerSwitch;
     private final SparkMaxConfig config;
 
-    public CartridgeIOSparkMax() {
+    public CartridgeIOReal() {
         motor = new POMSparkMax(MOTOR_ID);
         innerSwitch = new POMDigitalInput(INNER_SWITCH_CHANNEL, INNER_NORMALLY_OPEN);
         outerSwitch = new POMDigitalInput(OUTER_SWITCH_CHANNEL, OUTER_NORMALLY_OPEN);
