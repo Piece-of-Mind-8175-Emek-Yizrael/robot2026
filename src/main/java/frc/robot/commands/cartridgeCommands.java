@@ -7,7 +7,7 @@ import static frc.robot.subsystems.cartridge.CartridgeConstants.*;
 
 public class CartridgeCommands extends Command {
 
-    Cartridge cartridge;
+    private Cartridge cartridge;
 
     public CartridgeCommands(Cartridge cartridge) {
         this.cartridge = cartridge;
