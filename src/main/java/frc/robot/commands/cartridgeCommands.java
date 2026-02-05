@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.robot.subsystems.cartridge.Cartridge;
 import static frc.robot.subsystems.cartridge.CartridgeConstants.*;
 
@@ -17,16 +18,20 @@ public class CartridgeCommands extends Command {
         return Commands.runEnd(() -> cartridge.getIO().setVoltage(voltage), cartridge.getIO()::stop, cartridge);
     }
 
+    public Command goToPosition(double postion) {
+        return new FunctionalCommand(() -> cartridge.getIO().resetPID(),
+                () -> cartridge.getIO().goToPos(postion), bool -> {
+                    cartridge.getIO().stop();
+                },
+                () -> cartridge.getIO().atGoal(), cartridge);
+    }
+
     public Command openCartridge() {
-        return Commands
-                .runEnd(() -> cartridge.getIO().setVoltage(MOVING_VOLTAGE), cartridge.getIO()::stop, cartridge)
-                .until(() -> cartridge.getIO().isOuterPressed());
+        return goToPosition(OPEN_CARTRIDGE_POS);
     }
 
     public Command closeCartridge() {
-        return Commands
-                .runEnd(() -> cartridge.getIO().setVoltage(MOVING_VOLTAGE), cartridge.getIO()::stop, cartridge)
-                .until(() -> cartridge.getIO().isInnerPressed());
+        return goToPosition(CLOSE_CARTRIDGE_POS);
     }
 
 }
