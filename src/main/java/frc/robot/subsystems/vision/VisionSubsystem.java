@@ -237,7 +237,7 @@ public class VisionSubsystem extends SubsystemBase {
         return detections;
     }
 
-    public void consumeCartridgeAngle(double cartridgeDisplacement) {
+    public void consumeCartridgeDisplacement(double cartridgeDisplacement) {
         // TODO: replace this and implement it with the real value
         double cartridgeAngle = -1; // Just for the moment. not the actual value
 
@@ -249,14 +249,14 @@ public class VisionSubsystem extends SubsystemBase {
         updatedRobotToBackCamera.getTranslation().plus(new Translation3d(cartridgeXDisplacement, 0, cartridgeYDisplacement));
 
         for (var io : apriltagVisionIO) {
-            if (io.getPipelineName() == backCameraName) {
+            if (Objects.equals(io.getPipelineName(), backCameraName)) {
                 io.setRobotToCamera(updatedRobotToBackCamera);
             }
         }
     }
 
     @FunctionalInterface
-    public static interface CartridgeAngleConsumer {
+    public static interface CartridgeDisplacementConsumer {
         public void accept(double cartridgeDisplacement);
     }
 
