@@ -19,10 +19,7 @@ import static frc.robot.subsystems.vision.VisionConstants.*;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
@@ -41,6 +38,8 @@ import frc.robot.subsystems.vision.ObjectDetection.Detection;
 import frc.robot.subsystems.vision.ObjectDetection.ObjectDetectionVisionIO;
 import frc.robot.subsystems.vision.ObjectDetection.ObjectDetectionVisionIOInputsAutoLogged;
 import org.littletonrobotics.junction.Logger;
+
+import javax.xml.crypto.dsig.Transform;
 
 public class VisionSubsystem extends SubsystemBase {
     private final VisionConsumer consumer;
@@ -238,19 +237,27 @@ public class VisionSubsystem extends SubsystemBase {
         return detections;
     }
 
-    public void updateShooterRotation(double shooterAngle, double shooterRotationRadius) {
-        for (ApriltagVisionIO io : apriltagVisionIO) {
-            for (String affected : CAMERAS_AFFECTED_BY_SHOOTER_ROTATION) {
-                if (Objects.equals(io.getPipelineName(), affected)) {
-                    // TODO: some awesome calculations to update the bloody thing
-                }
+    public void consumeCartridgeAngle(double cartridgeDisplacement) {
+        // TODO: replace this and implement it with the real value
+        double cartridgeAngle = -1; // Just for the moment. not the actual value
+
+        double cartridgeXDisplacement = cartridgeDisplacement * Math.cos(cartridgeAngle);
+        double cartridgeYDisplacement = cartridgeDisplacement * Math.sin(cartridgeAngle);
+
+        Transform3d updatedRobotToBackCamera = InitialRobotToBackCameraTranslation;
+
+        updatedRobotToBackCamera.getTranslation().plus(new Translation3d(cartridgeXDisplacement, 0, cartridgeYDisplacement));
+
+        for (var io : apriltagVisionIO) {
+            if (io.getPipelineName() == backCameraName) {
+                io.setRobotToCamera(updatedRobotToBackCamera);
             }
         }
     }
 
     @FunctionalInterface
-    public static interface ShooterAngleConsumer {
-        public void accept(double shooterRotation, double shooterRotationRadius);
+    public static interface CartridgeAngleConsumer {
+        public void accept(double cartridgeDisplacement);
     }
 
     @FunctionalInterface
