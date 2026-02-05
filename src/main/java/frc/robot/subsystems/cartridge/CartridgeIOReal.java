@@ -1,18 +1,29 @@
 package frc.robot.subsystems.cartridge;
 
+import static frc.robot.subsystems.cartridge.CartridgeConstants.INNER_NORMALLY_OPEN;
+import static frc.robot.subsystems.cartridge.CartridgeConstants.INNER_SWITCH_CHANNEL;
+import static frc.robot.subsystems.cartridge.CartridgeConstants.INVERTED;
+import static frc.robot.subsystems.cartridge.CartridgeConstants.MOTOR_ID;
+import static frc.robot.subsystems.cartridge.CartridgeConstants.OUTER_NORMALLY_OPEN;
+import static frc.robot.subsystems.cartridge.CartridgeConstants.OUTER_SWITCH_CHANNEL;
+import static frc.robot.subsystems.cartridge.CartridgeConstants.STALL_LIMIT;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+<<<<<<< HEAD:src/main/java/frc/robot/subsystems/cartridge/cartridgeIOSparkMax.java
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+=======
+import com.revrobotics.spark.config.SparkMaxConfig;
+
+>>>>>>> 1a320b98f319b53e7236363a00c4fc29df161c0b:src/main/java/frc/robot/subsystems/cartridge/CartridgeIOReal.java
 import frc.robot.POM_lib.Motors.POMSparkMax;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
-import static frc.robot.subsystems.cartridge.CartridgeConstants.*;
 
-public class CartridgeIOSparkMax implements CartridgeIO {
+public class CartridgeIOReal implements CartridgeIO {
     private final POMSparkMax motor;
     private final RelativeEncoder encoder;
     private final POMDigitalInput innerSwitch;
@@ -21,7 +32,7 @@ public class CartridgeIOSparkMax implements CartridgeIO {
     private final CartridgeTuning tuning;
     private final SparkMaxConfig config;
 
-    public CartridgeIOSparkMax() {
+    public CartridgeIOReal() {
         motor = new POMSparkMax(MOTOR_ID);
         encoder = motor.getEncoder();
         innerSwitch = new POMDigitalInput(INNER_SWITCH_CHANNEL, INNER_NORMALLY_OPEN);
@@ -75,6 +86,7 @@ public class CartridgeIOSparkMax implements CartridgeIO {
     public boolean isOuterPressed() {
         return outerSwitch.get();
     }
+<<<<<<< HEAD:src/main/java/frc/robot/subsystems/cartridge/cartridgeIOSparkMax.java
 
     @Override
     public void goToPos(double goal) {
@@ -103,4 +115,7 @@ public class CartridgeIOSparkMax implements CartridgeIO {
                 .setConstraints(new TrapezoidProfile.Constraints(tuning.getMaxVelocity(), tuning.getMaxAcceleration()));
     }
 
+=======
+    
+>>>>>>> 1a320b98f319b53e7236363a00c4fc29df161c0b:src/main/java/frc/robot/subsystems/cartridge/CartridgeIOReal.java
 }
