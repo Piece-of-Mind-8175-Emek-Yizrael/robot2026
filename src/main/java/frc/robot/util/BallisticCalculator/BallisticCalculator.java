@@ -111,8 +111,8 @@ public class BallisticCalculator {
         final double coarseThresholdSq = 0.06 * 0.06; // if coarse best below this, refine
         final double fineDt = 0.005;
         final int fineMaxSteps = 2000; // refinement window (starting from saved coarse state)
-        final double xMargin = 5.0;
-        final double yFloor = -5.0;
+        final double xMargin = 0.5;
+        final double yFloor = -1.0;
 
         IntStream.range(0, total).parallel().forEach(idx -> {
             double initVx = vx0[idx];
