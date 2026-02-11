@@ -12,5 +12,5 @@ public interface TransferIO {
     public void stopMotor();
     public void updateInputs(TransferIOInputs inputs);
     public void setVoltage(double voltage);
-    public void setPercentOfSpeed(double percentage);
+    public void setVelocity(double percentage);
 }

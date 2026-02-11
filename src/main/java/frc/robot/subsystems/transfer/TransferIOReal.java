@@ -7,6 +7,7 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.POM_lib.Motors.POMSparkMax;
 
@@ -19,10 +20,11 @@ public class TransferIOReal implements TransferIO{
 
         encoder = motor.getEncoder();
 
-        motor.setDirection(TRANSFER_MOTOR_DIRECTION);
-
         SparkMaxConfig config = new SparkMaxConfig();
-        config.idleMode(SparkBaseConfig.IdleMode.kBrake).smartCurrentLimit(SMART_CURRENT_LIMIT);
+        config
+            .idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(SMART_CURRENT_LIMIT)
+            .inverted(INVERTED);
 
         motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
@@ -34,7 +36,9 @@ public class TransferIOReal implements TransferIO{
     }
 
     @Override
-    public void stopMotor() { setVoltage(0); }
+    public void stopMotor() {
+        setVoltage(0);
+    }
 
     @Override
     public void setVoltage(double voltage) {
@@ -42,7 +46,7 @@ public class TransferIOReal implements TransferIO{
     }
 
     @Override
-    public void setPercentOfSpeed(double percentage) {
-        motor.set(percentage);
+    public void setVelocity(double velocity) {
+        motor.set(velocity);
     }
 }

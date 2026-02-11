@@ -19,7 +19,7 @@ public class TransferIOSimulated implements TransferIO {
     }
 
     @Override
-    public void setPercentOfSpeed(double percentage) {
+    public void setVelocity(double percentage) {
 
     }
 }
