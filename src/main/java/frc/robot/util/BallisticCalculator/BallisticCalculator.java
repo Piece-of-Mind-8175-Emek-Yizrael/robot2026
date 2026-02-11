@@ -9,6 +9,26 @@ import java.util.stream.IntStream;
 
 public class BallisticCalculator {
 
+    public enum BallisticCalculatorMode {
+        FAST(0.04,0.01),
+        ACCURATE(0.02,0.005);
+
+        private double coarseDt, fineDt;
+
+        public double getCoarseDt() {
+            return coarseDt;
+        }
+
+        public double getFineDt() {
+            return fineDt;
+        }
+
+        BallisticCalculatorMode(double coarseDt, double fineDt) {
+            this.coarseDt = coarseDt;
+            this.fineDt = fineDt;
+        }
+    }
+
     private static double[] LinSpell(double start, double end, int num) {
         if (num <= 0) return new double[0];
         double[] out = new double[num];
@@ -29,6 +49,20 @@ public class BallisticCalculator {
     static double[] speeds = LinSpell(8.0, 12.0, 20);
     static double[] launchAngles = LinSpell(40.0, 85.0, 45);
 
+    public static List<BallisticCalculatorResult> calculateForFuel(Translation3d shooterToTarget, double minArrival, double maxArrival, BallisticCalculatorMode mode) {
+        return findConstrainedLaunch(
+                shooterToTarget.getX(),
+                shooterToTarget.getY(),
+                0.21,
+                0.11,
+                speeds,
+                launchAngles,
+                minArrival,
+                maxArrival,
+                BallisticCalculatorMode.ACCURATE
+        );
+    }
+
     public static List<BallisticCalculatorResult> calculateForFuel(Translation3d shooterToTarget, double minArrival, double maxArrival) {
         return findConstrainedLaunch(
                 shooterToTarget.getX(),
@@ -38,7 +72,8 @@ public class BallisticCalculator {
                 speeds,
                 launchAngles,
                 minArrival,
-                maxArrival
+                maxArrival,
+                BallisticCalculatorMode.ACCURATE
         );
     }
 
@@ -51,7 +86,22 @@ public class BallisticCalculator {
                 speeds,
                 launchAngles,
                 minArrival,
-                maxArrival
+                maxArrival,
+                BallisticCalculatorMode.ACCURATE
+        );
+    }
+
+    public static List<BallisticCalculatorResult> calculateForFuel(Translation3d shooterToTarget, BallisticCalculatorMode mode) {
+        return findConstrainedLaunch(
+                shooterToTarget.getX(),
+                shooterToTarget.getY(),
+                0.21,
+                0.11,
+                speeds,
+                launchAngles,
+                minArrival,
+                maxArrival,
+                mode
         );
     }
 
@@ -59,7 +109,8 @@ public class BallisticCalculator {
             double targetX, double targetY,
             double weightKg, double radiusM,
             double[] vRange, double[] angleRange,
-            double a1deg, double a2deg
+            double a1deg, double a2deg,
+            BallisticCalculatorMode mode
     ) {
         if (weightKg <= 0 || radiusM <= 0) {
             throw new IllegalArgumentException("`weight_kg` and `radius_m` must be positive.");
@@ -106,10 +157,10 @@ public class BallisticCalculator {
         ConcurrentLinkedQueue<BallisticCalculatorResult> ballisticCalculatorResults = new ConcurrentLinkedQueue<>();
 
         // simulation parameters: coarse then fine
-        final double coarseDt = 0.02;
+        final double coarseDt = mode.getCoarseDt();
         final int coarseMaxSteps = 800; // coarse sweep
         final double coarseThresholdSq = 0.06 * 0.06; // if coarse best below this, refine
-        final double fineDt = 0.005;
+        final double fineDt = mode.getFineDt();
         final int fineMaxSteps = 2000; // refinement window (starting from saved coarse state)
         final double xMargin = 0.5;
         final double yFloor = -1.0;
