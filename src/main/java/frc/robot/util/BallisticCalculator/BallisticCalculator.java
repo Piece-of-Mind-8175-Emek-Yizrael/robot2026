@@ -261,12 +261,12 @@ public class BallisticCalculator {
         return out;
     }
 
-    private static List<BallisticCalculatorResult> findConstrainedLaunchInMotion(
+    private static List<BallisticCalculatorResultWithRotation> findConstrainedLaunchInMotion(
             float targetX, float targetY,
             float weightKg, float radiusM,
             float[] vRange, float[] angleRange,
             float a1deg, float a2deg,
-            Translation2d fieldCentricMovement,
+            Translation2d targetCentricMovement,
             BallisticCalculatorMode mode
     ) {
         if (weightKg <= 0 || radiusM <= 0) {
@@ -275,13 +275,9 @@ public class BallisticCalculator {
         if (vRange == null || vRange.length == 0 || angleRange == null || angleRange.length == 0) {
             throw new IllegalArgumentException("`v_range` and `angle_range` must be non-empty.");
         }
-        if (fieldCentricMovement == null) {
-            throw new IllegalArgumentException("`robot_movement` must be non-empty.");
+        if (targetCentricMovement == null) {
+            throw new IllegalArgumentException("`target_centric_movement` must be non-empty.");
         }
-
-        // FIXME: wrong conversion from field centric to target centric
-        // calculate target centric robot movement translation2d
-        Translation2d targetCentricMovement = fieldCentricMovement.rotateBy(Rotation2d.fromRadians(Math.atan2(targetY, targetX)));
 
         final float g = 9.81f;
         final float rho = 1.225f;
@@ -320,7 +316,7 @@ public class BallisticCalculator {
         }
 
         // Concurrent collection for results (safe from parallel workers)
-        ConcurrentLinkedQueue<BallisticCalculatorResult> ballisticCalculatorResults = new ConcurrentLinkedQueue<>();
+        ConcurrentLinkedQueue<BallisticCalculatorResultWithRotation> ballisticCalculatorResults = new ConcurrentLinkedQueue<>();
 
         // simulation parameters: coarse then fine
         final float coarseDt = mode.getCoarseDt();
@@ -442,12 +438,11 @@ public class BallisticCalculator {
 
                 float roundedArrival = Math.round(arrivalAngleDeg * 100.0f) / 100.0f;
                 float bestErr = (float)Math.sqrt(bestErrSq);
-                ballisticCalculatorResults.add(new BallisticCalculatorResult(v0, launchDeg, roundedArrival, bestErr));
+                ballisticCalculatorResults.add(new BallisticCalculatorResultWithRotation(v0, launchDeg, roundedArrival, bestErr, dRotation));
             }
         });
 
         // convert concurrent queue to list and return
-        List<BallisticCalculatorResult> out = new ArrayList<>(ballisticCalculatorResults);
-        return out;
+        return new ArrayList<>(ballisticCalculatorResults);
     }
 }
