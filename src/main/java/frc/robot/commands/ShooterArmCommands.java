@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static frc.robot.subsystems.shooterArm.ShooterArmConstants.*;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.shooterArm.ShooterArm;
@@ -34,5 +36,13 @@ public class ShooterArmCommands {
                 return arm.getIO().atGoal();
             }
         };
+    }
+
+    public Command closeArm(ShooterArm arm) {
+        return goToPosition(CLOSE_POS, arm);
+    }
+
+    public Command openArm(ShooterArm arm) {
+        return goToPosition(OPEN_POS, arm);
     }
 }

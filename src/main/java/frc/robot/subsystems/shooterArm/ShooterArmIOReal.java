@@ -1,18 +1,6 @@
 package frc.robot.subsystems.shooterArm;
 
-import static frc.robot.subsystems.shooterArm.ShooterArmConstants.MAX_ACCELERATION;
-import static frc.robot.subsystems.shooterArm.ShooterArmConstants.MAX_VELOCITY;
-import static frc.robot.subsystems.shooterArm.ShooterArmConstants.MOTOR_ID;
-import static frc.robot.subsystems.shooterArm.ShooterArmConstants.currentLimit;
-import static frc.robot.subsystems.shooterArm.ShooterArmConstants.gearRatio;
-import static frc.robot.subsystems.shooterArm.ShooterArmConstants.kd;
-import static frc.robot.subsystems.shooterArm.ShooterArmConstants.kg;
-import static frc.robot.subsystems.shooterArm.ShooterArmConstants.ki;
-import static frc.robot.subsystems.shooterArm.ShooterArmConstants.kp;
-import static frc.robot.subsystems.shooterArm.ShooterArmConstants.ks;
-import static frc.robot.subsystems.shooterArm.ShooterArmConstants.kv;
-import static frc.robot.subsystems.shooterArm.ShooterArmConstants.velocityConversionFactor;
-import static frc.robot.subsystems.shooterArm.ShooterArmConstants.voltageCompensation;
+import static frc.robot.subsystems.shooterArm.ShooterArmConstants.*;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -46,12 +34,16 @@ public class ShooterArmIOReal implements ShooterArmIO {
         feedforward = new ArmFeedforward(ks, kv, kg);
         
         config = new SparkMaxConfig();
-        config.idleMode(IdleMode.kBrake).inverted(false)
+        config.idleMode(IdleMode.kBrake)
+                .inverted(INVERTED)
                 .smartCurrentLimit(currentLimit)
-                .voltageCompensation(voltageCompensation);
+                .voltageCompensation(voltageCompensation)
+                .smartCurrentLimit(currentLimit);
 
         config.encoder.positionConversionFactor(gearRatio)
-                .velocityConversionFactor(velocityConversionFactor);
+                .velocityConversionFactor(velocityConversionFactor)
+                .inverted(INVERTED)
+                .uvwMeasurementPeriod(20);
 
         motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
@@ -95,7 +87,7 @@ public class ShooterArmIOReal implements ShooterArmIO {
 
     @Override
     public void zeroPosition() {
-        encoder.setPosition(0.0);
+        encoder.setPosition(CLOSE_POS);
     }
 
     @Override
