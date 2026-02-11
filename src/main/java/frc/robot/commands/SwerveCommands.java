@@ -270,7 +270,7 @@ public class SwerveCommands {
                                         ChassisSpeeds speeds = new ChassisSpeeds(
                                                         linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
                                                         linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-                                                        omega);
+                                                        omega * drive.getMaxAngularSpeedRadPerSec());
                                         boolean isFlipped = DriverStation.getAlliance().isPresent()
                                                         && DriverStation.getAlliance().get() == Alliance.Red;
                                         drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, isFlipped
@@ -380,7 +380,7 @@ public class SwerveCommands {
                                                         ySupplier.getAsDouble());
 
                                         double x = MathUtil.applyDeadband(directionX.getAsDouble(), DEADBAND);
-                                        double y = MathUtil.applyDeadband(directionX.getAsDouble(), DEADBAND);
+                                        double y = MathUtil.applyDeadband(directionY.getAsDouble(), DEADBAND);
                                         Rotation2d direction = MathUtil.applyDeadband(Math.hypot(x, y), DEADBAND) > 0
                                                         ? new Rotation2d(x, y)
                                                         : lastAngle[0];
@@ -665,6 +665,24 @@ public class SwerveCommands {
                         // return m_timer.hasElapsed(5) ||
                         return (m_controllerX.atGoal() && m_controllerY.atGoal() && m_controllerTheta.atGoal());
                 }
+        }
+
+        public double getDistanceFromHub(Swerve drive) {
+                Pose2d hubPos = new Pose2d(0, 0, new Rotation2d()); //TODO put hub position
+                double x = hubPos.getX() - drive.getPose().getX();
+                double y = hubPos.getY() - drive.getPose().getY();
+
+                return Math.sqrt(x * x + y * y);
+        }
+
+        public static Command turnToHub(Swerve drive) {
+                Rotation2d hubAngle = new Rotation2d(); ////TODO put hub angle
+                return rotateToAngle(drive, () -> hubAngle);
+        }
+
+        public static Command driveFaceToHub(Swerve drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+                Rotation2d hubAngle = new Rotation2d(); //TODO put hub angle
+                return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> hubAngle);
         }
 
 }
