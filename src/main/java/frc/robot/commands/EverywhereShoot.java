@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.subsystems.shoot.Shoot;
@@ -47,7 +48,7 @@ public class EverywhereShoot {
         return Math.sqrt(x * x + y * y);
     }
 
-    public double getArmAngle() {
+    public double getArmAngleByPos() {
         double distance = getDistance();
         if(getPos().getX() < deliveryDistance){
             return deliveryAngle;
@@ -68,9 +69,41 @@ public class EverywhereShoot {
         }
     }
 
+    public double getArmAngleByInterpolation(double distance) {
+        InterpolatingDoubleTreeMap angleMap = new InterpolatingDoubleTreeMap();
+        double targetAngle = 0.0;
+
+        // up to 3M, enter angle by radios
+        //0 - 1M, dont have to check 0.3,6,9
+        angleMap.put(0.0, 0.0);
+        angleMap.put(0.3, 0.0);
+        angleMap.put(0.5, 0.0);
+        angleMap.put(0.6, 0.0);
+        angleMap.put(0.9, 0.0);
+        angleMap.put(1.0, 0.0);
+
+        //1 - 2M, dont have to check 1.3,6,9
+        angleMap.put(1.3, 0.0);
+        angleMap.put(1.5, 0.0);
+        angleMap.put(1.6, 0.0);
+        angleMap.put(1.9, 0.0);
+        angleMap.put(2.0, 0.0);
+
+        //2 - 3M, dont have to check 2.3,6,9
+        angleMap.put(2.3, 0.0);
+        angleMap.put(2.5, 0.0);
+        angleMap.put(2.6, 0.0);
+        angleMap.put(2.9, 0.0);
+        angleMap.put(3.0, 0.0);    
+        
+        targetAngle = angleMap.get(distance);
+
+        return targetAngle; 
+    }
+
     public Command setArmByDistance(){
         return new Command() {
-            double currentAngle = getArmAngle();
+            double currentAngle = getArmAngleByPos();
 
             {
                 addRequirements(swerve, arm);
@@ -78,17 +111,17 @@ public class EverywhereShoot {
 
             @Override
             public void initialize() {
-                arm.getIO().resetPID(getArmAngle());
-                currentAngle = getArmAngle();
+                arm.getIO().resetPID(getArmAngleByPos());
+                currentAngle = getArmAngleByPos();
             }
 
             @Override
             public void execute() {
-                if(currentAngle != getArmAngle()) {
-                    currentAngle = getArmAngle();
+                if(currentAngle != getArmAngleByPos()) {
+                    currentAngle = getArmAngleByPos();
                     arm.getIO().resetPID(currentAngle);
                 } else {
-                    arm.getIO().setGoal(getArmAngle());
+                    arm.getIO().setGoal(getArmAngleByPos());
                 }
                 
             }
