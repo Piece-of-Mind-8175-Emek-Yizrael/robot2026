@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.POM_lib.Motors.POMTalonFX;
+import frc.robot.POM_lib.sensors.POMDigitalInput;
 
 public class IntakeIOKraken implements IntakeIO{
     private final POMTalonFX motor;
@@ -17,13 +18,15 @@ public class IntakeIOKraken implements IntakeIO{
     public IntakeIOKraken(){
         motor = new POMTalonFX(MOTOR_ID);
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        motor.getConfigurator().apply(config);
-        
+        motor.getConfigurator().apply(config);        
     }
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
         inputs.intakeVoltage = motor.getMotorVoltage().getValueAsDouble();
+        inputs.intakeVelocity = motor.getVelocity().getValueAsDouble();
+        inputs.intakeAmp = motor.getSupplyCurrent().getValueAsDouble();
+        
     }
 
     @Override

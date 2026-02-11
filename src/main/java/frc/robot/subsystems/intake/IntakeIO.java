@@ -7,7 +7,7 @@ public interface IntakeIO {
     public static class IntakeIOInputs{
         public double intakeVoltage = 0.0;
         public double intakeVelocity = 0.0;
-        public boolean intakeSensor = false;
+        public double intakeAmp = 0.0;
     }
     public default void updateInputs(IntakeIOInputs inputs){}  
 
