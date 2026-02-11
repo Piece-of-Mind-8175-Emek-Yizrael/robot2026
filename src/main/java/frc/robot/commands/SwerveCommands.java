@@ -667,13 +667,7 @@ public class SwerveCommands {
                 }
         }
 
-        public double getDistanceFromHub(Swerve drive) {
-                Pose2d hubPos = new Pose2d(0, 0, new Rotation2d()); //TODO put hub position
-                double x = hubPos.getX() - drive.getPose().getX();
-                double y = hubPos.getY() - drive.getPose().getY();
-
-                return Math.sqrt(x * x + y * y);
-        }
+        
 
         public static Command turnToHub(Swerve drive) {
                 Rotation2d hubAngle = new Rotation2d(); ////TODO put hub angle

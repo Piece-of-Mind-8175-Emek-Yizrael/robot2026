@@ -43,9 +43,7 @@ public class EverywhereShoot {
 
 
     private double getDistance() {
-        double x = getPos().getX() - hubPos.getX();
-        double y = getPos().getY() - hubPos.getY();
-        return Math.sqrt(x * x + y * y);
+        return swerve.getDistanceFromHub();
     }
 
     public double getArmAngleByPos() {
