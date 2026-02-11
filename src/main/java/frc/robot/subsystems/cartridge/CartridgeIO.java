@@ -50,4 +50,7 @@ public interface CartridgeIO {
     public default void setPIDValues() {
     }
 
+    public default void resetIfPressed() {
+    }
+
 }

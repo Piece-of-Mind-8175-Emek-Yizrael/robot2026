@@ -39,7 +39,7 @@ public class CartridgeIOReal implements CartridgeIO {
         config.encoder.positionConversionFactor(1.0)
                 .velocityConversionFactor(1.0 / 60.0);
 
-        encoder.setPosition(0);
+        resetIfPressed();
 
         motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -54,6 +54,18 @@ public class CartridgeIOReal implements CartridgeIO {
         inputs.isInnerPressed = isInnerPressed();
         inputs.isOuterPressed = isOuterPressed();
         inputs.atGoal = atGoal();
+        resetIfPressed();
+    }
+
+    @Override
+    public void resetIfPressed() {
+        if(isInnerPressed()) {
+            encoder.setPosition(CLOSE_CARTRIDGE_POS);
+        }
+        
+        if(isOuterPressed()) {
+            encoder.setPosition(OPEN_CARTRIDGE_POS);
+        }
     }
 
     @Override
