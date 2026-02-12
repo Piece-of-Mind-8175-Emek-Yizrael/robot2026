@@ -515,6 +515,8 @@ public class Swerve extends SubsystemBase {
                 double x = hubPos.getX() - getPose().getX();
                 double y = hubPos.getY() - getPose().getY();
 
+                Logger.recordOutput("Distance from hub: ", Math.sqrt(x * x + y * y));
+
                 return Math.sqrt(x * x + y * y);
         }
 

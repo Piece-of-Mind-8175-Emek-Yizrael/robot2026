@@ -14,6 +14,7 @@ import static frc.robot.subsystems.drive.DriveConstants.MAX_VELOCETY_XY;
 import static frc.robot.subsystems.drive.DriveConstants.OMEGA_TOLERANCE;
 import static frc.robot.subsystems.drive.DriveConstants.TRANSLATION_TOLERANCE;
 
+import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
@@ -45,6 +46,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
 // import frc.robot.subsystems.Vision.VisionSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.drive.FieldConstants;
 import frc.robot.subsystems.drive.Swerve;
 
 public class SwerveCommands {
@@ -670,7 +672,12 @@ public class SwerveCommands {
         
 
         public static Command turnToHub(Swerve drive) {
-                Rotation2d hubAngle = new Rotation2d(); ////TODO put hub angle
+                double daltaX = FieldConstants.Hub.topCenterPoint.getX() - drive.getPose().getX();
+                double daltaY = FieldConstants.Hub.topCenterPoint.getY() - drive.getPose().getY();
+
+                double angleToHub = Math.atan2(daltaY, daltaX);
+                Rotation2d hubAngle = new Rotation2d(angleToHub);
+                
                 return rotateToAngle(drive, () -> hubAngle);
         }
 
