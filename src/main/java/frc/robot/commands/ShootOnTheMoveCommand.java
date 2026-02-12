@@ -6,7 +6,10 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.shoot.Shoot;
 import frc.robot.subsystems.shooterArm.ShooterArm;
+import frc.robot.util.BallisticCalculator.BallisticCalculator;
+import frc.robot.util.BallisticCalculator.BallisticCalculatorResultWithRotation;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public class ShootOnTheMoveCommand extends Command {
@@ -34,7 +37,10 @@ public class ShootOnTheMoveCommand extends Command {
         );
     }
 
-
+    // TODO: Implement
+    BallisticCalculatorResultWithRotation chooseTrajectory(List<BallisticCalculatorResultWithRotation> results) {
+        return null;
+    }
 
     // TODO: Implement
     @Override
@@ -45,7 +51,15 @@ public class ShootOnTheMoveCommand extends Command {
     // TODO: Implement
     @Override
     public void execute() {
-        Translation3d trasnlationToTarget = getTranslationToTarget(targetPose, robotPosition.get());
+        Pose2d position;
+
+        Translation3d translationToTarget = getTranslationToTarget(targetPose, robotPosition.get());
+
+        List<BallisticCalculatorResultWithRotation> results = BallisticCalculator.calculateForFuel(translationToTarget, null, BallisticCalculator.BallisticCalculatorMode.FAST); // FIXME: this isn't supposed to be null
+
+        BallisticCalculatorResultWithRotation best = chooseTrajectory(results);
+
+
     }
 
     // TODO: Implement
