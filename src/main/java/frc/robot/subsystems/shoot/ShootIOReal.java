@@ -18,6 +18,10 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.POM_lib.Motors.POMSparkMax;
@@ -36,6 +40,8 @@ public class ShootIOReal implements ShootIO {
 
     private double goalHoodVelocity = 0.0;
 
+    private ProfiledPIDController feedController;
+
     private final VelocityVoltage velocityVoltage = new VelocityVoltage(0.0);
 
     public ShootIOReal() {
@@ -48,7 +54,12 @@ public class ShootIOReal implements ShootIO {
         feedConfig = new SparkMaxConfig();
 
         Slot0Configs hoodSlot0 = new Slot0Configs()
-        .withKV(kv).withKS(ks).withKP(kp).withKI(ki).withKD(kd);
+        .withKV(kvHood).withKS(ksHood).withKP(kpHood).withKI(kiHood).withKD(kdHood);
+
+        feedController = new ProfiledPIDController(kpFeed, kiFeed, kdFeed,
+                        new TrapezoidProfile.Constraints(maxVelocityFeed, maxAccelerationFeed));
+
+        feedController.setTolerance(feedTolerance);
     
 
         hoodConfig.Slot0 = hoodSlot0;
@@ -91,8 +102,6 @@ public class ShootIOReal implements ShootIO {
                 () -> feedMotor.configure(
                         feedConfig, ResetMode.kResetSafeParameters,
                         PersistMode.kPersistParameters));
-
-
 
     }
 
@@ -162,8 +171,20 @@ public class ShootIOReal implements ShootIO {
     }
 
     @Override
-    public boolean atGoal() {
+    public boolean atGoalHood() {
         double currentVelocity = rightHoodMotor.getVelocity().getValueAsDouble();
         return Math.abs(currentVelocity - goalHoodVelocity) <= hoodTolerance;
+    }
+
+    @Override
+    public void setFeedSetpoint(double goal) {
+        feedController.setGoal(goal);
+        feedMotor.setVoltage(feedController.calculate(encoder.getVelocity()));
+    }
+
+
+    @Override
+    public boolean atGoalFeed() {
+        return feedController.atGoal();
     }
 }

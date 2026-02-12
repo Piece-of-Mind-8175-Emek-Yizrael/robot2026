@@ -25,6 +25,23 @@ public class ShootCommands {
         return Commands.runOnce(() -> shoot.getIO().stopBoth(), shoot).withName("stop both");
     }
 
+    public Command setSetHoodVelocity(double setPoint) {
+        return Commands.runEnd(
+            () -> shoot.getIO().setHoodSetpoint(setPoint),
+            shoot.getIO()::stopHood,
+            shoot
+            );
+    }
+    
+    public Command setSetFeedVelocity(double setPoint) {
+        return Commands.runEnd(
+            () -> shoot.getIO().setFeedSetpoint(setPoint),
+            shoot.getIO()::stopFeed,
+            shoot
+            );
+    }
+
+
     public Command setHoodGoal(double goal) {
         return new Command() {
             private boolean feedStarted = false;
@@ -41,8 +58,8 @@ public class ShootCommands {
 
             @Override
             public void execute() {
-                if(shoot.getIO().atGoal() && !feedStarted) {
-                    shoot.getIO().setFeedVoltage(FEED_SHOOT_VOLTAGE);
+                if(shoot.getIO().atGoalHood() && !feedStarted) {
+                    shoot.getIO().setFeedSetpoint(FEED_SHOOT_SETPOINT);
                     feedStarted = true;
                 }
             }

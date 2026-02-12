@@ -19,11 +19,21 @@ public class ShootConstants {
     public static final double FEED_SHOOT_VOLTAGE = 4.0;
 
     
-    public static final double kv = 0.0;
-    public static final double ks = 0.0;
-    public static final double kp = 0.0;
-    public static final double ki = 0.0;
-    public static final double kd = 0.0;
-
+    public static final double kvHood = 0.0;
+    public static final double ksHood = 0.0;
+    public static final double kpHood = 0.0;
+    public static final double kiHood = 0.0;
+    public static final double kdHood = 0.0;
+    
+    
+    public static final double kpFeed = 0.0;
+    public static final double kiFeed = 0.0;
+    public static final double kdFeed = 0.0;
+    public static final double maxAccelerationFeed = 1.0;
+    public static final double maxVelocityFeed = 1.0;
+    public static final double feedTolerance = 0.2; //rotations per second
+    
     public static final double hoodTolerance = 0.2; //rotations per second
+
+    public static final double FEED_SHOOT_SETPOINT = 1.0; //rotations per second
 }
