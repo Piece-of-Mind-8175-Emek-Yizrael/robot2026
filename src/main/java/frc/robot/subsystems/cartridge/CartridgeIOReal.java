@@ -9,6 +9,8 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import frc.robot.Constants.CartridgePose;
 import frc.robot.POM_lib.Motors.POMSparkMax;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
 
@@ -59,11 +61,11 @@ public class CartridgeIOReal implements CartridgeIO {
 
     @Override
     public void resetIfPressed() {
-        if(isInnerPressed()) {
+        if (isInnerPressed()) {
             encoder.setPosition(CLOSE_CARTRIDGE_POS);
         }
-        
-        if(isOuterPressed()) {
+
+        if (isOuterPressed()) {
             encoder.setPosition(OPEN_CARTRIDGE_POS);
         }
     }
@@ -106,6 +108,18 @@ public class CartridgeIOReal implements CartridgeIO {
     @Override
     public void resetPID() {
         pidController.reset(getPos());
+    }
+
+    @Override
+    public CartridgePose getCartridgePose() {
+        if (isInnerPressed()) {
+            return CartridgePose.CLOSE;
+        }
+        if (isOuterPressed()) {
+            return CartridgePose.OPEN;
+        } else {
+            return CartridgePose.IN_MOVEMENT;
+        }
     }
 
     @Override

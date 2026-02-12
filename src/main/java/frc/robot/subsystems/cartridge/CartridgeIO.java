@@ -2,9 +2,10 @@ package frc.robot.subsystems.cartridge;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import frc.robot.Constants.CartridgePose;
+
 public interface CartridgeIO {
 
-    
     @AutoLog
     public static class CartridgeIOInputs {
         public double voltage;
@@ -51,6 +52,10 @@ public interface CartridgeIO {
     }
 
     public default void resetIfPressed() {
+    }
+
+    public default CartridgePose getCartridgePose() {
+        return null;
     }
 
 }
