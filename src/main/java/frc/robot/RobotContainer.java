@@ -23,7 +23,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
-
+import frc.robot.commands.CartridgeCommands;
+import frc.robot.subsystems.cartridge.Cartridge;
+import frc.robot.subsystems.cartridge.CartridgeIOReal;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -36,11 +38,13 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  * the {@link Robot}
  * periodic methods (other than the scheduler calls). Instead, the structure of
  * the robot (including
- * subsystems, commands, and button mappings) should be declared here.
+ * subsystems, commands, and button mappings) should be declared here. :)
  */
+
 public class RobotContainer {
         // Subsystems
-
+        Cartridge cartridge;
+        CartridgeCommands cartridgeCommands;
         // Controller
         private final PS5Controller driverController = new PS5Controller(0);
         private final PomXboxController operatorController = new PomXboxController(1);
@@ -57,6 +61,8 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
+                                cartridge = new Cartridge(new CartridgeIOReal());
+                                cartridgeCommands = new CartridgeCommands(cartridge);
                                 break;
 
                         case SIM:
@@ -77,7 +83,7 @@ public class RobotContainer {
                 autoChooser = new LoggedDashboardChooser<>("Auto Choices", c); // TODO use auto builder
 
                 // Set up SysId routines
-                
+
                 // Configure the button bindings
                 configureButtonBindings();
         }
@@ -92,7 +98,11 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                
+                operatorController.rightTrigger().whileTrue(cartridgeCommands.setVoltage(2));
+                operatorController.leftTrigger().whileTrue(cartridgeCommands.setVoltage(-2));
+                operatorController.a().onTrue(cartridgeCommands.openCartridge());
+                operatorController.b().onTrue(cartridgeCommands.closeCartridge());
+
         }
 
         public void displaSimFieldToAdvantageScope() {
