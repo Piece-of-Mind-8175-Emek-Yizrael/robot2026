@@ -13,17 +13,23 @@
 
 package frc.robot;
 
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
-
-import org.ironmaple.simulation.SimulatedArena;
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import frc.robot.commands.SwerveCommands;
+import frc.robot.subsystems.drive.GyroIOPigeon2;
+import frc.robot.subsystems.drive.GyroIOSim;
+import frc.robot.subsystems.drive.ModuleIOReal;
+import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.Swerve;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -36,6 +42,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
         // Subsystems
+        Swerve swerve;
 
         // Controller
         private final PS5Controller driverController = new PS5Controller(0);
@@ -53,6 +60,11 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
+                                swerve = new Swerve(new GyroIOPigeon2(),
+                                new ModuleIOReal(0),
+                                new ModuleIOReal(1),
+                                new ModuleIOReal(2),
+                                new ModuleIOReal(3));
                                 break;
 
                         case SIM:
@@ -60,10 +72,17 @@ public class RobotContainer {
 
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
 
+                                swerve = new Swerve(
+                                                new GyroIOSim(this.driveSimulation.getGyroSimulation()),
+                                                new ModuleIOSim(this.driveSimulation.getModules()[0]),
+                                                new ModuleIOSim(this.driveSimulation.getModules()[1]),
+                                                new ModuleIOSim(this.driveSimulation.getModules()[2]),
+                                                new ModuleIOSim(this.driveSimulation.getModules()[3]));
                                 break;
 
                         default:
                                 // Replayed robot, disable IO implementations
+                                swerve = null;
                                 break;
                 }
 
@@ -88,7 +107,14 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                
+
+                swerve.setDefaultCommand(
+                        SwerveCommands.joystickDrive(swerve,
+                        () -> driverController.getLeftY() * -0.35,
+                         () -> driverController.getLeftX() * -0.35,
+                          () -> driverController.getRightX() * 0.35)
+                );
+
         }
 
         public void displaSimFieldToAdvantageScope() {
