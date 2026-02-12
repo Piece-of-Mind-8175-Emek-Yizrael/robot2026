@@ -23,6 +23,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
+import frc.robot.commands.TransferCommands;
+import frc.robot.subsystems.transfer.Transfer;
+import frc.robot.subsystems.transfer.TransferIOReal;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -40,7 +43,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
         // Subsystems
-
+        private Transfer transfer;
         // Controller
         private final PS5Controller driverController = new PS5Controller(0);
         private final PomXboxController operatorController = new PomXboxController(1);
@@ -57,17 +60,19 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
+                                transfer = new Transfer(new TransferIOReal());
                                 break;
 
                         case SIM:
                                 // Sim robot, instantiate physics sim IO implementations
 
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-
+                                transfer = null;
                                 break;
 
                         default:
                                 // Replayed robot, disable IO implementations
+                                transfer = null;
                                 break;
                 }
 
@@ -92,6 +97,7 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
+                operatorController.y().whileTrue(new TransferCommands().setVoltage(transfer, 4));
                 
         }
 

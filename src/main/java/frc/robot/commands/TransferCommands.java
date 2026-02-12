@@ -7,15 +7,15 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.transfer.Transfer;
 
 public class TransferCommands {
-    public static Command setVoltage(Transfer subsystem, double voltage) {
+    public Command setVoltage(Transfer subsystem, double voltage) {
         return Commands.runEnd(() -> subsystem.getIO().setVoltage(voltage), () -> subsystem.getIO().setVoltage(0), subsystem);
     }
 
-    public static Command stopMotor(Transfer subsystem) {
+    public Command stopMotor(Transfer subsystem) {
         return Commands.runOnce(() -> subsystem.getIO().setVoltage(0));
     }
 
-    public static Command toggleTransfer(Transfer subsystem, boolean on) {
+    public Command toggleTransfer(Transfer subsystem, boolean on) {
         if (on) return Commands.runOnce(() -> subsystem.getIO().setVelocity(TRANSFER_SPEED));
         return Commands.runOnce(() -> subsystem.getIO().setVelocity(0));
     }
