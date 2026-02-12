@@ -42,6 +42,8 @@ public interface ApriltagVisionIO {
 
   public void setRobotToCamera(Transform3d robotToCamera);
 
+  public void togglePipeline(boolean on);
+
   public default void updateInputs(ApriltagVisionIOInputs inputs) {
   }
 }

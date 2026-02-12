@@ -25,6 +25,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIO;
 import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIO.PoseObservationType;
 
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIOInputsAutoLogged;
 import frc.robot.subsystems.vision.ObjectDetection.Detection;
@@ -39,13 +41,12 @@ import frc.robot.subsystems.vision.ObjectDetection.ObjectDetectionVisionIO;
 import frc.robot.subsystems.vision.ObjectDetection.ObjectDetectionVisionIOInputsAutoLogged;
 import org.littletonrobotics.junction.Logger;
 
-import javax.xml.crypto.dsig.Transform;
-
 public class VisionSubsystem extends SubsystemBase {
     private final VisionConsumer consumer;
     private final ApriltagVisionIO[] apriltagVisionIO;
     private final ApriltagVisionIOInputsAutoLogged[] apriltagInputs;
     private final Alert[] disconnectedAlerts;
+    Supplier<Constants.CartridgePose> cartridgePose;
 
     private final ObjectDetectionVisionIO[] objectDetectionIO;
     private final ObjectDetectionVisionIOInputsAutoLogged[] objectDetectionInputs;
@@ -53,10 +54,11 @@ public class VisionSubsystem extends SubsystemBase {
     private volatile boolean updatingDetections = false;
 
     public VisionSubsystem(VisionConsumer consumer, ApriltagVisionIO[] apriltagVisionIO,
-            ObjectDetectionVisionIO[] objectDetectionIO) {
+            ObjectDetectionVisionIO[] objectDetectionIO, Supplier<Constants.CartridgePose> cartridgePose) {
         this.consumer = consumer;
         this.apriltagVisionIO = apriltagVisionIO;
         this.objectDetectionIO = objectDetectionIO;
+        this.cartridgePose = cartridgePose;
 
         // Initialize inputs
         this.apriltagInputs = new ApriltagVisionIOInputsAutoLogged[apriltagVisionIO.length];
@@ -105,6 +107,17 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        // disable the front camera if it's moving
+        boolean state = true;
+        if(cartridgePose.get() == Constants.CartridgePose.IN_MOVEMENT) { state = false; }
+
+        for (var io : apriltagVisionIO) {
+            if (Objects.equals(io.getPipelineName(), frontCameraName)) {
+                io.togglePipeline(state);
+            }
+        }
+
         for (int i = 0; i < apriltagVisionIO.length; i++) {
             apriltagVisionIO[i].updateInputs(apriltagInputs[i]);
             Logger.processInputs("Vision/ApriltagCamera" + Integer.toString(i), apriltagInputs[i]);
@@ -237,27 +250,8 @@ public class VisionSubsystem extends SubsystemBase {
         return detections;
     }
 
-    public void consumeCartridgeDisplacement(double cartridgeDisplacement) {
-        // TODO: replace this and implement it with the real value
-        double cartridgeAngle = -1; // Just for the moment. not the actual value
+    private void consumeCartridgeDisplacement() {
 
-        double cartridgeXDisplacement = cartridgeDisplacement * Math.cos(cartridgeAngle);
-        double cartridgeYDisplacement = cartridgeDisplacement * Math.sin(cartridgeAngle);
-
-        Transform3d updatedRobotToBackCamera = InitialRobotToBackCameraTranslation;
-
-        updatedRobotToBackCamera.getTranslation().plus(new Translation3d(cartridgeXDisplacement, 0, cartridgeYDisplacement));
-
-        for (var io : apriltagVisionIO) {
-            if (Objects.equals(io.getPipelineName(), backCameraName)) {
-                io.setRobotToCamera(updatedRobotToBackCamera);
-            }
-        }
-    }
-
-    @FunctionalInterface
-    public static interface CartridgeDisplacementConsumer {
-        public void accept(double cartridgeDisplacement);
     }
 
     @FunctionalInterface

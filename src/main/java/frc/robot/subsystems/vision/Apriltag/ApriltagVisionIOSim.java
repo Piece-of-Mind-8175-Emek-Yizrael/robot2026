@@ -11,6 +11,7 @@ import org.photonvision.simulation.VisionSystemSim;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 
+// FIXME: this is supposed to implement ApriltagVisionIO, not to extend ApriltagVisionIOReal
 public class ApriltagVisionIOSim extends ApriltagVisionIOReal {
 
     private static VisionSystemSim visionSim;
