@@ -7,19 +7,25 @@ public interface ClimbIO {
     @AutoLog
 
     public static class ClimbIOInputs {
-        public static double voltage;
-        public static double output;
-        public static double angle;
-        public static boolean isPressed;
+        public double voltage;
+        public double output;
+        public double angle;
+        public boolean isPressed;
     }
 
     public default void updateInputs(ClimbIOInputs inputs) {
     }
 
-    public default void setMotorVoltage(double voltage) {
+    public default void setClimbVoltage(double voltage) {
     }
-
-    public default void stopMotor() {
+    
+    public default void stopClimb() {
+    }
+    
+    public default void setArmMotor(double voltage) {
+    }
+    
+    public default void stopArm() {
     }
 
     public default void setServoAngle(double angle) {

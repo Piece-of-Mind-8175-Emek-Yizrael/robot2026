@@ -7,6 +7,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.servohub.ServoHub;
 
 import edu.wpi.first.wpilibj.Servo;
+import frc.robot.POM_lib.Motors.POMSparkMax;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
 
 import static frc.robot.subsystem.climb.ClimbConstants.*;
@@ -14,11 +15,13 @@ import static frc.robot.subsystem.climb.ClimbConstants.*;
 public class ClimbIOReal implements ClimbIO {
     private final TalonFX motor;
     private final Servo servo;
+    private final POMSparkMax armMotor;
     private final POMDigitalInput limitSwitch;
     private final MotorOutputConfigs configs;
 
     public ClimbIOReal() {
-        motor = new TalonFX(MOTOR_ID);
+        motor = new TalonFX(CLIMB_MOTOR_ID);
+        armMotor = new POMSparkMax(ARM_MOTOR_ID);
         servo = new Servo(SERVO_CHANNEL);
         limitSwitch = new POMDigitalInput(LIMIT_SWITCH_CHANNEL, IS_NORAMLLY_OPEN);
         configs = new MotorOutputConfigs();
@@ -36,13 +39,23 @@ public class ClimbIOReal implements ClimbIO {
     }
 
     @Override
-    public void setMotorVoltage(double voltage) {
+    public void setClimbVoltage(double voltage) {
         motor.setVoltage(voltage);
     }
 
     @Override
-    public void stopMotor() {
-        motor.stopMotor();
+    public void stopClimb() {
+        setClimbVoltage(0);
+    }
+
+    @Override
+    public void setArmMotor(double voltage) {
+        armMotor.setVoltage(voltage);
+    }
+
+    @Override
+    public void stopArm() {
+        setArmMotor(0);
     }
 
     @Override
