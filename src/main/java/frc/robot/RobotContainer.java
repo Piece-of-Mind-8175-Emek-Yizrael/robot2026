@@ -13,19 +13,18 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
 import frc.robot.commands.CartridgeCommands;
 import frc.robot.subsystems.cartridge.Cartridge;
 import frc.robot.subsystems.cartridge.CartridgeIOReal;
+import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIOReal;
+import frc.robot.subsystems.vision.VisionConstants;
+import frc.robot.subsystems.vision.VisionSubsystem;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -43,6 +42,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
         // Subsystems
+        VisionSubsystem visionSubsystem;
         Cartridge cartridge;
         CartridgeCommands cartridgeCommands;
         // Controller
@@ -60,6 +60,7 @@ public class RobotContainer {
         public RobotContainer() {
                 switch (Constants.currentMode) {
                         case REAL:
+                                visionSubsystem = new VisionSubsystem(null, new ApriltagVisionIOReal[]{new ApriltagVisionIOReal(VisionConstants.backCameraName, VisionConstants.InitialRobotToBackCameraTranslation)}, null, /*FIXME: this isn't supposed to be a null pointer*/() -> (null));
                                 // Real robot, instantiate hardware IO implementations
                                 cartridge = new Cartridge(new CartridgeIOReal());
                                 cartridgeCommands = new CartridgeCommands(cartridge);
@@ -105,7 +106,7 @@ public class RobotContainer {
 
         }
 
-        public void displaSimFieldToAdvantageScope() {
+        public void displaySimFieldToAdvantageScope() {
                 if (Constants.currentMode != Constants.Mode.SIM)
                         return;
 
