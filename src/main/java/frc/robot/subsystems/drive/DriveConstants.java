@@ -40,8 +40,8 @@ public class DriveConstants {
 
         public static final double maxSpeedMetersPerSec = 4;
         public static final double odometryFrequency = 50.0; // Hz TODO
-        public static final double trackWidth = 0.55735;
-        public static final double wheelBase = 0.55735;
+        public static final double trackWidth = 0.55245;
+        public static final double wheelBase = 0.55245;
         public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
         public static final Translation2d[] moduleTranslations = new Translation2d[] {
                         new Translation2d(trackWidth / 2.0, wheelBase / 2.0),
@@ -51,10 +51,10 @@ public class DriveConstants {
         };
 
         // Zeroed rotation values for each module, see setup instructions
-        public static final Rotation2d frontLeftZeroRotation = Rotation2d.fromDegrees(15.0);
-        public static final Rotation2d frontRightZeroRotation = Rotation2d.fromDegrees(175.8);
-        public static final Rotation2d backLeftZeroRotation = Rotation2d.fromDegrees(15.4);
-        public static final Rotation2d backRightZeroRotation = Rotation2d.fromDegrees(86.13);
+        public static final Rotation2d frontLeftZeroRotation = Rotation2d.fromDegrees(0.0);
+        public static final Rotation2d frontRightZeroRotation = Rotation2d.fromDegrees(0.0);
+        public static final Rotation2d backLeftZeroRotation = Rotation2d.fromDegrees(0.0);
+        public static final Rotation2d backRightZeroRotation = Rotation2d.fromDegrees(0.0);
         
         // Device CAN IDs
         public static final int pigeonCanId = 2;
