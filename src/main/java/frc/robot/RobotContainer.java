@@ -22,7 +22,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Commands.IntakeCommands;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIOKraken;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -40,6 +43,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
         // Subsystems
+        private Intake intake;
 
         // Controller
         private final PS5Controller driverController = new PS5Controller(0);
@@ -56,18 +60,20 @@ public class RobotContainer {
         public RobotContainer() {
                 switch (Constants.currentMode) {
                         case REAL:
+                        intake = new Intake(new IntakeIOKraken());
                                 // Real robot, instantiate hardware IO implementations
                                 break;
 
                         case SIM:
                                 // Sim robot, instantiate physics sim IO implementations
-
+                                intake = null;
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
 
                                 break;
 
                         default:
                                 // Replayed robot, disable IO implementations
+                                intake = null;
                                 break;
                 }
 
@@ -92,6 +98,8 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
+                operatorController.b().whileTrue(new IntakeCommands(intake).intake());
+                operatorController.x().whileTrue(new IntakeCommands(intake).outake());
                 
         }
 
