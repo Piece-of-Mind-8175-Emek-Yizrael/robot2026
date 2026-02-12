@@ -427,11 +427,11 @@ public class BallisticCalculator {
 
                 double ez = 0;
                 double vz = targetCentricMovement.getY();
-                for (double it = 0.0; it < t; it += 0.02) {
+                for (double it = 0.0; it < t; it += coarseDt) {
                     double drag = dragConst * vz * vz;
                     double az = -drag / weightKg;
-                    vz += az;
-                    ez += vz;
+                    vz += az * coarseDt;
+                    ez += vz * coarseDt;
                 }
 
                 double dRotation = Math.toDegrees(Math.atan2(ez, targetX));
