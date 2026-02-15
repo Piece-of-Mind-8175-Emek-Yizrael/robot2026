@@ -6,7 +6,7 @@ public class ShootConstants {
 
     public static final int LEFT_HOOD_MOTOR_ID = 15;
     public static final int RIGHT_HOOD_MOTOR_ID = 16;
-    public static final int FEED_MOTOR_ID = 20;
+    public static final int FEED_MOTOR_ID = 50;
     public static final double hoodGearRatio = 1.0; 
     public static final InvertedValue HOOD_DIRECTION = InvertedValue.CounterClockwise_Positive;
     public static final double slipCurrent = 30.0; //Amps

@@ -85,12 +85,12 @@ public class ShootIOReal implements ShootIO {
                 .smartCurrentLimit(feedCurrentLimit)
                 .voltageCompensation(12.0)
                 .openLoopRampRate(rampRate)
-                .closedLoopRampRate(rampRate)
-                .inverted(feedInverted);
+                .closedLoopRampRate(rampRate);
+                // .inverted(feedInverted);
 
         
         feedConfig.encoder
-                .inverted(feedInverted)
+                // .inverted(feedInverted)
                 .positionConversionFactor(feedGearRatio)
                 .velocityConversionFactor(feedEncoderVelocityFactor)
                 .uvwMeasurementPeriod(20);
