@@ -90,14 +90,16 @@ public class RobotContainer {
         /**
          * Use this method to define your button->command mappings. Buttons can be
          * created by
-         * instantiating a {@link GenericHID} or one of its subclasses ({@link
+         * instantiating a {@link GenericHID} or one of its 
+         * subclasses ({@link
          * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
          * it to a {@link
          * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                operatorController.a().whileTrue(new ShooterArmCommands().setVoltage(2, arm));
+                operatorController.a().whileTrue(new ShooterArmCommands().setVoltage(2.0, arm));
+                operatorController.y().whileTrue(new ShooterArmCommands().setVoltage(-2.0, arm));
                 
         }
 
