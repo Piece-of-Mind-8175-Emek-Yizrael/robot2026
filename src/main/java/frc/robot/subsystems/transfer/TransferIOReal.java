@@ -22,7 +22,7 @@ public class TransferIOReal implements TransferIO{
 
         SparkMaxConfig config = new SparkMaxConfig();
         config
-            .idleMode(IdleMode.kBrake)
+            .idleMode(IdleMode.kCoast)
             .smartCurrentLimit(SMART_CURRENT_LIMIT)
             .inverted(INVERTED);
 

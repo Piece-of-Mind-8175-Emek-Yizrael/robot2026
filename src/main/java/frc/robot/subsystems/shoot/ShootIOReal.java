@@ -81,7 +81,7 @@ public class ShootIOReal implements ShootIO {
 
 
         feedConfig
-                .idleMode(IdleMode.kBrake)
+                .idleMode(IdleMode.kCoast)
                 .smartCurrentLimit(feedCurrentLimit)
                 .voltageCompensation(12.0)
                 .openLoopRampRate(rampRate)
