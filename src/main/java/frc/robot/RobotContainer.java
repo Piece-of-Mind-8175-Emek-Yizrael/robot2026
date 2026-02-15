@@ -13,21 +13,20 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
-
-import org.ironmaple.simulation.SimulatedArena;
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import frc.robot.commands.ShootCommands;
+import frc.robot.subsystems.shoot.Shoot;
+import frc.robot.subsystems.shoot.ShootIOReal;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -40,6 +39,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
         // Subsystems
+        private Shoot shoot;
 
         // Controller
         private final PS5Controller driverController = new PS5Controller(0);
@@ -57,17 +57,19 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
+                                shoot = new Shoot(new ShootIOReal());
                                 break;
 
                         case SIM:
                                 // Sim robot, instantiate physics sim IO implementations
-
+                                shoot = null;
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
 
                                 break;
 
                         default:
                                 // Replayed robot, disable IO implementations
+                                shoot = null;
                                 break;
                 }
 
@@ -92,6 +94,7 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
+                operatorController.a().whileTrue(new ShootCommands(shoot).setVoltage(7.0,-4.0));
                 
         }
 
