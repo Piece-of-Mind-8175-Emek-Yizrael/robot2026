@@ -1,5 +1,20 @@
 package frc.robot.subsystem.climb;
 
+import static frc.robot.subsystem.climb.ClimbConstants.BEFORE_CLIMB_Kg;
+import static frc.robot.subsystem.climb.ClimbConstants.CLIMB_Kg;
+import static frc.robot.subsystem.climb.ClimbConstants.CURRENT_LIMIT;
+import static frc.robot.subsystem.climb.ClimbConstants.GEAR_RATIO;
+import static frc.robot.subsystem.climb.ClimbConstants.IS_NORAMLLY_OPEN;
+import static frc.robot.subsystem.climb.ClimbConstants.Kd;
+import static frc.robot.subsystem.climb.ClimbConstants.Ki;
+import static frc.robot.subsystem.climb.ClimbConstants.Kp;
+import static frc.robot.subsystem.climb.ClimbConstants.Ks;
+import static frc.robot.subsystem.climb.ClimbConstants.LIMIT_SWITCH_CHANNEL;
+import static frc.robot.subsystem.climb.ClimbConstants.MOTOR_ID;
+import static frc.robot.subsystem.climb.ClimbConstants.NEO_ID;
+import static frc.robot.subsystem.climb.ClimbConstants.SERVO_CHANNEL;
+import static frc.robot.subsystem.climb.ClimbConstants.TOLERANCE;
+
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
@@ -10,14 +25,14 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.Servo;
 import frc.robot.POM_lib.Motors.POMSparkMax;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
-
-import static frc.robot.subsystem.climb.ClimbConstants.*;
 
 public class ClimbIOReal implements ClimbIO {
     private final TalonFX motor;
@@ -25,7 +40,6 @@ public class ClimbIOReal implements ClimbIO {
     private final POMSparkMax neo; 
     private VoltageOut voltageOut;
     private final POMDigitalInput limitSwitch;
-    private final MotorOutputConfigs configs;
     private final TalonFXConfiguration config;
     private final PositionVoltage preClimbRequest;
     private final PositionVoltage ClimbRequest;
@@ -38,10 +52,6 @@ public class ClimbIOReal implements ClimbIO {
         neo = new POMSparkMax(NEO_ID);
         voltageOut = new VoltageOut(0);
         limitSwitch = new POMDigitalInput(LIMIT_SWITCH_CHANNEL, IS_NORAMLLY_OPEN);
-        configs = new MotorOutputConfigs();
-        configs.Inverted = InvertedValue.Clockwise_Positive;
-        configs.NeutralMode = NeutralModeValue.Brake;
-        motor.getConfigurator().apply(configs); // should work
 
         config = new TalonFXConfiguration();
         config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; // need to check
@@ -61,8 +71,9 @@ public class ClimbIOReal implements ClimbIO {
         config.Slot1 = ClimbSlot;
 
         neoConfig = new SparkMaxConfig();
-        neoConfig.idleMode(IdleMode.kCoast)
-                .inverted(false);
+        neoConfig.idleMode(IdleMode.kCoast);
+
+        neo.configure(neoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         preClimbRequest = new PositionVoltage(0).withSlot(0);
         ClimbRequest = new PositionVoltage(0).withSlot(1);
