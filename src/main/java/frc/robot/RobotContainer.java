@@ -98,8 +98,11 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                operatorController.b().whileTrue(new IntakeCommands(intake).intake());
-                operatorController.x().whileTrue(new IntakeCommands(intake).outake());
+                operatorController.b().whileTrue(new IntakeCommands(intake).intake(-2));
+                operatorController.a().whileTrue(new IntakeCommands(intake).intake(-3));
+                operatorController.x().whileTrue(new IntakeCommands(intake).intake(-4));
+                operatorController.y().whileTrue(new IntakeCommands(intake).intake(-6));
+                // operatorController.x().whileTrue(new IntakeCommands(intake).outake());
                 
         }
 

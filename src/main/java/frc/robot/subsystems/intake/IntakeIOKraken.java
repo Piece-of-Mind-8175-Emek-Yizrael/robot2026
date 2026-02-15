@@ -17,7 +17,8 @@ public class IntakeIOKraken implements IntakeIO{
 
     public IntakeIOKraken(){
         motor = new POMTalonFX(MOTOR_ID);
-        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        config.CurrentLimits.SupplyCurrentLimit = 20;
         motor.getConfigurator().apply(config);        
     }
 
