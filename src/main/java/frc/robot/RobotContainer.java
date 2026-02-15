@@ -102,7 +102,7 @@ public class RobotContainer {
                 // Default command, normal field-relative drive
                 operatorController.a().whileTrue(new TransferCommands().setVoltage(transfer, 8.0));
                 operatorController.x().whileTrue(new TransferCommands().setVoltage(transfer, -8.0));
-                operatorController.b().whileTrue(new ShootCommands(shoot).setVoltage(7.0, -6.0));
+                operatorController.b().whileTrue(new ShootCommands(shoot).setVoltage(12.0, -6.0));
                 operatorController.y().whileTrue(new ShootCommands(shoot).setFeedVoltage(-6.0));
                 
         }

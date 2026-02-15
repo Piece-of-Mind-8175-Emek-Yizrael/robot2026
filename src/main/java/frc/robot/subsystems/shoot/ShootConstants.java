@@ -9,10 +9,10 @@ public class ShootConstants {
     public static final int FEED_MOTOR_ID = 50;
     public static final double hoodGearRatio = 1.0; 
     public static final InvertedValue HOOD_DIRECTION = InvertedValue.CounterClockwise_Positive;
-    public static final double slipCurrent = 30.0; //Amps
+    public static final double slipCurrent = 40.0; //Amps
     public static final double rampRate = 0.25; //seconds from 0 to full
     public static final int feedCurrentLimit = 30; //Amps
-    public static final double feedGearRatio = 1.0; //rotations
+    public static final double feedGearRatio = 1.0 / 9.0; //rotations
     public static final double feedEncoderVelocityFactor = feedGearRatio / 60.0; //rotatio per second
     public static final boolean feedInverted = false; //true is inverted
 
