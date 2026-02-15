@@ -42,6 +42,8 @@ import frc.robot.subsystems.shoot.ShootIOReal;
  */
 public class RobotContainer {
         // Subsystems
+        private final Shoot shoot;
+        private final Transfer transfer;
 
         // Controller
         private final PS5Controller driverController = new PS5Controller(0);
@@ -59,17 +61,21 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
+                                shoot = new Shoot(new ShootIOReal());
+                                transfer = new Transfer(new TransferIOReal());
                                 break;
 
                         case SIM:
                                 // Sim robot, instantiate physics sim IO implementations
                                 shoot = null;
-                                SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
                                 transfer = null;
+                                SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
                                 break;
 
                         default:
                                 // Replayed robot, disable IO implementations
+                                shoot = null;
+                                transfer = null;
                                 break;
                 }
 
@@ -94,6 +100,9 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
+                operatorController.a().whileTrue(new TransferCommands().setVoltage(transfer, 3.0));
+                operatorController.x().whileTrue(new TransferCommands().setVoltage(transfer, -3.0));
+                operatorController.b().whileTrue(new ShootCommands(shoot).setVoltage(6.0, 4.0));
                 
         }
 
