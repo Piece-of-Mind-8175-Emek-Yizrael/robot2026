@@ -17,6 +17,7 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Servo;
 import frc.robot.POM_lib.Motors.POMSparkMax;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
@@ -33,6 +34,8 @@ public class ClimbIOReal implements ClimbIO {
 
     private final PositionVoltage preClimbRequest;
     private final PositionVoltage ClimbRequest;
+
+    private PIDController pidController;
     
     private double currentGoal;
     
@@ -44,6 +47,8 @@ public class ClimbIOReal implements ClimbIO {
         encoder = armMotor.getEncoder();
         servo = new Servo(SERVO_CHANNEL);
         limitSwitch = new POMDigitalInput(LIMIT_SWITCH_CHANNEL, NORMALLY_OPEN);
+
+        pidController = new PIDController(KpNeo, KiNeo, KdNeo);
         
         voltageOut = new VoltageOut(0);
 
@@ -75,7 +80,7 @@ public class ClimbIOReal implements ClimbIO {
 
         armMotor.configure(armConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        servo.setAngle(CLOSE_SERVO_ANGLE);
+        servo.setAngle(CLOSE_SERVO_POS);
         resetPos();
     }
 
@@ -84,7 +89,7 @@ public class ClimbIOReal implements ClimbIO {
         inputs.krakenVoltage = climbMotor.getMotorVoltage().getValue();
         inputs.KrakenOutput = climbMotor.getMotorOutputStatus().getValueAsDouble();
         inputs.krakenPosition = climbMotor.getPosition().getValueAsDouble();
-        inputs.krakenAtGoal = atGoal();
+        inputs.krakenAtGoal = atKrakenGoal();
 
         inputs.neoVoltage = armMotor.getAppliedOutput();
         inputs.neoOutput = armMotor.getOutputCurrent();
@@ -147,7 +152,7 @@ public class ClimbIOReal implements ClimbIO {
     }
 
     @Override
-    public boolean atGoal() {
+    public boolean atKrakenGoal() {
         return Math.abs(getPosition() - currentGoal) < TOLERANCE;
     }
     
@@ -155,6 +160,17 @@ public class ClimbIOReal implements ClimbIO {
     @Override
     public double getPosition() {
         return climbMotor.getPosition().getValueAsDouble();
+    }
+
+    @Override
+    public void setNeoGoal(double goal) {
+        pidController.setSetpoint(goal);
+        setNeoVoltage(pidController.calculate(armMotor.getEncoder().getPosition()));
+    }
+
+    @Override
+    public boolean atNeoGoal() {
+        return pidController.atSetpoint();
     }
 
 

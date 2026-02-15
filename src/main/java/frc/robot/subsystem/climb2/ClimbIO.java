@@ -50,7 +50,7 @@ public interface ClimbIO {
     public default void ClimbGoToPos(double goal) {
     }
 
-    public default boolean atGoal() {
+    public default boolean atKrakenGoal() {
         return false;
     }
 
@@ -60,6 +60,14 @@ public interface ClimbIO {
 
     public default void resetPos(){
         
+    }
+
+    public default void setNeoGoal(double goal) {
+
+    }
+
+    public default boolean atNeoGoal() {
+        return false;
     }
     
 }
