@@ -7,19 +7,27 @@ public interface ClimbIO {
     @AutoLog
 
     public static class ClimbIOInputs {
-        public static double voltage;
-        public static double output;
-        public static double angle;
-        public static boolean isPressed;
+        public double krakenVoltage;
+        public double KrakenOutput;
+        public double neoVoltage;
+        public double neoOutput;
+        public double angle;
+        public boolean isPressed;
     }
 
     public default void updateInputs(ClimbIOInputs inputs) {
     }
 
-    public default void setMotorVoltage(double voltage) {
+    public default void setKrakenVoltage(double voltage) {
     }
 
-    public default void stopMotor() {
+    public default void stopKraken() {
+    }
+
+    public default void setNeoVoltage(double voltage) {
+    }
+
+    public default void stopNeo() {
     }
 
     public default void setServoAngle(double angle) {

@@ -17,12 +17,20 @@ public class ClimbCommands extends Command {
         this.climb = climb;
     }
 
-    public Command setVoltage(double voltage) {
-        return Commands.runEnd(() -> climb.getIO().setMotorVoltage(voltage), climb.getIO()::stopMotor, climb);
+    public Command setKrakenVoltage(double voltage) {
+        return Commands.runEnd(() -> climb.getIO().setKrakenVoltage(voltage), climb.getIO()::stopKraken, climb);
     }
 
-    public Command stopMotor() {
-        return Commands.runOnce(() -> climb.getIO().stopMotor(), climb);
+    public Command stopKraken() {
+        return Commands.runOnce(() -> climb.getIO().stopKraken(), climb);
+    }
+
+    public Command setNeoVoltage(double voltage) {
+        return Commands.runEnd(() -> climb.getIO().setNeoVoltage(voltage), climb.getIO()::stopNeo, climb);
+    }
+
+    public Command stopNeo() {
+        return Commands.runOnce(() -> climb.getIO().stopNeo(), climb);
     }
 
     public Command setServoAngle(double angle) {
@@ -40,17 +48,17 @@ public class ClimbCommands extends Command {
     }
 
     public Command closedUntilPressed(double voltage) {
-        return Commands.runOnce(() -> climb.getIO().setMotorVoltage(voltage), climb)
-                .andThen(Commands.waitUntil(climb.getIO()::isPressed));
+        return Commands.runOnce(() -> climb.getIO().setKrakenVoltage(voltage), climb)
+                        .until(() -> climb.getIO().isPressed());
     }
 
     public Command goToPos(double goal) {
         return Commands.runOnce(() -> climb.getIO().ClimbGoToPos(goal), climb)
-                .andThen(Commands.waitUntil(climb.getIO()::atGoal));
+                .until(climb.getIO()::atGoal);
     }
 
     public Command setClimb(double voltage) {
-        return Commands.runEnd(() -> climb.getIO().setMotorVoltage(voltage), () -> climb.getIO().stopMotor(), climb)
+        return Commands.runEnd(() -> climb.getIO().setKrakenVoltage(voltage), () -> climb.getIO().stopKraken(), climb)
                 .until(() -> climb.getIO().isPressed())
                 .andThen(() -> climb.getIO().setServoAngle(SET_CLIMB_SERVO_ANGLE));
     }
@@ -59,39 +67,24 @@ public class ClimbCommands extends Command {
         return Commands.sequence(
                 closedUntilPressed(CLOSE_CLIMB_OPEN_SERVO_VOLTAGE),
                 openServo(),
-                stopMotor().until(() -> climb.getIO().getPosition() >= CLIMB_OPENED_POS));
+                stopKraken().until(() -> climb.getIO().getPosition() >= CLIMB_OPENED_POS));
     }
 
     public Command openClimb(double voltage, BooleanSupplier buttonPressed) {
         return Commands.runOnce(() -> climb.getIO().setServoAngle(CLOSE_CLIMB_SERVO_ANGLE), climb)
-                .withTimeout(OPEN_SWITCH_DELAY).andThen(() -> climb.getIO().setMotorVoltage(voltage), climb)
-                .until(buttonPressed).andThen(() -> climb.getIO().stopMotor(), climb);
+                .withTimeout(OPEN_SWITCH_DELAY).andThen(() -> climb.getIO().setKrakenVoltage(voltage), climb)
+                .until(buttonPressed).andThen(() -> climb.getIO().stopKraken(), climb);
     }// need to cheackb
 
     public Command climb() {
         return Commands.sequence(goToPos(CLIMB_CLOSED_POS),
                 openServo(),
-                stopMotor());
+                stopKraken());
     }
 
     public Command climbDown() {
         return Commands.sequence(null);
     }
 
-    // public Command setPreClimb() {
-    // return new FunctionalCommand(() ->
-    // climb.getIO().setServoAngle(OPEN_CLIMB_SERVO_ANGLE),
-    // () -> climb.getIO().preClimbGoToPos(PRE_CLIMB_POS),
-    // interrupted -> climb.getIO().stopMotor(),
-    // () -> climb.getIO().atGoal(), climb);
-    // }
-
-    // public Command setClimb() {
-    // return new FunctionalCommand(null, () -> climb.getIO().ClimbGoToPos(),
-    // interrupted -> {
-    // climb.getIO().setServoAngle(CLOSE_CLIMB_SERVO_ANGLE);
-    // climb.getIO().stopMotor();
-    // }, () -> climb.getIO().atGoal(), climb);
-    // }
 
 }
