@@ -12,7 +12,7 @@ public class ShootConstants {
     public static final double slipCurrent = 30.0; //Amps
     public static final double rampRate = 0.25; //seconds from 0 to full
     public static final int feedCurrentLimit = 30; //Amps
-    public static final double feedGearRatio = 1.0; //rotations
+    public static final double feedGearRatio = 1.0 / 9.0; //rotations
     public static final double feedEncoderVelocityFactor = feedGearRatio / 60.0; //rotatio per second
     public static final boolean feedInverted = false; //true is inverted
 
