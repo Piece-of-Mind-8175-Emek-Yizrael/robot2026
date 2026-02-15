@@ -24,6 +24,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
+import frc.robot.commands.TransferCommands;
+import frc.robot.subsystems.transfer.Transfer;
+import frc.robot.subsystems.transfer.TransferIOReal;
 import frc.robot.commands.ShootCommands;
 import frc.robot.subsystems.shoot.Shoot;
 import frc.robot.subsystems.shoot.ShootIOReal;
@@ -39,7 +42,6 @@ import frc.robot.subsystems.shoot.ShootIOReal;
  */
 public class RobotContainer {
         // Subsystems
-        private Shoot shoot;
 
         // Controller
         private final PS5Controller driverController = new PS5Controller(0);
@@ -57,19 +59,17 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
-                                shoot = new Shoot(new ShootIOReal());
                                 break;
 
                         case SIM:
                                 // Sim robot, instantiate physics sim IO implementations
                                 shoot = null;
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-
+                                transfer = null;
                                 break;
 
                         default:
                                 // Replayed robot, disable IO implementations
-                                shoot = null;
                                 break;
                 }
 
@@ -94,7 +94,6 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                operatorController.a().whileTrue(new ShootCommands(shoot).setVoltage(7.0,-4.0));
                 
         }
 
