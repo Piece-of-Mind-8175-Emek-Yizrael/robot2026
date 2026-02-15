@@ -58,6 +58,12 @@ public class ClinbCommands2 {
                         .until(() -> (climb.getIo().atKrakenGoal() || climb.getIo().isPressed()));
     }
 
+
+    
+    //////////////////////
+
+
+
     public Command openClimb(){
         return Commands.sequence(
             openServo()
