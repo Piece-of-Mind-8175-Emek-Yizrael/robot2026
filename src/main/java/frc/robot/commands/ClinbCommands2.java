@@ -58,11 +58,24 @@ public class ClinbCommands2 {
                         .until(() -> (climb.getIo().atKrakenGoal() || climb.getIo().isPressed()));
     }
 
-    public Command openClime(){
+    public Command openClimb(){
         return Commands.sequence(
-            openServo(),
-            openArm(),
-            WaitCommand.seconds(2)
+            openServo()
+            ,openArm()
+            // ,WaitCommand(0.2)
+            ,climbGoToPos(OPEN_CLIME_GOAL)
+            ,closeServo()
+
+        );
+    }
+
+    public Command closeClimb(){
+        return Commands.sequence(
+            climbGoToPos(CLOSE_CLIME_GOAL)
+            ,openServo()
+            ,preClimbGoToPos(CLOSE_CLIME_GOAL)
+            ,closeArm()
+            ,closeServo()
         );
     }
 }
