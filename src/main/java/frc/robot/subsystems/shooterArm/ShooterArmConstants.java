@@ -1,12 +1,12 @@
 package frc.robot.subsystems.shooterArm;
 
 public class ShooterArmConstants {
-    public static final int MOTOR_ID = 21;
+    public static final int MOTOR_ID = 20;
     
     public static final int currentLimit = 40;
     public static final double voltageCompensation = 12.0;
 
-    public static final double gearRatio = 1.0 / 10.0;
+    public static final double gearRatio = ((1.0 / 10.0) * (18.0 / 42.0)) ;
     public static final double velocityConversionFactor = gearRatio / 60.0; // RPM to rad/s
 
     public static final boolean INVERTED = false;

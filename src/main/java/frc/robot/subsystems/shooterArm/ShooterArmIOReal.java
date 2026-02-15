@@ -35,14 +35,14 @@ public class ShooterArmIOReal implements ShooterArmIO {
         
         config = new SparkMaxConfig();
         config.idleMode(IdleMode.kBrake)
-                .inverted(INVERTED)
+                // .inverted(INVERTED)
                 .smartCurrentLimit(currentLimit)
                 .voltageCompensation(voltageCompensation)
                 .smartCurrentLimit(currentLimit);
 
         config.encoder.positionConversionFactor(gearRatio)
                 .velocityConversionFactor(velocityConversionFactor)
-                .inverted(INVERTED)
+                // .inverted(INVERTED)
                 .uvwMeasurementPeriod(20);
 
         motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -62,7 +62,7 @@ public class ShooterArmIOReal implements ShooterArmIO {
 
     @Override
     public void setVoltage(double voltage) {
-        motor.set(voltage);
+        motor.setVoltage(voltage);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class ShooterArmIOReal implements ShooterArmIO {
     }
 
     @Override
-    public double getPos() {
+    public double getAngle() {
         return encoder.getPosition();
     }
 
@@ -117,7 +117,7 @@ public class ShooterArmIOReal implements ShooterArmIO {
     @Override
     public void stayInCurrentGoal() {
         if (manualMode) {
-            currentGoal = getPos();
+            currentGoal = getAngle();
             resetPID();
         }
     }

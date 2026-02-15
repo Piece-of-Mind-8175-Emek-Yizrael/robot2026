@@ -35,7 +35,7 @@ public interface ShooterArmIO {
     public default void resistGravity() {
     }
 
-    public default double getPos(){
+    public default double getAngle(){
         return 0.0;
     }
     
