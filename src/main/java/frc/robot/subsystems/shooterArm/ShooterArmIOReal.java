@@ -96,7 +96,7 @@ public class ShooterArmIOReal implements ShooterArmIO {
     }
 
     @Override
-    public double getPos() {
+    public double getAngle() {
         return encoder.getPosition();
     }
 
@@ -117,7 +117,7 @@ public class ShooterArmIOReal implements ShooterArmIO {
     @Override
     public void stayInCurrentGoal() {
         if (manualMode) {
-            currentGoal = getPos();
+            currentGoal = getAngle();
             resetPID();
         }
     }
