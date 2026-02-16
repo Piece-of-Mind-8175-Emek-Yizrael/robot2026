@@ -15,7 +15,7 @@ public class BallisticCalculator {
         FAST(0.04f,0.01f),
         ACCURATE(0.02f,0.005f);
 
-        private float coarseDt, fineDt;
+        private final float coarseDt, fineDt;
 
         public float getCoarseDt() {
             return coarseDt;
