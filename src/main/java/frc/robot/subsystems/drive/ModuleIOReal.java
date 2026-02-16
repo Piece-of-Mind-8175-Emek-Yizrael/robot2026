@@ -99,7 +99,7 @@ private final Rotation2d zeroRotation;
         turnEncoder = new CANcoder(swerveBaseID + 2 + swerveModuleIDsCount * module);
 
         var encoderConfig = new CANcoderConfiguration();
-        encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
 
         encoderConfig.MagnetSensor.MagnetOffset = zeroRotation.getRotations();
 
@@ -144,7 +144,7 @@ private final Rotation2d zeroRotation;
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .positionWrappingEnabled(true)
                 .positionWrappingInputRange(turnPIDMinInput, turnPIDMaxInput)
-                .pidf(turnKp, 0.0, turnKd, 0.0).outputRange(-turnPIDMaxOutput, turnPIDMaxOutput);
+                .pidf(turnKp, 0.00, turnKd, 0.0).outputRange(-turnPIDMaxOutput, turnPIDMaxOutput);
 
         turnConfig.signals
                 .primaryEncoderPositionAlwaysOn(true)
