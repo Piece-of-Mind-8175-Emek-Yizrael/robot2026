@@ -210,10 +210,10 @@ private final Rotation2d zeroRotation;
         drivePositionQueue.clear();
         turnPositionQueue.clear();
 
-        // if (timer.get() >= 10) {
-        //     turnMotor.getEncoder().setPosition(getAbsolutePosition());
-        //     timer.restart();
-        // }
+        if (timer.get() >= 10) {
+            turnMotor.getEncoder().setPosition(getAbsolutePosition());
+            timer.restart();
+        }
     }
 
     @Override

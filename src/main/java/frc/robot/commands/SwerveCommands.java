@@ -165,7 +165,7 @@ public class SwerveCommands {
                                                                         : drive.getRotation());
 
                                         // speeds = new ChassisSpeeds(0, 0.2, 0);
-                                        drive.runVelocity(speeds, true);
+                                        drive.runVelocity(speeds, false);
                                 },
                                 drive).beforeStarting(Commands.runOnce(drive::resetKinematics, drive));
         }
