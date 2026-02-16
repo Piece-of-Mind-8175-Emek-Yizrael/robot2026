@@ -188,7 +188,8 @@ private final Rotation2d zeroRotation;
         sparkStickyFault = false;
         ifOk(
                 turnMotor,
-                turnMotor.getEncoder()::getPosition,
+                () -> (turnMotor.getEncoder().getPosition() % 360),
+                // this::getAbsolutePosition,
                 (value) -> inputs.turnPosition = new Rotation2d(value));
 
         ifOk(turnMotor, turnMotor.getEncoder()::getVelocity, (value) -> inputs.turnVelocityRadPerSec = value);
@@ -210,10 +211,10 @@ private final Rotation2d zeroRotation;
         drivePositionQueue.clear();
         turnPositionQueue.clear();
 
-        if (timer.get() >= 10) {
-            turnMotor.getEncoder().setPosition(getAbsolutePosition());
-            timer.restart();
-        }
+        // if (timer.get() >= 10) {
+        //     turnMotor.getEncoder().setPosition(getAbsolutePosition());
+        //     timer.restart();
+        // }
     }
 
     @Override
