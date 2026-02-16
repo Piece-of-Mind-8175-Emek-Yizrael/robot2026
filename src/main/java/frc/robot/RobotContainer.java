@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
 import frc.robot.commands.SwerveCommands;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -45,7 +46,7 @@ public class RobotContainer {
         Swerve swerve;
 
         // Controller
-        private final PS5Controller driverController = new PS5Controller(0);
+        private final CommandPS5Controller  driverController = new CommandPS5Controller (0);
         private final PomXboxController operatorController = new PomXboxController(1);
 
         // Dashboard inputs
@@ -110,10 +111,15 @@ public class RobotContainer {
 
                 swerve.setDefaultCommand(
                         SwerveCommands.joystickDrive(swerve,
-                        () -> driverController.getLeftY() * -0.3,
-                         () -> driverController.getLeftX() * -0.3,
-                          () -> driverController.getRightX() * 0.3)
+                        () -> driverController.getLeftY() * -0.35,
+                         () -> driverController.getLeftX() * -0.35,
+                          () -> driverController.getRightX() * 0.35)
                 );
+
+                driverController.R2().whileTrue(SwerveCommands.joystickDrive(swerve,
+                        () -> 0,
+                         () -> 0.35,
+                          () -> 0));
                 
         }
 

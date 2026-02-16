@@ -62,8 +62,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 
 public class ModuleIOReal implements ModuleIO {
-
-    private final Rotation2d zeroRotation;
+private final Rotation2d zeroRotation;
     private final int module;
     private Timer timer = new Timer();
     // Hardware objects
@@ -100,13 +99,9 @@ public class ModuleIOReal implements ModuleIO {
         turnEncoder = new CANcoder(swerveBaseID + 2 + swerveModuleIDsCount * module);
 
         var encoderConfig = new CANcoderConfiguration();
-        encoderConfig.MagnetSensor.SensorDirection = switch (module) {//TODO: verify CANCoder sensor direction values
-            case 0 -> SensorDirectionValue.Clockwise_Positive;
-            case 1 -> SensorDirectionValue.Clockwise_Positive;
-            case 2 -> SensorDirectionValue.CounterClockwise_Positive;
-            case 3 -> SensorDirectionValue.CounterClockwise_Positive;
-            default -> SensorDirectionValue.Clockwise_Positive;
-        };
+        encoderConfig.MagnetSensor.SensorDirection = module == 1 ? SensorDirectionValue.CounterClockwise_Positive
+                : SensorDirectionValue.Clockwise_Positive;
+
         encoderConfig.MagnetSensor.MagnetOffset = zeroRotation.getRotations();
 
         tryUntilOk(5, () -> turnEncoder.getConfigurator().apply(encoderConfig, 0.25));
@@ -122,13 +117,7 @@ public class ModuleIOReal implements ModuleIO {
         driveConfig.TorqueCurrent.PeakReverseTorqueCurrent = -driveSlipCurrent;
         driveConfig.CurrentLimits.StatorCurrentLimit = driveSlipCurrent;
         driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        driveConfig.MotorOutput.Inverted = switch (module) {
-            case 0 -> InvertedValue.CounterClockwise_Positive;
-            case 1 -> InvertedValue.CounterClockwise_Positive;
-            case 2 -> InvertedValue.CounterClockwise_Positive;
-            case 3 -> InvertedValue.CounterClockwise_Positive;
-            default -> InvertedValue.CounterClockwise_Positive;
-        };
+        driveConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         driveConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = driveRampRate;
         driveConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = driveRampRate;
         driveConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = driveRampRate;
@@ -197,7 +186,6 @@ public class ModuleIOReal implements ModuleIO {
         inputs.driveConnected = driveConnectedDebounce.calculate(driveStatus.isOK());
 
         // update turn inputs
-        
         sparkStickyFault = false;
         ifOk(
                 turnMotor,
@@ -223,7 +211,7 @@ public class ModuleIOReal implements ModuleIO {
         drivePositionQueue.clear();
         turnPositionQueue.clear();
 
-        if (timer.get() >= 3) {
+        if (timer.get() >= 10) {
             turnMotor.getEncoder().setPosition(getAbsolutePosition());
             timer.restart();
         }
@@ -277,5 +265,4 @@ public class ModuleIOReal implements ModuleIO {
             default -> "Unknown";
         };
     }
-
 }
