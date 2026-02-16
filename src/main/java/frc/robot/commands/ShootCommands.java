@@ -30,6 +30,14 @@ public class ShootCommands {
             ).withName("set feed");
     }
 
+    public Command setHoodVoltage(double feedVoltage) {
+        return Commands.runEnd(
+            () -> shoot.getIO().setHoodVoltage(feedVoltage),
+            shoot.getIO()::stopHood,
+            shoot
+            ).withName("set hood");
+    }
+
     
 
     public Command stopBoth() {

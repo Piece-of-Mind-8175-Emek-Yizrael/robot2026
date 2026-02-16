@@ -26,6 +26,9 @@ public class TransferIOReal implements TransferIO{
             .smartCurrentLimit(SMART_CURRENT_LIMIT)
             .inverted(INVERTED);
 
+        config.encoder
+            .positionConversionFactor(GEAR_RATIO);
+
         motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 

@@ -7,5 +7,6 @@ public class TransferConstants {
     public static final double TRANSFER_SPEED = 0.5; // TODO: replace with the actual value
     public static final int SMART_CURRENT_LIMIT = 40;
     public static final boolean INVERTED = false;
+    public static final double GEAR_RATIO = 3.0 / 7.0; // TODO: replace with the actual value
 
 }
