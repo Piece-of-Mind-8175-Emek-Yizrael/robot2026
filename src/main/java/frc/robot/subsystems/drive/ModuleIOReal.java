@@ -99,8 +99,7 @@ private final Rotation2d zeroRotation;
         turnEncoder = new CANcoder(swerveBaseID + 2 + swerveModuleIDsCount * module);
 
         var encoderConfig = new CANcoderConfiguration();
-        encoderConfig.MagnetSensor.SensorDirection = module == 1 ? SensorDirectionValue.CounterClockwise_Positive
-                : SensorDirectionValue.Clockwise_Positive;
+        encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
         encoderConfig.MagnetSensor.MagnetOffset = zeroRotation.getRotations();
 
@@ -211,10 +210,10 @@ private final Rotation2d zeroRotation;
         drivePositionQueue.clear();
         turnPositionQueue.clear();
 
-        if (timer.get() >= 10) {
-            turnMotor.getEncoder().setPosition(getAbsolutePosition());
-            timer.restart();
-        }
+        // if (timer.get() >= 10) {
+        //     turnMotor.getEncoder().setPosition(getAbsolutePosition());
+        //     timer.restart();
+        // }
     }
 
     @Override

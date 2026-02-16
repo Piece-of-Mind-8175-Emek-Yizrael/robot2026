@@ -116,6 +116,8 @@ public class RobotContainer {
                           () -> driverController.getRightX() * 0.35)
                 );
 
+                driverController.triangle().onTrue(swerve.resetGyroCommand());
+
                 driverController.R2().whileTrue(SwerveCommands.joystickDrive(swerve,
                         () -> 0,
                          () -> 0.35,
