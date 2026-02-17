@@ -170,7 +170,6 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {
-
     SimulatedArena.getInstance().simulationPeriodic();
     robotContainer.displaSimFieldToAdvantageScope();
   }

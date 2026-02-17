@@ -11,6 +11,8 @@ import static frc.robot.subsystems.drive.DriveConstants.maxSpeedMetersPerSec;
 import static frc.robot.subsystems.drive.DriveConstants.moduleTranslations;
 import static frc.robot.subsystems.drive.DriveConstants.ppConfig;
 
+import static frc.robot.subsystems.drive.FieldConstants.Hub.HUB_CENTER_POINT;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.DoubleSupplier;
@@ -36,7 +38,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -56,8 +58,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.Mode;
 import frc.robot.util.LocalADStarAK;
-
-import static frc.robot.subsystems.drive.FieldConstants.Hub.*;
 
 public class Swerve extends SubsystemBase {
     // ODED WAS HERE
@@ -509,15 +509,30 @@ public class Swerve extends SubsystemBase {
                             "Robot Angle", () -> gyroInputs.yawPosition.getRadians(), null);
                 });
     }
+    
+    public boolean isRedAlliance(){
+        return DriverStation.getAlliance().orElse(Alliance.Red).equals(Alliance.Red);
+    }
+
+    public Pose2d flipAlliance(Pose2d pose){
+        return new Pose2d(FieldConstants.fieldLength - pose.getX(),
+                                                                FieldConstants.fieldWidth - pose.getY(),
+                                                                Rotation2d.fromDegrees(180
+                                                                                + pose.getRotation().getDegrees()));
+
+    }
+
+    public Pose2d getRobotPoseAsBlue(){
+        if(isRedAlliance()){
+            return flipAlliance(getPose());
+        }
+        return getPose();
+    }
 
     public double getDistanceFromHub() {
-                Translation3d hubPos = topCenterPoint;
-                double x = hubPos.getX() - getPose().getX();
-                double y = hubPos.getY() - getPose().getY();
+        return HUB_CENTER_POINT.getDistance(getRobotPoseAsBlue().getTranslation());
+    }
 
-                Logger.recordOutput("Distance from hub: ", Math.sqrt(x * x + y * y));
-
-                return Math.sqrt(x * x + y * y);
-        }
 
 }
+

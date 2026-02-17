@@ -13,6 +13,7 @@ import static frc.robot.subsystems.drive.DriveConstants.MAX_VELOCETY_OMEGA;
 import static frc.robot.subsystems.drive.DriveConstants.MAX_VELOCETY_XY;
 import static frc.robot.subsystems.drive.DriveConstants.OMEGA_TOLERANCE;
 import static frc.robot.subsystems.drive.DriveConstants.TRANSLATION_TOLERANCE;
+import static frc.robot.subsystems.drive.FieldConstants.Hub.HUB_CENTER_POINT;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
@@ -671,19 +672,17 @@ public class SwerveCommands {
 
         
 
-        public static Command turnToHub(Swerve drive) {
-                double daltaX = FieldConstants.Hub.topCenterPoint.getX() - drive.getPose().getX();
-                double daltaY = FieldConstants.Hub.topCenterPoint.getY() - drive.getPose().getY();
+        private static Rotation2d angleToHub(Swerve swerve){
+                return HUB_CENTER_POINT.minus(swerve.getRobotPoseAsBlue().getTranslation()).getAngle();
+        }
+        
 
-                double angleToHub = Math.atan2(daltaY, daltaX);
-                Rotation2d hubAngle = new Rotation2d(angleToHub);
-                
-                return rotateToAngle(drive, () -> hubAngle);
+        public static Command turnToHub(Swerve drive) {
+                return rotateToAngle(drive, () -> angleToHub(drive));
         }
 
         public static Command driveFaceToHub(Swerve drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
-                Rotation2d hubAngle = new Rotation2d(); //TODO put hub angle
-                return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> hubAngle);
+                return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> angleToHub(drive));
         }
 
 }
