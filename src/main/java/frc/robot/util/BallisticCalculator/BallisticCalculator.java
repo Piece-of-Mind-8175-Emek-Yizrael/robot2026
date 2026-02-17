@@ -156,7 +156,7 @@ public class BallisticCalculator {
         float[] vy0 = new float[total];
 
         // TODO: check whether the X and Y of the targetCentricMovement are applied at the correct order
-        for (int iv = 0; iv < nV; iv++) {
+        for (int iv = nV - 1; iv >= 0; iv--) {
             float v0 = vRange[iv];
             int base = iv * nA;
             for (int ia = 0; ia < nA; ia++) {
@@ -177,7 +177,7 @@ public class BallisticCalculator {
         final float xMargin = 0.5f;
         final float yFloor = -1.0f;
 
-        IntStream.range(0, total).parallel().forEach(idx -> {
+        for (int idx = 0; idx < vx0.length; idx++) {
             float initVx = vx0[idx];
             float initVy = vy0[idx];
             int iv = idx / nA;
@@ -185,10 +185,8 @@ public class BallisticCalculator {
             float v0 = vRange[iv];
             float launchDeg = angleRange[ia];
 
-            double t = 0;
-
             // Quick bounding: if initial vx is tiny and targetX far, skip
-            if (Math.abs(initVx) < eps && Math.abs(targetX) > 1.0) return;
+            if (Math.abs(initVx) < eps && Math.abs(targetX) > 1.0) continue;
 
             // ---- coarse pass ----
             float vx = initVx;
@@ -197,7 +195,6 @@ public class BallisticCalculator {
             float y = 0.0f;
             float bestErrSqCoarse = Float.POSITIVE_INFINITY;
             float savedVx = vx, savedVy = vy, savedX = x, savedY = y;
-            double savedT = t;
 
             for (int step = 0; step < coarseMaxSteps; step++) {
                 float v2 = vx * vx + vy * vy;
@@ -212,7 +209,6 @@ public class BallisticCalculator {
                 x += vx * coarseDt;
                 y += vy * coarseDt;
 
-                t += coarseDt;
 
                 float dx = x - targetX;
                 float dy = y - targetY;
@@ -223,13 +219,12 @@ public class BallisticCalculator {
                     savedVy = vy;
                     savedX = x;
                     savedY = y;
-                    savedT = t;
                 }
                 if (y < yFloor || x > targetX + xMargin || (Math.abs(vx) < eps && Math.abs(vy) < eps)) break;
             }
 
             // If coarse pass indicates not promising, skip
-            if (bestErrSqCoarse > coarseThresholdSq) return;
+            if (bestErrSqCoarse > coarseThresholdSq) continue;
 
             // ---- fine pass: start from saved coarse state and refine ----
             vx = savedVx;
@@ -238,10 +233,11 @@ public class BallisticCalculator {
             x = savedX;
             y = savedY;
 
-            t = savedT;
-
             float bestErrSq = Float.POSITIVE_INFINITY;
             float arrivalAngleDeg = Float.NaN;
+            
+            double vz = targetCentricMovement.getY();
+            double ez = 0;
 
             for (int step = 0; step < fineMaxSteps; step++) {
                 float v2 = vx * vx + vy * vy;
@@ -256,7 +252,10 @@ public class BallisticCalculator {
                 x += vx * fineDt;
                 y += vy * fineDt;
 
-                t += fineDt;
+                double dragZ = dragConst * vz * vz;
+                double az = -dragZ / weightKg;
+                vz += az * fineDt;
+                ez += vz * fineDt;
 
                 float dx = x - targetX;
                 float dy = y - targetY;
@@ -272,25 +271,15 @@ public class BallisticCalculator {
             }
 
             if (!Double.isNaN(arrivalAngleDeg) && arrivalAngleDeg >= aLow && arrivalAngleDeg <= aHigh && bestErrSq < errThresholdSq) {
-
                 // find the required shooter rotation for the provided time of flight
-
-                double ez = 0;
-                double vz = targetCentricMovement.getY();
-                for (double it = 0.0; it < t; it += coarseDt) {
-                    double drag = dragConst * vz * vz;
-                    double az = -drag / weightKg;
-                    vz += az * coarseDt;
-                    ez += vz * coarseDt;
-                }
-
                 double dRotation = Math.toDegrees(Math.atan2(ez, targetX));
 
                 float roundedArrival = Math.round(arrivalAngleDeg * 100.0f) / 100.0f;
                 float bestErr = (float)Math.sqrt(bestErrSq);
                 ballisticCalculatorResults.add(new BallisticCalculatorResultWithRotation(v0, launchDeg, roundedArrival, bestErr, dRotation));
+                break;
             }
-        });
+        }
 
         // convert concurrent queue to list and return
         return new ArrayList<>(ballisticCalculatorResults);
