@@ -34,7 +34,7 @@ public class CartridgeIOReal implements CartridgeIO {
         config = new SparkMaxConfig();
 
         config.idleMode(IdleMode.kBrake)
-                .smartCurrentLimit(STALL_LIMIT)
+                .smartCurrentLimit(CURRENT_LIMIT)
                 .voltageCompensation(VOLTAGE_COMPENSATION)
                 .inverted(INVERTED);
 
