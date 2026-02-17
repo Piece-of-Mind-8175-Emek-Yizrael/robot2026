@@ -18,6 +18,16 @@ public class CartridgeCommands extends Command {
         return Commands.runEnd(() -> cartridge.getIO().setVoltage(voltage), cartridge.getIO()::stop, cartridge);
     }
 
+    public Command setOpenVoltage() {
+        return setVoltage(2).until(cartridge.getIO()::isOuterPressed);
+    }
+
+    public Command setCloseVoltage() {
+        return setVoltage(-5).until(cartridge.getIO()::isInnerPressed);
+    }
+
+
+
     public Command goToPosition(double postion) {
         return new FunctionalCommand(() -> cartridge.getIO().resetPID(),
                 () -> cartridge.getIO().goToPos(postion), bool -> {
