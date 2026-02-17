@@ -19,7 +19,6 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -70,17 +69,20 @@ public class RobotContainer {
 
                         case SIM:
                                 // Sim robot, instantiate physics sim IO implementations
-
-                                SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-
+                                
+                                
                                 swerve = new Swerve(
-                                                new GyroIOSim(this.driveSimulation.getGyroSimulation()),
-                                                new ModuleIOSim(this.driveSimulation.getModules()[0]),
-                                                new ModuleIOSim(this.driveSimulation.getModules()[1]),
-                                                new ModuleIOSim(this.driveSimulation.getModules()[2]),
-                                                new ModuleIOSim(this.driveSimulation.getModules()[3]));
-                                break;
+                                        new GyroIOSim(this.driveSimulation.getGyroSimulation()),
+                                        new ModuleIOSim(this.driveSimulation.getModules()[0]),
+                                        new ModuleIOSim(this.driveSimulation.getModules()[1]),
+                                        new ModuleIOSim(this.driveSimulation.getModules()[2]),
+                                        new ModuleIOSim(this.driveSimulation.getModules()[3]));
+                                        
+                                // driveSimulation = new SwerveDriveSimulation(Swerve.maplesimConfig, new Pose2d());
 
+                                // SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
+                                        break;
+                                        
                         default:
                                 // Replayed robot, disable IO implementations
                                 swerve = null;

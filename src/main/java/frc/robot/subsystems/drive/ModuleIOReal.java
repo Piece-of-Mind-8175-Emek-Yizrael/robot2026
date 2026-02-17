@@ -26,9 +26,9 @@ import static frc.robot.subsystems.drive.DriveConstants.turnPIDMaxInput;
 import static frc.robot.subsystems.drive.DriveConstants.turnPIDMaxOutput;
 import static frc.robot.subsystems.drive.DriveConstants.turnPIDMinInput;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
+import static frc.robot.util.SparkUtil.tryUntilOk;
 import static frc.robot.util.SparkUtil.ifOk;
 import static frc.robot.util.SparkUtil.sparkStickyFault;
-import static frc.robot.util.SparkUtil.tryUntilOk;
 
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
@@ -45,11 +45,13 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+// import com.revrobotics.spark.SparkBase.PersistMode;
+// import com.revrobotics.spark.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -99,7 +101,7 @@ private final Rotation2d zeroRotation;
         turnEncoder = new CANcoder(swerveBaseID + 2 + swerveModuleIDsCount * module);
 
         var encoderConfig = new CANcoderConfiguration();
-        encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
         encoderConfig.MagnetSensor.MagnetOffset = zeroRotation.getRotations();
 
@@ -144,7 +146,7 @@ private final Rotation2d zeroRotation;
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .positionWrappingEnabled(true)
                 .positionWrappingInputRange(turnPIDMinInput, turnPIDMaxInput)
-                .pidf(turnKp, 0.00, turnKd, 0.0).outputRange(-turnPIDMaxOutput, turnPIDMaxOutput);
+                .pid(turnKp, 0.00, turnKd).outputRange(-turnPIDMaxOutput, turnPIDMaxOutput);
 
         turnConfig.signals
                 .primaryEncoderPositionAlwaysOn(true)
@@ -188,7 +190,7 @@ private final Rotation2d zeroRotation;
         sparkStickyFault = false;
         ifOk(
                 turnMotor,
-                () -> (turnMotor.getEncoder().getPosition() % 360),
+                () -> (turnMotor.getEncoder().getPosition() % (Math.PI * 2)),
                 // this::getAbsolutePosition,
                 (value) -> inputs.turnPosition = new Rotation2d(value));
 
@@ -211,10 +213,10 @@ private final Rotation2d zeroRotation;
         drivePositionQueue.clear();
         turnPositionQueue.clear();
 
-        // if (timer.get() >= 10) {
-        //     turnMotor.getEncoder().setPosition(getAbsolutePosition());
-        //     timer.restart();
-        // }
+        if (timer.get() >= 10) {
+            turnMotor.getEncoder().setPosition(getAbsolutePosition());
+            timer.restart();
+        }
     }
 
     @Override
@@ -245,7 +247,7 @@ private final Rotation2d zeroRotation;
         Logger.recordOutput(getModuleString() + "/ks", ks);
         Logger.recordOutput(getModuleString() + "/error", error);
         if (Math.abs(error) > 0.05) {
-            turnController.setReference(setpoint.getRadians(), ControlType.kPosition,
+            turnController.setSetpoint(setpoint.getRadians(), ControlType.kPosition,
                     ClosedLoopSlot.kSlot0, ks, ArbFFUnits.kVoltage);
         } else {
             setTurnOpenLoop(0);

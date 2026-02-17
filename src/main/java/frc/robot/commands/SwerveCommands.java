@@ -1,18 +1,6 @@
 package frc.robot.commands;
 
-import static frc.robot.subsystems.drive.DriveConstants.ALGAE_OUTTAKE_DRIVE_BACK_SPEED;
-import static frc.robot.subsystems.drive.DriveConstants.KD_OMEGA;
-import static frc.robot.subsystems.drive.DriveConstants.KD_XY;
-import static frc.robot.subsystems.drive.DriveConstants.KI_OMEGA;
-import static frc.robot.subsystems.drive.DriveConstants.KI_XY;
-import static frc.robot.subsystems.drive.DriveConstants.KP_OMEGA;
-import static frc.robot.subsystems.drive.DriveConstants.KP_XY;
-import static frc.robot.subsystems.drive.DriveConstants.MAX_ACCELERATION_OMEGA;
-import static frc.robot.subsystems.drive.DriveConstants.MAX_ACCELERATION_XY;
-import static frc.robot.subsystems.drive.DriveConstants.MAX_VELOCETY_OMEGA;
-import static frc.robot.subsystems.drive.DriveConstants.MAX_VELOCETY_XY;
-import static frc.robot.subsystems.drive.DriveConstants.OMEGA_TOLERANCE;
-import static frc.robot.subsystems.drive.DriveConstants.TRANSLATION_TOLERANCE;
+import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -34,15 +22,11 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
-// import frc.robot.Constants.VisionConstants;
-import frc.robot.POM_lib.Joysticks.PomXboxController;
 // import frc.robot.subsystems.Vision.VisionSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.Swerve;
@@ -671,6 +655,8 @@ public class SwerveCommands {
                 Pose2d hubPos = new Pose2d(0, 0, new Rotation2d()); //TODO put hub position
                 double x = hubPos.getX() - drive.getPose().getX();
                 double y = hubPos.getY() - drive.getPose().getY();
+
+                hubPos.getTranslation().getDistance(drive.getPose().getTranslation());
 
                 return Math.sqrt(x * x + y * y);
         }
