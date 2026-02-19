@@ -35,7 +35,7 @@ public class CartridgeTuning {
     }
 
     public double getKs() {
-        return KiTune.get();
+        return KsTune.get();
     }
 
     public double getKg() {
