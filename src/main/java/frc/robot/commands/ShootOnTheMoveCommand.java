@@ -25,6 +25,7 @@ public class ShootOnTheMoveCommand extends Command {
     private final double FEED_SHOOT_VOLTAGE = 0;
     private final double SHOOTER_DEFAULT_SPEED = 10.0; // [m/s]
 
+
     // shooter subsystem
     Shoot shooter;
     ShooterArm shooterArm;

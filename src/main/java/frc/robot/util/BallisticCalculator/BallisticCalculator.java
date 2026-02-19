@@ -51,104 +51,157 @@ public class BallisticCalculator {
     static float[] speeds = LinSpell(8.0f, 12.0f, 20);
     static float[] launchAngles = LinSpell(40.0f, 85.0f, 45);
 
-    public static List<BallisticCalculatorResultWithRotation> calculateForFuel(Translation3d shooterToTarget, Translation2d targetCentricMovement, float minArrival, float maxArrival, BallisticCalculatorMode mode) {
-        return findConstrainedLaunchInMotion(
-                (float)shooterToTarget.getX(),
-                (float)shooterToTarget.getY(),
+    private volatile boolean parametersUpdated = false;
+    private volatile boolean isProcessing = false;
+    private volatile BallisticCalculatorParameters parameters;
+    private volatile BallisticCalculatorResultWithRotation result = null;
+    private Thread processingTread = null;
+
+    private static BallisticCalculator instance;
+
+    public static BallisticCalculator getInstance() {
+        if (instance == null) {
+            instance = new BallisticCalculator();
+        }
+        return instance;
+    }
+
+    public BallisticCalculator() {
+        parameters = new BallisticCalculatorParameters(
+                0.0f,
+                0.0f,
                 0.21f,
                 0.11f,
                 speeds,
                 launchAngles,
                 minArrival,
                 maxArrival,
-                targetCentricMovement,
+                new Translation2d(),
                 BallisticCalculatorMode.ACCURATE
         );
+        processingTread = new Thread(() -> {
+            while(true) {
+                while (!parametersUpdated) ;
+                isProcessing = true;
+                result = findConstrainedLaunchInMotion(parameters);
+                parametersUpdated = false;
+                isProcessing = false;
+            }
+        });
+        processingTread.run();
     }
 
-    public static List<BallisticCalculatorResultWithRotation> calculateForFuel(Translation3d shooterToTarget, Translation2d targetCentricMovement, float minArrival, float maxArrival) {
-        return findConstrainedLaunchInMotion(
-                (float)shooterToTarget.getX(),
-                (float)shooterToTarget.getY(),
-                0.21f,
-                0.11f,
-                speeds,
-                launchAngles,
-                minArrival,
-                maxArrival,
+    public void updateParameters(Translation3d shooterToTarget, Translation2d targetCentricMovement) {
+        if (isProcessing) return;
+        parameters = new BallisticCalculatorParameters(
+                (float) shooterToTarget.getX(),
+                (float) shooterToTarget.getY(),
+                parameters.weightKg(),
+                parameters.radiusM(),
+                parameters.vRange(),
+                parameters.angleRange(),
+                parameters.a1deg(),
+                parameters.a2deg(),
                 targetCentricMovement,
-                BallisticCalculatorMode.ACCURATE
+                parameters.mode()
         );
+        parametersUpdated = true;
     }
 
-    public static List<BallisticCalculatorResultWithRotation> calculateForFuel(Translation3d shooterToTarget, Translation2d targetCentricMovement) {
-        return findConstrainedLaunchInMotion(
-                (float)shooterToTarget.getX(),
-                (float)shooterToTarget.getY(),
-                0.21f,
-                0.11f,
-                speeds,
-                launchAngles,
-                minArrival,
-                maxArrival,
-                targetCentricMovement,
-                BallisticCalculatorMode.ACCURATE
-        );
-    }
 
-    public static List<BallisticCalculatorResultWithRotation> calculateForFuel(Translation3d shooterToTarget, Translation2d targetCentricMovement, BallisticCalculatorMode mode) {
-        return findConstrainedLaunchInMotion(
-                (float)shooterToTarget.getX(),
-                (float)shooterToTarget.getY(),
-                0.21f,
-                0.11f,
-                speeds,
-                launchAngles,
-                minArrival,
-                maxArrival,
-                targetCentricMovement,
-                mode
-        );
-    }
+//    public List<BallisticCalculatorResultWithRotation> calculateForFuel(Translation3d shooterToTarget, Translation2d targetCentricMovement, float minArrival, float maxArrival, BallisticCalculatorMode mode) {
+//        return findConstrainedLaunchInMotion( new BallisticCalculatorParameters(
+//                (float)shooterToTarget.getX(),
+//                (float)shooterToTarget.getY(),
+//                0.21f,
+//                0.11f,
+//                speeds,
+//                launchAngles,
+//                minArrival,
+//                maxArrival,
+//                targetCentricMovement,
+//                BallisticCalculatorMode.ACCURATE
+//        ));
+//    }
+//
+//    public List<BallisticCalculatorResultWithRotation> calculateForFuel(Translation3d shooterToTarget, Translation2d targetCentricMovement, float minArrival, float maxArrival) {
+//        return findConstrainedLaunchInMotion( new BallisticCalculatorParameters(
+//                (float)shooterToTarget.getX(),
+//                (float)shooterToTarget.getY(),
+//                0.21f,
+//                0.11f,
+//                speeds,
+//                launchAngles,
+//                minArrival,
+//                maxArrival,
+//                targetCentricMovement,
+//                BallisticCalculatorMode.ACCURATE
+//        ));
+//    }
+//
+//    public List<BallisticCalculatorResultWithRotation> calculateForFuel(Translation3d shooterToTarget, Translation2d targetCentricMovement) {
+//        return findConstrainedLaunchInMotion( new BallisticCalculatorParameters(
+//                (float)shooterToTarget.getX(),
+//                (float)shooterToTarget.getY(),
+//                0.21f,
+//                0.11f,
+//                speeds,
+//                launchAngles,
+//                minArrival,
+//                maxArrival,
+//                targetCentricMovement,
+//                BallisticCalculatorMode.ACCURATE
+//        ));
+//    }
+//
+//    public List<BallisticCalculatorResultWithRotation> calculateForFuel(Translation3d shooterToTarget, Translation2d targetCentricMovement, BallisticCalculatorMode mode) {
+//        return findConstrainedLaunchInMotion( new BallisticCalculatorParameters(
+//                (float)shooterToTarget.getX(),
+//                (float)shooterToTarget.getY(),
+//                0.21f,
+//                0.11f,
+//                speeds,
+//                launchAngles,
+//                minArrival,
+//                maxArrival,
+//                targetCentricMovement,
+//                mode
+//        ));
+//    }
 
-    private static List<BallisticCalculatorResultWithRotation> findConstrainedLaunchInMotion(
-            float targetX, float targetY,
-            float weightKg, float radiusM,
-            float[] vRange, float[] angleRange,
-            float a1deg, float a2deg,
-            Translation2d targetCentricMovement,
-            BallisticCalculatorMode mode
+    private BallisticCalculatorResultWithRotation findConstrainedLaunchInMotion(
+            BallisticCalculatorParameters params
     ) {
-        if (weightKg <= 0 || radiusM <= 0) {
+        if (params.weightKg() <= 0 || params.radiusM() <= 0) {
             throw new IllegalArgumentException("`weight_kg` and `radius_m` must be positive.");
         }
-        if (vRange == null || vRange.length == 0 || angleRange == null || angleRange.length == 0) {
+        if (params.vRange() == null || params.vRange().length == 0 || params.angleRange() == null || params.angleRange().length == 0) {
             throw new IllegalArgumentException("`v_range` and `angle_range` must be non-empty.");
         }
-        if (targetCentricMovement == null) {
+        if (params.targetCentricMovement() == null) {
             throw new IllegalArgumentException("`target_centric_movement` must be non-empty.");
         }
 
         final float g = 9.81f;
         final float rho = 1.225f;
         final float Cd = 0.48f;
-        final float area = (float)Math.PI * radiusM * radiusM;
+        final float area = (float)Math.PI * params.radiusM() * params.radiusM();
         final float dragConst = 0.5f * rho * Cd * area;
         final float eps = 1e-8f;
         final float errThresholdSq = 0.02f * 0.02f;
 
-        float aLow = Math.min(a1deg, a2deg);
-        float aHigh = Math.max(a1deg, a2deg);
+        float aLow = Math.min(params.a1deg(), params.a2deg());
+        float aHigh = Math.max(params.a1deg(), params.a2deg());
 
-        final int nV = vRange.length;
-        final int nA = angleRange.length;
+        final int nV = params.vRange().length;
+        final int nA = params.angleRange().length;
         final int total = nV * nA;
 
         // precompute trig and flattened initial velocity components
         float[] cosA = new float[nA];
         float[] sinA = new float[nA];
         for (int i = 0; i < nA; i++) {
-            float rad = (float)Math.toRadians(angleRange[i]);
+            float rad = (float)Math.toRadians(params.angleRange()[i]);
             cosA[i] = (float)Math.cos(rad);
             sinA[i] = (float)Math.sin(rad);
         }
@@ -157,22 +210,19 @@ public class BallisticCalculator {
 
         // TODO: check whether the X and Y of the targetCentricMovement are applied at the correct order
         for (int iv = nV - 1; iv >= 0; iv--) {
-            float v0 = vRange[iv];
+            float v0 = params.vRange()[iv];
             int base = iv * nA;
             for (int ia = 0; ia < nA; ia++) {
-                vx0[base + ia] = v0 * cosA[ia] + (float) targetCentricMovement.getX();
+                vx0[base + ia] = v0 * cosA[ia] + (float) params.targetCentricMovement().getX();
                 vy0[base + ia] = v0 * sinA[ia];
             }
         }
 
-        // Concurrent collection for results (safe from parallel workers)
-        ConcurrentLinkedQueue<BallisticCalculatorResultWithRotation> ballisticCalculatorResults = new ConcurrentLinkedQueue<>();
-
         // simulation parameters: coarse then fine
-        final float coarseDt = mode.getCoarseDt();
+        final float coarseDt = params.mode().getCoarseDt();
         final int coarseMaxSteps = 800; // coarse sweep
         final float coarseThresholdSq = 0.06f * 0.06f; // if coarse best below this, refine
-        final float fineDt = mode.getFineDt();
+        final float fineDt = params.mode().getFineDt();
         final int fineMaxSteps = 2000; // refinement window (starting from saved coarse state)
         final float xMargin = 0.5f;
         final float yFloor = -1.0f;
@@ -182,11 +232,11 @@ public class BallisticCalculator {
             float initVy = vy0[idx];
             int iv = idx / nA;
             int ia = idx % nA;
-            float v0 = vRange[iv];
-            float launchDeg = angleRange[ia];
+            float v0 = params.vRange()[iv];
+            float launchDeg = params.angleRange()[ia];
 
             // Quick bounding: if initial vx is tiny and targetX far, skip
-            if (Math.abs(initVx) < eps && Math.abs(targetX) > 1.0) continue;
+            if (Math.abs(initVx) < eps && Math.abs(params.targetX()) > 1.0) continue;
 
             // ---- coarse pass ----
             float vx = initVx;
@@ -201,8 +251,8 @@ public class BallisticCalculator {
                 float v = (float)Math.sqrt(v2);
                 float drag = dragConst * v2;
 
-                float ax = (v > eps) ? -(drag * (vx / v)) / weightKg : 0.0f;
-                float ay = (v > eps) ? -g - (drag * (vy / v)) / weightKg : -g;
+                float ax = (v > eps) ? -(drag * (vx / v)) / params.weightKg() : 0.0f;
+                float ay = (v > eps) ? -g - (drag * (vy / v)) / params.weightKg() : -g;
 
                 vx += ax * coarseDt;
                 vy += ay * coarseDt;
@@ -210,8 +260,8 @@ public class BallisticCalculator {
                 y += vy * coarseDt;
 
 
-                float dx = x - targetX;
-                float dy = y - targetY;
+                float dx = x - params.targetX();
+                float dy = y - params.targetY();
                 float errSq = dx * dx + dy * dy;
                 if (errSq < bestErrSqCoarse) {
                     bestErrSqCoarse = errSq;
@@ -220,7 +270,7 @@ public class BallisticCalculator {
                     savedX = x;
                     savedY = y;
                 }
-                if (y < yFloor || x > targetX + xMargin || (Math.abs(vx) < eps && Math.abs(vy) < eps)) break;
+                if (y < yFloor || x > params.targetX() + xMargin || (Math.abs(vx) < eps && Math.abs(vy) < eps)) break;
             }
 
             // If coarse pass indicates not promising, skip
@@ -236,7 +286,7 @@ public class BallisticCalculator {
             float bestErrSq = Float.POSITIVE_INFINITY;
             float arrivalAngleDeg = Float.NaN;
             
-            double vz = targetCentricMovement.getY();
+            double vz = params.targetCentricMovement().getY();
             double ez = 0;
 
             for (int step = 0; step < fineMaxSteps; step++) {
@@ -244,8 +294,8 @@ public class BallisticCalculator {
                 float v = (float)Math.sqrt(v2);
                 float drag = dragConst * v2;
 
-                float ax = (v > eps) ? -(drag * (vx / v)) / weightKg : 0.0f;
-                float ay = (v > eps) ? -g - (drag * (vy / v)) / weightKg : -g;
+                float ax = (v > eps) ? -(drag * (vx / v)) / params.weightKg() : 0.0f;
+                float ay = (v > eps) ? -g - (drag * (vy / v)) / params.weightKg() : -g;
 
                 vx += ax * fineDt;
                 vy += ay * fineDt;
@@ -253,35 +303,34 @@ public class BallisticCalculator {
                 y += vy * fineDt;
 
                 double dragZ = dragConst * vz * vz;
-                double az = -dragZ / weightKg;
+                double az = -dragZ / params.weightKg();
                 vz += az * fineDt;
                 ez += vz * fineDt;
 
-                float dx = x - targetX;
-                float dy = y - targetY;
+                float dx = x - params.targetX();
+                float dy = y - params.targetY();
                 float errSq = dx * dx + dy * dy;
                 if (errSq < bestErrSq) {
                     bestErrSq = errSq;
                     arrivalAngleDeg = (float)Math.toDegrees(Math.atan2(vy, vx));
                 }
 
-                if (y < yFloor || x > targetX + xMargin || (Math.abs(vx) < eps && Math.abs(vy) < eps)) {
+                if (y < yFloor || x > params.targetX() + xMargin || (Math.abs(vx) < eps && Math.abs(vy) < eps)) {
                     break;
                 }
             }
 
             if (!Double.isNaN(arrivalAngleDeg) && arrivalAngleDeg >= aLow && arrivalAngleDeg <= aHigh && bestErrSq < errThresholdSq) {
                 // find the required shooter rotation for the provided time of flight
-                double dRotation = Math.toDegrees(Math.atan2(ez, targetX));
+                double dRotation = Math.toDegrees(Math.atan2(ez, params.targetX()));
 
                 float roundedArrival = Math.round(arrivalAngleDeg * 100.0f) / 100.0f;
                 float bestErr = (float)Math.sqrt(bestErrSq);
-                ballisticCalculatorResults.add(new BallisticCalculatorResultWithRotation(v0, launchDeg, roundedArrival, bestErr, dRotation));
-                break;
+                return new BallisticCalculatorResultWithRotation(v0, launchDeg, roundedArrival, bestErr, dRotation);
             }
         }
 
         // convert concurrent queue to list and return
-        return new ArrayList<>(ballisticCalculatorResults);
+        return null;
     }
 }
