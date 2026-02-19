@@ -1,13 +1,9 @@
 package frc.robot.util.BallisticCalculator;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.stream.IntStream;
+import java.util.concurrent.locks.Lock;
 
 public class BallisticCalculator {
 
@@ -56,6 +52,7 @@ public class BallisticCalculator {
     private volatile BallisticCalculatorParameters parameters;
     private volatile BallisticCalculatorResultWithRotation result = null;
     private Thread processingTread = null;
+    private volatile Lock resultsLock;
 
     private static BallisticCalculator instance;
 
@@ -80,15 +77,31 @@ public class BallisticCalculator {
                 BallisticCalculatorMode.ACCURATE
         );
         processingTread = new Thread(() -> {
+            BallisticCalculatorResultWithRotation res = null;
             while(true) {
                 while (!parametersUpdated) ;
                 isProcessing = true;
-                result = findConstrainedLaunchInMotion(parameters);
+                res = findConstrainedLaunchInMotion(parameters);
                 parametersUpdated = false;
                 isProcessing = false;
+                while (resultsLock.tryLock()) ;
+                try {
+                    result = res;
+                } finally {
+                    resultsLock.unlock();
+                }
             }
         });
         processingTread.run();
+    }
+
+    public BallisticCalculatorResultWithRotation getLatestResults() {
+        while (resultsLock.tryLock()) ;
+        try {
+            return result;
+        } finally {
+            resultsLock.unlock();
+        }
     }
 
     public void updateParameters(Translation3d shooterToTarget, Translation2d targetCentricMovement) {
@@ -107,67 +120,6 @@ public class BallisticCalculator {
         );
         parametersUpdated = true;
     }
-
-
-//    public List<BallisticCalculatorResultWithRotation> calculateForFuel(Translation3d shooterToTarget, Translation2d targetCentricMovement, float minArrival, float maxArrival, BallisticCalculatorMode mode) {
-//        return findConstrainedLaunchInMotion( new BallisticCalculatorParameters(
-//                (float)shooterToTarget.getX(),
-//                (float)shooterToTarget.getY(),
-//                0.21f,
-//                0.11f,
-//                speeds,
-//                launchAngles,
-//                minArrival,
-//                maxArrival,
-//                targetCentricMovement,
-//                BallisticCalculatorMode.ACCURATE
-//        ));
-//    }
-//
-//    public List<BallisticCalculatorResultWithRotation> calculateForFuel(Translation3d shooterToTarget, Translation2d targetCentricMovement, float minArrival, float maxArrival) {
-//        return findConstrainedLaunchInMotion( new BallisticCalculatorParameters(
-//                (float)shooterToTarget.getX(),
-//                (float)shooterToTarget.getY(),
-//                0.21f,
-//                0.11f,
-//                speeds,
-//                launchAngles,
-//                minArrival,
-//                maxArrival,
-//                targetCentricMovement,
-//                BallisticCalculatorMode.ACCURATE
-//        ));
-//    }
-//
-//    public List<BallisticCalculatorResultWithRotation> calculateForFuel(Translation3d shooterToTarget, Translation2d targetCentricMovement) {
-//        return findConstrainedLaunchInMotion( new BallisticCalculatorParameters(
-//                (float)shooterToTarget.getX(),
-//                (float)shooterToTarget.getY(),
-//                0.21f,
-//                0.11f,
-//                speeds,
-//                launchAngles,
-//                minArrival,
-//                maxArrival,
-//                targetCentricMovement,
-//                BallisticCalculatorMode.ACCURATE
-//        ));
-//    }
-//
-//    public List<BallisticCalculatorResultWithRotation> calculateForFuel(Translation3d shooterToTarget, Translation2d targetCentricMovement, BallisticCalculatorMode mode) {
-//        return findConstrainedLaunchInMotion( new BallisticCalculatorParameters(
-//                (float)shooterToTarget.getX(),
-//                (float)shooterToTarget.getY(),
-//                0.21f,
-//                0.11f,
-//                speeds,
-//                launchAngles,
-//                minArrival,
-//                maxArrival,
-//                targetCentricMovement,
-//                mode
-//        ));
-//    }
 
     private BallisticCalculatorResultWithRotation findConstrainedLaunchInMotion(
             BallisticCalculatorParameters params
