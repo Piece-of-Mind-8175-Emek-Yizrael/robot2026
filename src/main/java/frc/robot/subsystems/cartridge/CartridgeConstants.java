@@ -1,7 +1,7 @@
 package frc.robot.subsystems.cartridge;
 
 public class CartridgeConstants {
-    
+
     public static final int MOTOR_ID = 22;
     public static final int INNER_SWITCH_CHANNEL = 8;
     public static final int OUTER_SWITCH_CHANNEL = 0;
@@ -13,6 +13,9 @@ public class CartridgeConstants {
     public static final double Kp = 0;
     public static final double Ki = 0;
     public static final double Kd = 0;
+    public static final double Ks = 0;
+    public static final double Kg = 0;
+    public static final double Kv = 0;
     public static final double MAX_ACCELERATION = 10;
     public static final double MAX_VELOCITY = 10;
     public static final double TOLERANCE = 0.0;

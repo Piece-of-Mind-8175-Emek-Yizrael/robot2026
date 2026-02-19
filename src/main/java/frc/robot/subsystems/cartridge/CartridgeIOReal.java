@@ -33,7 +33,7 @@ public class CartridgeIOReal implements CartridgeIO {
         outerSwitch = new POMDigitalInput(OUTER_SWITCH_CHANNEL, OUTER_NORMALLY_OPEN);
         pidController = new ProfiledPIDController(Kp, Ki, Kd,
                 new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
-        ff = ElevatorFeedforward();
+        ff = new ElevatorFeedforward(Ks, Kg, Kv);
         tuning = new CartridgeTuning();
         config = new SparkMaxConfig();
 
@@ -96,7 +96,7 @@ public class CartridgeIOReal implements CartridgeIO {
 
     @Override
     public void goToPos(double goal) {
-        motor.setVoltage(pidController.calculate(getPos(), goal));
+        motor.setVoltage(pidController.calculate(getPos(), goal) + ff.calculate(pidController.getSetpoint().velocity));
     }
 
     @Override
@@ -131,6 +131,9 @@ public class CartridgeIOReal implements CartridgeIO {
         pidController.setPID(tuning.getKp(), tuning.getKi(), tuning.getKd());
         pidController
                 .setConstraints(new TrapezoidProfile.Constraints(tuning.getMaxVelocity(), tuning.getMaxAcceleration()));
+        ff.setKs(tuning.getKs());
+        ff.setKg(tuning.getKg());
+        ff.setKv(tuning.getKv());
     }
 
 }
