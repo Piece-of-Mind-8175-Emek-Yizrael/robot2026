@@ -37,11 +37,11 @@ public class CartridgeCommands extends Command {
     }
 
     public Command openCartridge() {
-        return goToPosition(OPEN_CARTRIDGE_POS);
+        return goToPosition(OPEN_CARTRIDGE_POS).until(cartridge.getIO()::isOuterPressed);
     }
 
     public Command closeCartridge() {
-        return goToPosition(CLOSE_CARTRIDGE_POS);
+        return goToPosition(CLOSE_CARTRIDGE_POS).until(cartridge.getIO()::isInnerPressed);
     }
 
 }

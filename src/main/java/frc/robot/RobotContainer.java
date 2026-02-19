@@ -100,8 +100,8 @@ public class RobotContainer {
                 // Default command, normal field-relative drive
                 operatorController.rightTrigger().whileTrue(cartridgeCommands.setOpenVoltage());
                 operatorController.leftTrigger().whileTrue(cartridgeCommands.setCloseVoltage());
-                operatorController.a().onTrue(cartridgeCommands.openCartridge());
-                operatorController.b().onTrue(cartridgeCommands.closeCartridge());
+                operatorController.a().whileTrue(cartridgeCommands.openCartridge());
+                operatorController.b().whileTrue(cartridgeCommands.closeCartridge());
 
         }
 

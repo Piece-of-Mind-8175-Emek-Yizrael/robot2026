@@ -9,6 +9,8 @@ public class CartridgeConstants {
     public static final boolean OUTER_NORMALLY_OPEN = true;
     public static final int CURRENT_LIMIT = 70;
     public static final double VOLTAGE_COMPENSATION = 12;
+    public static final double positionConversionFactor = 1.0 / 2.119;
+    public static final double velocityConversionFactor = positionConversionFactor / 60.0;
     public static final boolean INVERTED = false;
     public static final double Kp = 0;
     public static final double Ki = 0;
@@ -19,6 +21,6 @@ public class CartridgeConstants {
     public static final double MAX_ACCELERATION = 10;
     public static final double MAX_VELOCITY = 10;
     public static final double TOLERANCE = 0.0;
-    public static final double OPEN_CARTRIDGE_POS = 0.0;
+    public static final double OPEN_CARTRIDGE_POS = 1.0;
     public static final double CLOSE_CARTRIDGE_POS = 0.0;
 }

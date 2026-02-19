@@ -42,8 +42,8 @@ public class CartridgeIOReal implements CartridgeIO {
                 .voltageCompensation(VOLTAGE_COMPENSATION)
                 .inverted(INVERTED);
 
-        config.encoder.positionConversionFactor(1.0)
-                .velocityConversionFactor(1.0 / 60.0);
+        config.encoder.positionConversionFactor(positionConversionFactor)
+                .velocityConversionFactor(velocityConversionFactor);
 
         resetIfPressed();
 
