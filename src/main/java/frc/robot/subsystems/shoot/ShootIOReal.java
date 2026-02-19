@@ -38,7 +38,8 @@ public class ShootIOReal implements ShootIO {
     private final SparkMaxConfig feedConfig;
     private final TalonFXConfiguration hoodConfig;
 
-    private double goalHoodVelocity = 0.0;
+    private double rightGoalHoodVelocity = 0.0;
+    private double leftGoalHoodVelocity = 0.0;
 
     private ProfiledPIDController feedController;
 
@@ -77,7 +78,7 @@ public class ShootIOReal implements ShootIO {
         tryUntilOk(5, () -> leftHoodMotor.getConfigurator().apply(hoodConfig, 0.25));
         tryUntilOk(5, () -> rightHoodMotor.getConfigurator().apply(hoodConfig, 0.25));
         
-        leftHoodMotor.setControl(new Follower(rightHoodMotor.getDeviceID(), MotorAlignmentValue.Opposed));
+        // leftHoodMotor.setControl(new Follower(rightHoodMotor.getDeviceID(), MotorAlignmentValue.Opposed));
 
 
         feedConfig
@@ -108,7 +109,7 @@ public class ShootIOReal implements ShootIO {
     @Override
     public void updateInputs(ShootIOInputs inputs) {
         
-        inputs.goalHoodVelocity = goalHoodVelocity;
+        inputs.goalHoodVelocity = leftGoalHoodVelocity;
         
         //left hood motor
         inputs.leftHoodConnected = leftHoodMotor.isConnected();
@@ -132,8 +133,10 @@ public class ShootIOReal implements ShootIO {
 
     @Override
     public void setHoodVoltage(double voltage) {
-        goalHoodVelocity = 0.0;
+        leftGoalHoodVelocity = 0.0;
+        rightGoalHoodVelocity = 0.0;
         rightHoodMotor.setControl(new VoltageOut(voltage));
+        leftHoodMotor.setControl(new VoltageOut(voltage));
     }
 
     @Override
@@ -143,7 +146,8 @@ public class ShootIOReal implements ShootIO {
 
     @Override
     public void stopHood() {
-        goalHoodVelocity = 0.0;
+        leftGoalHoodVelocity = 0.0;
+        rightGoalHoodVelocity = 0.0;
         setHoodVoltage(0);
     }
 
@@ -166,14 +170,17 @@ public class ShootIOReal implements ShootIO {
 
     @Override
     public void setHoodSetpoint(double targetVelocity) {
-        goalHoodVelocity = targetVelocity;
+        leftGoalHoodVelocity = targetVelocity;
+        rightGoalHoodVelocity = targetVelocity;
         rightHoodMotor.setControl(velocityVoltage.withVelocity(targetVelocity));
+        leftHoodMotor.setControl(velocityVoltage.withVelocity(targetVelocity));
     }
 
     @Override
     public boolean atGoalHood() {
-        double currentVelocity = rightHoodMotor.getVelocity().getValueAsDouble();
-        return Math.abs(currentVelocity - goalHoodVelocity) <= hoodTolerance;
+        double leftCurrentVelocity = leftHoodMotor.getVelocity().getValueAsDouble();
+        double rightCurrentVelocity = rightHoodMotor.getVelocity().getValueAsDouble();
+        return Math.abs(leftCurrentVelocity - leftGoalHoodVelocity) <= hoodTolerance && Math.abs(rightCurrentVelocity - rightGoalHoodVelocity) <= hoodTolerance;
     }
 
     @Override
