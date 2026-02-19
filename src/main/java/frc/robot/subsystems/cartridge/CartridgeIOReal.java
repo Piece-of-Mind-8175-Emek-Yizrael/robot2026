@@ -6,6 +6,8 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -20,6 +22,7 @@ public class CartridgeIOReal implements CartridgeIO {
     private final POMDigitalInput innerSwitch;
     private final POMDigitalInput outerSwitch;
     private final ProfiledPIDController pidController;
+    private final ElevatorFeedforward ff;
     private final CartridgeTuning tuning;
     private final SparkMaxConfig config;
 
@@ -30,6 +33,7 @@ public class CartridgeIOReal implements CartridgeIO {
         outerSwitch = new POMDigitalInput(OUTER_SWITCH_CHANNEL, OUTER_NORMALLY_OPEN);
         pidController = new ProfiledPIDController(Kp, Ki, Kd,
                 new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
+        ff = ElevatorFeedforward();
         tuning = new CartridgeTuning();
         config = new SparkMaxConfig();
 
