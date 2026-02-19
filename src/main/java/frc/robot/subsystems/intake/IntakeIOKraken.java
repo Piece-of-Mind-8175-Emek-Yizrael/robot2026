@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import static frc.robot.subsystems.intake.IntakeConstants.CURRENT_LIMIT;
 import static frc.robot.subsystems.intake.IntakeConstants.MOTOR_ID;
+import static frc.robot.subsystems.intake.IntakeConstants.RAMP_RATE;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -20,6 +21,7 @@ public class IntakeIOKraken implements IntakeIO{
         motor = new POMTalonFX(MOTOR_ID);
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         config.CurrentLimits.SupplyCurrentLimit = CURRENT_LIMIT;
+        config.OpenLoopRamps.VoltageOpenLoopRampPeriod =  RAMP_RATE;
         motor.getConfigurator().apply(config);        
     }
 
