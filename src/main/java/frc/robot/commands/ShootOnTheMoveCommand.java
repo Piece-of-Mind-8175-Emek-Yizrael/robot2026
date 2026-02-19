@@ -14,7 +14,7 @@ import frc.robot.subsystems.shoot.Shoot;
 import frc.robot.subsystems.shoot.ShootIO;
 import frc.robot.subsystems.shooterArm.ShooterArm;
 import frc.robot.util.BallisticCalculator.BallisticCalculator;
-import frc.robot.util.BallisticCalculator.BallisticCalculatorResultWithRotation;
+import frc.robot.util.BallisticCalculator.BallisticCalculatorResult;
 
 import java.util.List;
 import java.util.function.DoubleSupplier;
@@ -24,7 +24,6 @@ public class ShootOnTheMoveCommand extends Command {
     // FIXME: switch to using the actual value
     private final double FEED_SHOOT_VOLTAGE = 0;
     private final double SHOOTER_DEFAULT_SPEED = 10.0; // [m/s]
-
 
     // shooter subsystem
     Shoot shooter;
@@ -58,17 +57,6 @@ public class ShootOnTheMoveCommand extends Command {
         
     }
 
-    BallisticCalculatorResultWithRotation chooseTrajectory(List<BallisticCalculatorResultWithRotation> results, double currentVelocity) {
-        BallisticCalculatorResultWithRotation best = null;
-        for (var result : results) {
-            if (best == null || Math.abs(currentVelocity - result.v0()) < Math.abs(currentVelocity - best.v0())) {
-                best = result;
-            }
-        }
-        return best;
-    }
-
-    // TODO: Implement
     @Override
     public void initialize() {
         CommandScheduler.getInstance().schedule(joystickDriveAtAngleCommand);
@@ -89,20 +77,20 @@ public class ShootOnTheMoveCommand extends Command {
         Transform2d posOffset = position.minus(targetPose.toPose2d());
         double angleRadians = Math.atan2(posOffset.getX(), posOffset.getY());
         velocityTranslation = velocityTranslation.rotateBy(Rotation2d.fromRadians(angleRadians));
-        
-        List<BallisticCalculatorResultWithRotation> results = BallisticCalculator.calculateForFuel(translationToTarget, velocityTranslation, BallisticCalculator.BallisticCalculatorMode.FAST); // FIXME: this isn't supposed to be null
 
-        
+
         ShootIO.ShootIOInputs shooterInputs = new ShootIO.ShootIOInputs();
         shooter.getIO().updateInputs(shooterInputs);
 
-        BallisticCalculatorResultWithRotation bestTrajectory = chooseTrajectory(results, (shooterInputs.leftVelocity + shooterInputs.rightVelocity) / 2);
-        shooter.getIO().setHoodSetpoint(bestTrajectory.v0() * 2); // TODO: check the said setPoint is the momentary velocity at the edge of the flywheel
+        BallisticCalculator.getInstance().updateParameters(translationToTarget, velocityTranslation);
+        BallisticCalculatorResult trajectory = BallisticCalculator.getInstance().getLatestResults();
 
-        rotationSupplier = () -> swerve.getRotation().plus(Rotation2d.fromDegrees(bestTrajectory.dRobotAngle()));
+        shooter.getIO().setHoodSetpoint(trajectory.v0() * 2); // TODO: check the said setPoint is the momentary velocity at the edge of the flywheel
+
+        rotationSupplier = () -> swerve.getRotation().plus(Rotation2d.fromDegrees(trajectory.dRobotAngle()));
         
         // TODO: see if the global angle is needed or a more detailed angle
-        shooterArm.getIO().setGoal(bestTrajectory.launchAngle());
+        shooterArm.getIO().setGoal(trajectory.launchAngle());
 
         // TODO: consider the robot's movement and see if the current rotation is good
         if (shooter.getIO().atGoalHood() && shooterArm.getIO().atGoal()) {

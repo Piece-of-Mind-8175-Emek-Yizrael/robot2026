@@ -50,7 +50,7 @@ public class BallisticCalculator {
     private volatile boolean parametersUpdated = false;
     private volatile boolean isProcessing = false;
     private volatile BallisticCalculatorParameters parameters;
-    private volatile BallisticCalculatorResultWithRotation result = null;
+    private volatile BallisticCalculatorResult result = null;
     private Thread processingTread = null;
     private volatile Lock resultsLock;
 
@@ -77,7 +77,7 @@ public class BallisticCalculator {
                 BallisticCalculatorMode.ACCURATE
         );
         processingTread = new Thread(() -> {
-            BallisticCalculatorResultWithRotation res = null;
+            BallisticCalculatorResult res = null;
             while(true) {
                 while (!parametersUpdated) ;
                 isProcessing = true;
@@ -95,7 +95,7 @@ public class BallisticCalculator {
         processingTread.run();
     }
 
-    public BallisticCalculatorResultWithRotation getLatestResults() {
+    public BallisticCalculatorResult getLatestResults() {
         while (resultsLock.tryLock()) ;
         try {
             return result;
@@ -121,7 +121,7 @@ public class BallisticCalculator {
         parametersUpdated = true;
     }
 
-    private BallisticCalculatorResultWithRotation findConstrainedLaunchInMotion(
+    private BallisticCalculatorResult findConstrainedLaunchInMotion(
             BallisticCalculatorParameters params
     ) {
         if (params.weightKg() <= 0 || params.radiusM() <= 0) {
@@ -278,7 +278,7 @@ public class BallisticCalculator {
 
                 float roundedArrival = Math.round(arrivalAngleDeg * 100.0f) / 100.0f;
                 float bestErr = (float)Math.sqrt(bestErrSq);
-                return new BallisticCalculatorResultWithRotation(v0, launchDeg, roundedArrival, bestErr, dRotation);
+                return new BallisticCalculatorResult(v0, launchDeg, roundedArrival, bestErr, dRotation);
             }
         }
 
