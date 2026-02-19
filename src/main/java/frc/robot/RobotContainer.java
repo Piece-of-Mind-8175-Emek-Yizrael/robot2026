@@ -94,7 +94,10 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                operatorController.a().whileTrue(new ShootCommands(shoot).setVoltage(7.0,-4.0));
+                operatorController.a().whileTrue(new ShootCommands(shoot).setSetHoodVelocity(7.0));
+                operatorController.b().whileTrue(new ShootCommands(shoot).setSetHoodVelocity(0));
+                operatorController.x().whileTrue(new ShootCommands(shoot).setSetFeedVelocity(4));
+                operatorController.y().whileTrue(new ShootCommands(shoot).setSetFeedVelocity(0));
                 
         }
 
