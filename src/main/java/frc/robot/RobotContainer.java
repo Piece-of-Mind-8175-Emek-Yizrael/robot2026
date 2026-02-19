@@ -105,8 +105,6 @@ public class RobotContainer {
                 operatorController.y().whileTrue(new ShootCommands(shoot).setVoltage(7.0, -6.0));
                 // operatorController.y().whileTrue(new ShootCommands(shoot).setFeedVoltage(-6.0));
                 operatorController.b().whileTrue(new ShootCommands(shoot).setHoodVoltage(7.0));
-
-                
         }
 
         public void displaSimFieldToAdvantageScope() {
