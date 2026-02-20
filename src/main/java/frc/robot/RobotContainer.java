@@ -26,6 +26,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Commands.IntakeCommands;
 import frc.robot.Commands.ShootCommands;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
+import frc.robot.commands.TransferCommands;
+import frc.robot.subsystems.transfer.Transfer;
+import frc.robot.subsystems.transfer.TransferIOReal;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIOKraken;
 import frc.robot.subsystems.shoot.Shoot;
@@ -77,7 +80,6 @@ public class RobotContainer {
                                 intake = null;
                                 shoot = null;
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-
                                 break;
 
                         default:
