@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.Commands;
 
 import static frc.robot.subsystems.transfer.TransferConstants.*;
 
@@ -7,16 +7,22 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.transfer.Transfer;
 
 public class TransferCommands {
-    public Command setVoltage(Transfer subsystem, double voltage) {
-        return Commands.runEnd(() -> subsystem.getIO().setVoltage(voltage), () -> subsystem.getIO().setVoltage(0), subsystem);
+
+    private Transfer transfer;
+
+    public TransferCommands(Transfer transfer){
+        this.transfer = transfer;
+    }
+    public Command setVoltage() {
+        return Commands.runEnd(() -> transfer.getIO().setVoltage(TRANSFER_SPEED), () -> transfer.getIO().setVoltage(0), transfer);
     }
 
-    public Command stopMotor(Transfer subsystem) {
-        return Commands.runOnce(() -> subsystem.getIO().setVoltage(0));
+    public Command stopMotor() {
+        return Commands.runOnce(() -> transfer.getIO().setVoltage(0));
     }
 
-    public Command toggleTransfer(Transfer subsystem, boolean on) {
-        if (on) return Commands.runOnce(() -> subsystem.getIO().setVelocity(TRANSFER_SPEED));
-        return Commands.runOnce(() -> subsystem.getIO().setVelocity(0));
+    public Command toggleTransfer(boolean on) {
+        if (on) return Commands.runOnce(() -> transfer.getIO().setVelocity(TRANSFER_SPEED));
+        return Commands.runOnce(() -> transfer.getIO().setVelocity(0));
     }
 }

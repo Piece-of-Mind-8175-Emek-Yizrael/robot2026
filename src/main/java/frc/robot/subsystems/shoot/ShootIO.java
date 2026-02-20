@@ -58,7 +58,7 @@ public interface ShootIO {
     public default void setHoodSetpoint(double goal){
     }
 
-    public default boolean atGoalHood(boolean reset){
+    public default boolean atGoalHood(){
         return false;
     }
 
@@ -67,6 +67,10 @@ public interface ShootIO {
 
     public default boolean atGoalFeed(){
         return false;
+    }
+
+    public default void resetCommand(){
+
     }
     
 }

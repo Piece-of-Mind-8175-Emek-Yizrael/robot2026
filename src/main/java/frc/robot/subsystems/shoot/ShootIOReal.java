@@ -42,9 +42,11 @@ public class ShootIOReal implements ShootIO {
     private double rightGoalHoodVelocity = 0.0;
     private double leftGoalHoodVelocity = 0.0;
     private double feedGoalVelocity = 0.0;
-
+    boolean leftAtGoal = false;
+    boolean rightAtGoal = false;
+    
     private ProfiledPIDController feedController;
-
+    
     private final VelocityVoltage velocityVoltage = new VelocityVoltage(0.0);
 
     public ShootIOReal() {
@@ -124,7 +126,7 @@ public class ShootIOReal implements ShootIO {
 
     @Override
     public void updateInputs(ShootIOInputs inputs) {  
-        inputs.bothAtGoal = atGoalHood(false);
+        inputs.bothAtGoal = atGoalHood();
         
         //left hood motor
         inputs.leftHoodConnected = leftHoodMotor.isConnected();
@@ -200,11 +202,12 @@ public class ShootIOReal implements ShootIO {
     }
 
     @Override
-    public boolean atGoalHood(boolean reset) {//FIXME not working after one use
+    public boolean atGoalHood() {//FIXME not working after one use
+        if(rightAtGoal || leftAtGoal){
+
+        }
         double leftCurrentVelocity = leftHoodMotor.getVelocity().getValueAsDouble();
         double rightCurrentVelocity = rightHoodMotor.getVelocity().getValueAsDouble();
-        boolean leftAtGoal = reset;
-        boolean rightAtGoal = reset;
         if(Math.abs(leftCurrentVelocity - leftGoalHoodVelocity) <= hoodTolerance && !leftAtGoal){
             leftAtGoal = true;
         }
@@ -225,5 +228,11 @@ public class ShootIOReal implements ShootIO {
     @Override
     public boolean atGoalFeed() {
         return feedController.atGoal();
+    }
+
+    @Override
+    public void resetCommand() {
+        leftAtGoal = false;
+        rightAtGoal = false;
     }
 }

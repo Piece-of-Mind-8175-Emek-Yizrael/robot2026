@@ -25,14 +25,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Commands.IntakeCommands;
 import frc.robot.Commands.ShootCommands;
+import frc.robot.Commands.TransferCommands;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
-import frc.robot.commands.TransferCommands;
-import frc.robot.subsystems.transfer.Transfer;
-import frc.robot.subsystems.transfer.TransferIOReal;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIOKraken;
 import frc.robot.subsystems.shoot.Shoot;
 import frc.robot.subsystems.shoot.ShootIOReal;
+import frc.robot.subsystems.transfer.Transfer;
+import frc.robot.subsystems.transfer.TransferIOReal;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -47,10 +47,12 @@ public class RobotContainer {
         // Subsystems
         private Intake intake;
         private Shoot shoot;
+        private Transfer transfer;
 
         // Commands
         ShootCommands ShootCommands;
         IntakeCommands intakeCommands;
+        TransferCommands TransferCommands;
 
         // Controller
         private final PS5Controller driverController = new PS5Controller(0);
@@ -69,9 +71,12 @@ public class RobotContainer {
                         case REAL:
                         intake = new Intake(new IntakeIOKraken());
                         shoot = new Shoot(new ShootIOReal());
+                        transfer = new Transfer(new TransferIOReal());
 
                         ShootCommands = new ShootCommands(shoot);
                         intakeCommands = new IntakeCommands(intake);
+                        TransferCommands = new TransferCommands(transfer);
+                        
                                 // Real robot, instantiate hardware IO implementations
                                 break;
 
@@ -79,6 +84,7 @@ public class RobotContainer {
                                 // Sim robot, instantiate physics sim IO implementations
                                 intake = null;
                                 shoot = null;
+                                transfer = null;
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
                                 break;
 
@@ -86,6 +92,7 @@ public class RobotContainer {
                                 // Replayed robot, disable IO implementations
                                 intake = null;
                                 shoot = null;
+                                transfer = null;
                                 break;
                 }
 
@@ -105,6 +112,7 @@ public class RobotContainer {
          * created by
          * instantiating a {@link GenericHID} or one of its subclasses ({@link
          * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+         * 
          * it to a {@link
          * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
          */
@@ -112,6 +120,7 @@ public class RobotContainer {
                 // Default command, normal field-relative drive
                 operatorController.a().whileTrue(ShootCommands.setHoodGoal(50));
                 operatorController.b().whileTrue(intakeCommands.intake());
+                operatorController.y().whileTrue(TransferCommands.setVoltage());
                 
         }
 

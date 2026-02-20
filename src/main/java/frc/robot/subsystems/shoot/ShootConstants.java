@@ -39,7 +39,7 @@ public class ShootConstants {
     public static final double maxVelocityFeed = 35.0;
     public static final double feedTolerance = 0.2; //rotations per second
     
-    public static final double hoodTolerance = 0.2; //rotations per second
+    public static final double hoodTolerance = 2; //rotations per second
 
     public static final double FEED_SHOOT_SETPOINT = 1.0; //rotations per second
 }
