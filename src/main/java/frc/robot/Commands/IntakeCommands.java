@@ -14,16 +14,16 @@ public class IntakeCommands {
         this.intake = intake;
     }
 
-    public Command intake(double volts){ 
+    public Command intake(){ 
         return Commands.runEnd(
-            () -> intake.getIO().setVoltage(volts) ,
+            () -> intake.getIO().setVoltage(4) ,
             () -> intake.getIO().stopMotor(), 
             intake);
     }
 
-    public Command outake(double volts){ {
+    public Command outake(){ {
         return Commands.runEnd(
-            () -> intake.getIO().setVoltage(volts),
+            () -> intake.getIO().setVoltage(-4),
             () -> intake.getIO().stopMotor(),
             intake);
     }

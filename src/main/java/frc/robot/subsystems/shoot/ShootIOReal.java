@@ -211,7 +211,7 @@ public class ShootIOReal implements ShootIO {
         if(Math.abs(rightCurrentVelocity - rightGoalHoodVelocity) <= hoodTolerance && !rightAtGoal){
             rightAtGoal = true;
         }
-        return rightAtGoal /*&& leftAtGoal*/;
+        return /*rightAtGoal && */leftAtGoal;
     }
 
     @Override
