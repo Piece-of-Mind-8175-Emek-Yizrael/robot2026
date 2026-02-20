@@ -68,7 +68,7 @@ public class ShootCommands {
 
             @Override
             public void execute() {
-                if(shoot.getIO().atGoalHood() && !feedStarted) {
+                if(shoot.getIO().atGoalHood(false) && !feedStarted) {
                     // shoot.getIO().setFeedSetpoint(FEED_SHOOT_SETPOINT);
                     shoot.getIO().setFeedVoltage(12);
                     

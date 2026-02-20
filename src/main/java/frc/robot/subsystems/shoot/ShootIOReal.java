@@ -124,7 +124,7 @@ public class ShootIOReal implements ShootIO {
 
     @Override
     public void updateInputs(ShootIOInputs inputs) {  
-        inputs.bothAtGoal = atGoalHood();
+        inputs.bothAtGoal = atGoalHood(false);
         
         //left hood motor
         inputs.leftHoodConnected = leftHoodMotor.isConnected();
@@ -200,18 +200,18 @@ public class ShootIOReal implements ShootIO {
     }
 
     @Override
-    public boolean atGoalHood() {//TODO check for both
+    public boolean atGoalHood(boolean reset) {//FIXME not working after one use
         double leftCurrentVelocity = leftHoodMotor.getVelocity().getValueAsDouble();
         double rightCurrentVelocity = rightHoodMotor.getVelocity().getValueAsDouble();
-        boolean leftAtGoal = false;
-        boolean rightAtGoal = false;
+        boolean leftAtGoal = reset;
+        boolean rightAtGoal = reset;
         if(Math.abs(leftCurrentVelocity - leftGoalHoodVelocity) <= hoodTolerance && !leftAtGoal){
             leftAtGoal = true;
         }
         if(Math.abs(rightCurrentVelocity - rightGoalHoodVelocity) <= hoodTolerance && !rightAtGoal){
             rightAtGoal = true;
         }
-        return /*rightAtGoal && */leftAtGoal;
+        return rightAtGoal && leftAtGoal;
     }
 
     @Override
