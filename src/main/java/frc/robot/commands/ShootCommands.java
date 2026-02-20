@@ -13,12 +13,21 @@ public class ShootCommands {
     public ShootCommands(Shoot shoot){
         this.shoot = shoot;
     }
+
     public Command setVoltage(double hoodVoltage, double feedVoltage) {
         return Commands.runEnd(
             () -> shoot.getIO().setBoth(hoodVoltage, feedVoltage),
             shoot.getIO()::stopBoth,
             shoot
             ).withName("set voltage both");
+    }
+
+    public Command setFeedVoltage(double feedVoltage) {
+        return Commands.runEnd(
+            () -> shoot.getIO().setFeedVoltage(feedVoltage),
+            shoot.getIO()::stopFeed,
+            shoot
+            ).withName("set feed both");
     }
 
     public Command stopBoth() {
@@ -59,7 +68,9 @@ public class ShootCommands {
             @Override
             public void execute() {
                 if(shoot.getIO().atGoalHood() && !feedStarted) {
-                    shoot.getIO().setFeedSetpoint(FEED_SHOOT_SETPOINT);
+                    // shoot.getIO().setFeedSetpoint(FEED_SHOOT_SETPOINT);
+                    shoot.getIO().setFeedVoltage(12);
+                    
                     feedStarted = true;
                 }
             }

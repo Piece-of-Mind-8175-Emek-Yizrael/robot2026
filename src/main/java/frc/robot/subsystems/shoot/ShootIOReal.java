@@ -36,10 +36,12 @@ public class ShootIOReal implements ShootIO {
     private final RelativeEncoder encoder;
 
     private final SparkMaxConfig feedConfig;
-    private final TalonFXConfiguration hoodConfig;
+    private final TalonFXConfiguration hoodRightConfig;
+    private final TalonFXConfiguration hoodLeftConfig;
 
     private double rightGoalHoodVelocity = 0.0;
     private double leftGoalHoodVelocity = 0.0;
+    private double feedGoalVelocity = 0.0;
 
     private ProfiledPIDController feedController;
 
@@ -50,40 +52,54 @@ public class ShootIOReal implements ShootIO {
         rightHoodMotor = new POMTalonFX(RIGHT_HOOD_MOTOR_ID);
         feedMotor = new POMSparkMax(FEED_MOTOR_ID);
         encoder = feedMotor.getEncoder();
-
-        hoodConfig = new TalonFXConfiguration();
-        feedConfig = new SparkMaxConfig();
-
-        Slot0Configs hoodSlot0 = new Slot0Configs()
-        .withKV(kvHood).withKS(ksHood).withKP(kpHood).withKI(kiHood).withKD(kdHood);
-
-        feedController = new ProfiledPIDController(kpFeed, kiFeed, kdFeed,
-                        new TrapezoidProfile.Constraints(maxVelocityFeed, maxAccelerationFeed));
-
-        feedController.setTolerance(feedTolerance);
-    
-
-        hoodConfig.Slot0 = hoodSlot0;
-
-        hoodConfig.Feedback.SensorToMechanismRatio = hoodGearRatio;
-        hoodConfig.TorqueCurrent.PeakForwardTorqueCurrent = slipCurrent;
-        hoodConfig.TorqueCurrent.PeakReverseTorqueCurrent = -slipCurrent;
-        hoodConfig.CurrentLimits.StatorCurrentLimit = slipCurrent;
-        hoodConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        hoodConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = rampRate;
-        hoodConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = rampRate;
-        hoodConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        hoodConfig.MotorOutput.withInverted(HOOD_DIRECTION);
-
-        tryUntilOk(5, () -> leftHoodMotor.getConfigurator().apply(hoodConfig, 0.25));
-        tryUntilOk(5, () -> rightHoodMotor.getConfigurator().apply(hoodConfig, 0.25));
+        
+        //right hood
+        hoodRightConfig = new TalonFXConfiguration();
+        Slot0Configs rightHoodSlot0 = new Slot0Configs()
+        .withKV(kvRightHood).withKS(ksRightHood).withKP(kpRightHood).withKI(kiRightHood).withKD(kdRightHood);
+        
+        hoodRightConfig.Slot0 = rightHoodSlot0;
+        hoodRightConfig.Feedback.SensorToMechanismRatio = hoodGearRatio;
+        hoodRightConfig.TorqueCurrent.PeakForwardTorqueCurrent = slipCurrent;
+        hoodRightConfig.TorqueCurrent.PeakReverseTorqueCurrent = -slipCurrent;
+        hoodRightConfig.CurrentLimits.StatorCurrentLimit = slipCurrent;
+        hoodRightConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        hoodRightConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = rampRate;
+        hoodRightConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = rampRate;
+        hoodRightConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        hoodRightConfig.MotorOutput.withInverted(RIGHT_HOOD_DIRECTION);
+        
+        
+        //left hood
+        hoodLeftConfig = new TalonFXConfiguration();
+        Slot0Configs leftHoodSlot0 = new Slot0Configs()
+        .withKV(kvLeftHood).withKS(ksLeftHood).withKP(kpLeftHood).withKI(kiLeftHood).withKD(kdLefthHood);
+        
+        hoodLeftConfig.Slot0 = leftHoodSlot0;
+        hoodLeftConfig.Feedback.SensorToMechanismRatio = hoodGearRatio;
+        hoodLeftConfig.TorqueCurrent.PeakForwardTorqueCurrent = slipCurrent;
+        hoodLeftConfig.TorqueCurrent.PeakReverseTorqueCurrent = -slipCurrent;
+        hoodLeftConfig.CurrentLimits.StatorCurrentLimit = slipCurrent;
+        hoodLeftConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        hoodLeftConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = rampRate;
+        hoodLeftConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = rampRate;
+        hoodLeftConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        hoodLeftConfig.MotorOutput.withInverted(LEFT_HOOD_DIRECTION);
+        
+        tryUntilOk(5, () -> leftHoodMotor.getConfigurator().apply(hoodLeftConfig, 0.25));
+        tryUntilOk(5, () -> rightHoodMotor.getConfigurator().apply(hoodRightConfig, 0.25));
         
         // leftHoodMotor.setControl(new Follower(rightHoodMotor.getDeviceID(), MotorAlignmentValue.Opposed));
-
-
+        
+        //feed config
+        feedConfig = new SparkMaxConfig();
+        feedController = new ProfiledPIDController(kpFeed, kiFeed, kdFeed,
+        new TrapezoidProfile.Constraints(maxVelocityFeed, maxAccelerationFeed));
+        feedController.setTolerance(feedTolerance);
+        
         feedConfig
-                .idleMode(IdleMode.kBrake)
-                .smartCurrentLimit(feedCurrentLimit)
+        .idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(feedCurrentLimit)
                 .voltageCompensation(12.0)
                 .openLoopRampRate(rampRate)
                 .closedLoopRampRate(rampRate)
@@ -107,27 +123,32 @@ public class ShootIOReal implements ShootIO {
     }
 
     @Override
-    public void updateInputs(ShootIOInputs inputs) {
-        
-        inputs.goalHoodVelocity = leftGoalHoodVelocity;
+    public void updateInputs(ShootIOInputs inputs) {  
+        inputs.bothAtGoal = atGoalHood();
         
         //left hood motor
         inputs.leftHoodConnected = leftHoodMotor.isConnected();
         inputs.leftVoltage = leftHoodMotor.getMotorVoltage().getValueAsDouble();
         inputs.leftVelocity = leftHoodMotor.getVelocity().getValueAsDouble();
         inputs.leftAppliedVoltage = leftHoodMotor.getMotorVoltage().getValueAsDouble() * leftHoodMotor.getDutyCycle().getValueAsDouble();
-
+        inputs.leftAtGoal = Math.abs(leftHoodMotor.getVelocity().getValueAsDouble() - leftGoalHoodVelocity) <= hoodTolerance;
+        inputs.leftGoal = leftGoalHoodVelocity;
+        
         //right hood motor
         inputs.rightHoodConnected = rightHoodMotor.isConnected();
         inputs.rightVoltage = rightHoodMotor.getMotorVoltage().getValueAsDouble();
         inputs.rightVelocity = rightHoodMotor.getVelocity().getValueAsDouble();
         inputs.rightAppliedVoltage = rightHoodMotor.getMotorVoltage().getValueAsDouble() * rightHoodMotor.getDutyCycle().getValueAsDouble();
+        inputs.rightAtGoal = Math.abs(rightHoodMotor.getVelocity().getValueAsDouble() - rightGoalHoodVelocity) <= hoodTolerance;
+        inputs.rightGoal = rightGoalHoodVelocity;
 
         //transfer motor
         inputs.feedConnected = feedMotor.getFirmwareVersion() != 0;
-        inputs.feedVoltage = feedMotor.getBusVoltage();
+        inputs.feedAppliedVoltage = feedMotor.getAppliedOutput();
         inputs.feedVelocity = encoder.getVelocity();
-        inputs.feedAppliedVoltage = feedMotor.getAppliedOutput() * feedMotor.getBusVoltage();
+        inputs.feedVoltage = feedMotor.getAppliedOutput() * feedMotor.getBusVoltage();
+        inputs.feedAtGoal = feedController.atGoal();
+        inputs.feedGoal = feedGoalVelocity;
 
     }
 
@@ -141,6 +162,7 @@ public class ShootIOReal implements ShootIO {
 
     @Override
     public void setFeedVoltage(double voltage) {
+        feedGoalVelocity = 0.0;
         feedMotor.setVoltage(voltage);
     }
 
@@ -153,6 +175,7 @@ public class ShootIOReal implements ShootIO {
 
     @Override
     public void stopFeed() {
+        feedGoalVelocity = 0.0;
         setFeedVoltage(0);
     }
 
@@ -177,14 +200,23 @@ public class ShootIOReal implements ShootIO {
     }
 
     @Override
-    public boolean atGoalHood() {
+    public boolean atGoalHood() {//TODO check for both
         double leftCurrentVelocity = leftHoodMotor.getVelocity().getValueAsDouble();
         double rightCurrentVelocity = rightHoodMotor.getVelocity().getValueAsDouble();
-        return Math.abs(leftCurrentVelocity - leftGoalHoodVelocity) <= hoodTolerance && Math.abs(rightCurrentVelocity - rightGoalHoodVelocity) <= hoodTolerance;
+        boolean leftAtGoal = false;
+        boolean rightAtGoal = false;
+        if(Math.abs(leftCurrentVelocity - leftGoalHoodVelocity) <= hoodTolerance && !leftAtGoal){
+            leftAtGoal = true;
+        }
+        if(Math.abs(rightCurrentVelocity - rightGoalHoodVelocity) <= hoodTolerance && !rightAtGoal){
+            rightAtGoal = true;
+        }
+        return rightAtGoal /*&& leftAtGoal*/;
     }
 
     @Override
     public void setFeedSetpoint(double goal) {
+        feedGoalVelocity = goal;
         feedController.setGoal(goal);
         feedMotor.setVoltage(feedController.calculate(encoder.getVelocity()));
     }
