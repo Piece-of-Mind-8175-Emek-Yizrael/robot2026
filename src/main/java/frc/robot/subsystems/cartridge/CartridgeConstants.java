@@ -7,7 +7,7 @@ public class CartridgeConstants {
     public static final int OUTER_SWITCH_CHANNEL = 0;
     public static final boolean INNER_NORMALLY_OPEN = false;
     public static final boolean OUTER_NORMALLY_OPEN = true;
-    public static final int CURRENT_LIMIT = 80;
+    public static final int CURRENT_LIMIT = 90;
     public static final double VOLTAGE_COMPENSATION = 12;
     public static final double positionConversionFactor = 1.0 / 2.119;
     public static final double velocityConversionFactor = positionConversionFactor / 60.0;
