@@ -63,6 +63,7 @@ public class ShootCommands {
 
             @Override
             public void initialize() {
+                feedStarted = false;
                 shoot.getIO().setHoodSetpoint(goal);
             }
 
