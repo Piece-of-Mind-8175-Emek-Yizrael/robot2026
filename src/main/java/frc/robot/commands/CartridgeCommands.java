@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -43,5 +43,9 @@ public class CartridgeCommands extends Command {
     public Command closeCartridge() {
         return goToPosition(CLOSE_CARTRIDGE_POS).until(cartridge.getIO()::isInnerPressed).withName("close cartridge");
     }
+
+    // public Command openAndCloseCartridge(){
+        
+    // }
 
 }

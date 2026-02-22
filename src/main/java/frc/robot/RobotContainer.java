@@ -33,7 +33,7 @@ import frc.robot.subsystems.shoot.Shoot;
 import frc.robot.subsystems.shoot.ShootIOReal;
 import frc.robot.subsystems.transfer.Transfer;
 import frc.robot.subsystems.transfer.TransferIOReal;
-import frc.robot.commands.CartridgeCommands;
+import frc.robot.Commands.CartridgeCommands;
 import frc.robot.subsystems.cartridge.Cartridge;
 import frc.robot.subsystems.cartridge.CartridgeIOReal;
 import org.ironmaple.simulation.SimulatedArena;
@@ -54,11 +54,14 @@ public class RobotContainer {
         private Intake intake;
         private Shoot shoot;
         private Transfer transfer;
+        private Cartridge cartridge;
 
         // Commands
-        ShootCommands ShootCommands;
-        IntakeCommands intakeCommands;
-        TransferCommands TransferCommands;
+        private ShootCommands shootCommands;
+        private IntakeCommands intakeCommands;
+        private TransferCommands transferCommands;
+        private CartridgeCommands cartridgeCommands;
+
 
         
         // Controller
@@ -79,10 +82,14 @@ public class RobotContainer {
                         intake = new Intake(new IntakeIOKraken());
                         shoot = new Shoot(new ShootIOReal());
                         transfer = new Transfer(new TransferIOReal());
+                        cartridge = new Cartridge(new CartridgeIOReal());
+                        
+                        
 
-                        ShootCommands = new ShootCommands(shoot);
+                        shootCommands = new ShootCommands(shoot);
                         intakeCommands = new IntakeCommands(intake);
-                        TransferCommands = new TransferCommands(transfer);
+                        transferCommands = new TransferCommands(transfer);
+                        cartridgeCommands = new CartridgeCommands(cartridge);
                         
                                 // Real robot, instantiate hardware IO implementations
                                 break;
@@ -92,6 +99,7 @@ public class RobotContainer {
                                 intake = null;
                                 shoot = null;
                                 transfer = null;
+                                cartridge = null;
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
                                 break;
 
@@ -100,6 +108,7 @@ public class RobotContainer {
                                 intake = null;
                                 shoot = null;
                                 transfer = null;
+                                cartridge = null;
                                 break;
                 }
 
@@ -125,9 +134,12 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                operatorController.a().whileTrue(ShootCommands.setHoodGoal(50));
+                operatorController.a().whileTrue(shootCommands.setHoodGoal(50));
                 operatorController.b().whileTrue(intakeCommands.intake());
-                operatorController.y().whileTrue(TransferCommands.setVoltage());
+                // operatorController.y().whileTrue(transferCommands.setVoltage());
+                operatorController.y().whileTrue(cartridgeCommands.openCartridge());
+                operatorController.x().whileTrue(cartridgeCommands.closeCartridge());
+
                 
         }
 
