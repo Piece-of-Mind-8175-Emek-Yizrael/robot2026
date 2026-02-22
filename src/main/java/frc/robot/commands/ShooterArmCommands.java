@@ -8,10 +8,10 @@ import frc.robot.subsystems.shooterArm.ShooterArm;
 import frc.robot.subsystems.shooterArm.ShooterArmIO;
 
 public class ShooterArmCommands {
-    
+
     public Command setVoltage(double voltage, ShooterArm arm) {
         return Commands.startEnd(() -> arm.getIO().setVoltage(voltage),
-                                arm.getIO()::stopMotor, arm);
+                arm.getIO()::stopMotor, arm);
     }
 
     public Command goToPosition(double position, ShooterArm arm) {
@@ -28,7 +28,7 @@ public class ShooterArmCommands {
 
             @Override
             public void end(boolean interrupted) {
-                arm.getIO().stopMotor();//TODO decide if we want to stop motor or hold position
+                arm.getIO().stopMotor();// TODO decide if we want to stop motor or hold position
             }
 
             @Override
@@ -44,5 +44,9 @@ public class ShooterArmCommands {
 
     public Command openArm(ShooterArm arm) {
         return goToPosition(OPEN_POS, arm);
+    }
+
+    public Command ressistGravity(ShooterArm arm) {
+        return Commands.run(() -> arm.getIO().resistGravity(), arm);
     }
 }

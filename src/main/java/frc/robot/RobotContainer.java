@@ -82,7 +82,7 @@ public class RobotContainer {
                 autoChooser = new LoggedDashboardChooser<>("Auto Choices", c); // TODO use auto builder
 
                 // Set up SysId routines
-                
+
                 // Configure the button bindings
                 configureButtonBindings();
         }
@@ -90,7 +90,7 @@ public class RobotContainer {
         /**
          * Use this method to define your button->command mappings. Buttons can be
          * created by
-         * instantiating a {@link GenericHID} or one of its 
+         * instantiating a {@link GenericHID} or one of its
          * subclasses ({@link
          * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
          * it to a {@link
@@ -98,9 +98,13 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                operatorController.a().whileTrue(new ShooterArmCommands().setVoltage(2.0, arm));
-                operatorController.y().whileTrue(new ShooterArmCommands().setVoltage(-2.0, arm));
-                
+                operatorController.RB().whileTrue(new ShooterArmCommands().setVoltage(1.0, arm));
+                operatorController.LB().whileTrue(new ShooterArmCommands().setVoltage(-1.0, arm));
+                operatorController.rightTrigger().whileTrue(new ShooterArmCommands().setVoltage(2.5, arm));
+                operatorController.leftTrigger().whileTrue(new ShooterArmCommands().setVoltage(-2.0, arm));
+                operatorController.a().whileTrue(new ShooterArmCommands().goToPosition(0.5, arm));
+                operatorController.x().whileTrue(new ShooterArmCommands().goToPosition(1, arm));
+                operatorController.b().whileTrue(new ShooterArmCommands().goToPosition(0, arm));
         }
 
         public void displaSimFieldToAdvantageScope() {

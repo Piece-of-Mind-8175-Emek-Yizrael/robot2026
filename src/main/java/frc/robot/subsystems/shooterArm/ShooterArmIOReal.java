@@ -29,12 +29,14 @@ public class ShooterArmIOReal implements ShooterArmIO {
     public ShooterArmIOReal() {
         motor = new POMSparkMax(MOTOR_ID);
         encoder = motor.getEncoder();
-        
-        pidController = new ProfiledPIDController(kp, ki, kd, new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
-        feedforward = new ArmFeedforward(ks, kv, kg);
-        
+
+        pidController = new ProfiledPIDController(kp, ki, kd,
+                new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
+        feedforward = new ArmFeedforward(ks, kg, kv);
+
         config = new SparkMaxConfig();
-        config.idleMode(IdleMode.kBrake)
+
+        config.idleMode(IdleMode.kCoast)
                 // .inverted(INVERTED)
                 .smartCurrentLimit(currentLimit)
                 .voltageCompensation(voltageCompensation)
@@ -58,6 +60,7 @@ public class ShooterArmIOReal implements ShooterArmIO {
         inputs.armVelocity = encoder.getVelocity();
         inputs.motorVoltage = motor.getBusVoltage();
         inputs.motorAppliedVoltage = motor.getAppliedOutput() * motor.getBusVoltage();
+        inputs.atGoal = atGoal();
     }
 
     @Override
@@ -74,7 +77,7 @@ public class ShooterArmIOReal implements ShooterArmIO {
     public void setGoal(double goal) {
         pidController.setGoal(goal);
         setVoltage(pidController.calculate(encoder.getPosition())
-                +feedforward.calculate(encoder.getPosition(), pidController.getSetpoint().velocity));
+                + feedforward.calculate(encoder.getPosition(), pidController.getSetpoint().velocity));
 
         currentGoal = goal;
         manualMode = false;
@@ -108,9 +111,11 @@ public class ShooterArmIOReal implements ShooterArmIO {
     @Override
     public void resetPID(double newGoal) {
         if (newGoal - encoder.getPosition() > 0) {
-            pidController.reset(encoder.getPosition(), Math.max(encoder.getVelocity(), feedforward.calculate(encoder.getPosition(), 1)));
+            pidController.reset(encoder.getPosition(),
+                    Math.max(encoder.getVelocity(), feedforward.calculate(encoder.getPosition(), 1)));
         } else {
-            pidController.reset(encoder.getPosition(), Math.min(encoder.getVelocity(),feedforward.calculate(encoder.getPosition(), 1)));
+            pidController.reset(encoder.getPosition(),
+                    Math.min(encoder.getVelocity(), feedforward.calculate(encoder.getPosition(), 1)));
         }
     }
 
@@ -121,5 +126,5 @@ public class ShooterArmIOReal implements ShooterArmIO {
             resetPID();
         }
     }
-    
+
 }

@@ -5,7 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.shooterArm.ShooterArmIO.ShooterArmIOInputs;
 
-public class ShooterArm extends SubsystemBase{
+public class ShooterArm extends SubsystemBase {
 
     private final ShooterArmIO io;
 
@@ -14,7 +14,7 @@ public class ShooterArm extends SubsystemBase{
     public ShooterArm(ShooterArmIO io) {
         this.io = io;
 
-        setDefaultCommand(run(() -> io.stayInCurrentGoal()).withName("default command"));
+        setDefaultCommand(run(() -> io.resistGravity()).withName("resist gravity"));
     }
 
     @Override
@@ -26,5 +26,5 @@ public class ShooterArm extends SubsystemBase{
     public ShooterArmIO getIO() {
         return io;
     }
-    
+
 }

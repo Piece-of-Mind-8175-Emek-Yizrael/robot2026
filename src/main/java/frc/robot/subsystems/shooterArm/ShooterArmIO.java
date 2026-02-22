@@ -11,6 +11,7 @@ public interface ShooterArmIO {
         public double armVelocity = 0.0;
         public double motorVoltage = 0.0;
         public double motorAppliedVoltage = 0.0;
+        public boolean atGoal = false;
     }
 
     public default void updateInputs(ShooterArmIOInputs inputs) {
@@ -35,10 +36,10 @@ public interface ShooterArmIO {
     public default void resistGravity() {
     }
 
-    public default double getAngle(){
+    public default double getAngle() {
         return 0.0;
     }
-    
+
     public default void resetPID() {
     }
 
