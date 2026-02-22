@@ -19,14 +19,12 @@ public class CartridgeCommands extends Command {
     }
 
     public Command setOpenVoltage() {
-        return setVoltage(4).until(cartridge.getIO()::isOuterPressed);
+        return setVoltage(3).until(cartridge.getIO()::isOuterPressed);
     }
 
     public Command setCloseVoltage() {
-        return setVoltage(-3).until(cartridge.getIO()::isInnerPressed);
+        return setVoltage(-4).until(cartridge.getIO()::isInnerPressed);
     }
-
-
 
     public Command goToPosition(double postion) {
         return new FunctionalCommand(() -> cartridge.getIO().resetPID(),
@@ -37,15 +35,15 @@ public class CartridgeCommands extends Command {
     }
 
     public Command openCartridge() {
-        return goToPosition(OPEN_CARTRIDGE_POS).until(cartridge.getIO()::isOuterPressed).withName("open cartridge");
+        return goToPosition(OPEN_CARTRIDGE_POS).andThen(setOpenVoltage()).withName("open cartridge");
     }
 
     public Command closeCartridge() {
-        return goToPosition(CLOSE_CARTRIDGE_POS).until(cartridge.getIO()::isInnerPressed).withName("close cartridge");
+        return goToPosition(CLOSE_CARTRIDGE_POS).andThen(setCloseVoltage().withName("close cartridge"));
     }
 
     // public Command openAndCloseCartridge(){
-        
+
     // }
 
 }
