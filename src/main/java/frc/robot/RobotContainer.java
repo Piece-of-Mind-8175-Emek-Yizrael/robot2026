@@ -33,6 +33,11 @@ import frc.robot.subsystems.shoot.Shoot;
 import frc.robot.subsystems.shoot.ShootIOReal;
 import frc.robot.subsystems.transfer.Transfer;
 import frc.robot.subsystems.transfer.TransferIOReal;
+import frc.robot.commands.CartridgeCommands;
+import frc.robot.subsystems.cartridge.Cartridge;
+import frc.robot.subsystems.cartridge.CartridgeIOReal;
+import org.ironmaple.simulation.SimulatedArena;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -43,6 +48,7 @@ import frc.robot.subsystems.transfer.TransferIOReal;
  * the robot (including
  * subsystems, commands, and button mappings) should be declared here. :)
  */
+
 public class RobotContainer {
         // Subsystems
         private Intake intake;
@@ -54,6 +60,7 @@ public class RobotContainer {
         IntakeCommands intakeCommands;
         TransferCommands TransferCommands;
 
+        
         // Controller
         private final PS5Controller driverController = new PS5Controller(0);
         private final PomXboxController operatorController = new PomXboxController(1);
@@ -102,7 +109,7 @@ public class RobotContainer {
                 autoChooser = new LoggedDashboardChooser<>("Auto Choices", c); // TODO use auto builder
 
                 // Set up SysId routines
-                
+
                 // Configure the button bindings
                 configureButtonBindings();
         }
