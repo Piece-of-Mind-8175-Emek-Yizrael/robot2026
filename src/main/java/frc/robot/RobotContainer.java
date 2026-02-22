@@ -43,8 +43,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
         // Subsystems
-        Cartridge cartridge;
-        CartridgeCommands cartridgeCommands;
+        
         // Controller
         private final PS5Controller driverController = new PS5Controller(0);
         private final PomXboxController operatorController = new PomXboxController(1);
@@ -61,8 +60,6 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
-                                cartridge = new Cartridge(new CartridgeIOReal());
-                                cartridgeCommands = new CartridgeCommands(cartridge);
                                 break;
 
                         case SIM:
@@ -98,11 +95,6 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                operatorController.rightTrigger().whileTrue(cartridgeCommands.setOpenVoltage());
-                operatorController.leftTrigger().whileTrue(cartridgeCommands.setCloseVoltage());
-                operatorController.a().whileTrue(cartridgeCommands.openCartridge());
-                operatorController.b().whileTrue(cartridgeCommands.closeCartridge());
-
         }
 
         public void displaSimFieldToAdvantageScope() {
