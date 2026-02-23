@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision.ObjectDetection;
 
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.subsystems.vision.VisionConstants;
 import org.littletonrobotics.junction.Logger;
@@ -15,6 +16,9 @@ import java.util.Optional;
 public class VisionIORealFuel implements ObjectDetectionVisionIO {
     final PhotonCamera camera;
     final String name;
+    boolean toggle = true;
+
+    Transform3d robotToCamera;
 
     public VisionIORealFuel(String name) {
         this.name = name;
@@ -23,6 +27,8 @@ public class VisionIORealFuel implements ObjectDetectionVisionIO {
 
     @Override
     public void updateInputs(ObjectDetectionVisionIOInputs inputs) {
+        if (!toggle) return;
+
         List<PhotonPipelineResult> allUnreadResults = camera.getAllUnreadResults();
         PhotonPipelineResult latestResult = allUnreadResults.get(allUnreadResults.size() - 1);
 
@@ -49,20 +55,26 @@ public class VisionIORealFuel implements ObjectDetectionVisionIO {
                         Optional.of(translationToFuel)
                 );
             }
-//            else if(target.getDetectedObjectClassID() == VisionConstants.TargetType.CORAL.getClassId()) {
-//                detections[i] = new Detection(
-//                        VisionConstants.TargetType.CORAL,
-//                        targetWidth,
-//                        targetHeight,
-//                        target.getYaw(),
-//                        Optional.empty()
-//                );
-//            }
         }
 
         inputs.pipelineName = name;
         inputs.connected = camera.isConnected();
         inputs.detections = detections;
+    }
+
+    @Override
+    public String getPipelineName() {
+        return name;
+    }
+
+    @Override
+    public void setRobotToCamera(Transform3d robotToCamera) {
+        this.robotToCamera = robotToCamera;
+    }
+
+    @Override
+    public void togglePipeline(boolean on) {
+        toggle = on;
     }
 
     // sorts corners by this order: top left, top right, bottom right, bottom left

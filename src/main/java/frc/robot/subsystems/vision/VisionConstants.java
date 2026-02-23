@@ -69,9 +69,9 @@ public class VisionConstants {
     public static double angularStdDevMegatag2Factor = Double.POSITIVE_INFINITY; // No rotation data available
 
     public static class ObjectDetectionConstants {
-        public static double FUEL_DIAMETER_METERS = 0.150114;
+        public static double FUEL_DIAMETER_METERS = 0.150114; // TODO: replace this with the diameter of the 2026 fuel object
 
-        public static Pose3d OBJECT_DETECTION_CAMERA_RIGHT_POSE = null;
-        public static Pose3d OBJECT_DETECTION_CAMERA_LEFT_POSE = null;
+        public static Transform3d CAMERA_TO_ROBOT_CLOSED_CARTRIDGE_TRANSLATION = null; // TODO: replace this with the actual value
+        public static Transform3d CAMERA_TO_ROBOT_OPEN_CARTRIDGE_TRANSLATION = null; // TODO: replace this with the actual value
     }
 }

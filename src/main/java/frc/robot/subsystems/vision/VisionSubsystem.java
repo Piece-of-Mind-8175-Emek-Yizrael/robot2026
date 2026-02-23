@@ -24,15 +24,13 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIO;
 import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIO.PoseObservationType;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Supplier;
 
 import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIOInputsAutoLogged;
@@ -52,13 +50,16 @@ public class VisionSubsystem extends SubsystemBase {
     private final ObjectDetectionVisionIOInputsAutoLogged[] objectDetectionInputs;
     private final List<Detection> detections = new ArrayList<>();
     private volatile boolean updatingDetections = false;
+    private final Optional<Field2d> field;
 
     public VisionSubsystem(VisionConsumer consumer, ApriltagVisionIO[] apriltagVisionIO,
-            ObjectDetectionVisionIO[] objectDetectionIO, Supplier<Constants.CartridgePose> cartridgePose) {
+                           ObjectDetectionVisionIO[] objectDetectionIO, Supplier<Constants.CartridgePose> cartridgePose
+                            , Optional<Field2d> field) {
         this.consumer = consumer;
         this.apriltagVisionIO = apriltagVisionIO;
         this.objectDetectionIO = objectDetectionIO;
         this.cartridgePose = cartridgePose;
+        this.field = field;
 
         // Initialize inputs
         this.apriltagInputs = new ApriltagVisionIOInputsAutoLogged[apriltagVisionIO.length];
@@ -109,12 +110,23 @@ public class VisionSubsystem extends SubsystemBase {
     public void periodic() {
 
         // disable the front camera if it's moving
-        boolean state = true;
-        if(cartridgePose.get() == Constants.CartridgePose.IN_MOVEMENT) { state = false; }
-
-        for (var io : apriltagVisionIO) {
+        boolean state = cartridgePose.get() != Constants.CartridgePose.IN_MOVEMENT;
+        for (var io : objectDetectionIO) {
             if (Objects.equals(io.getPipelineName(), frontCameraName)) {
                 io.togglePipeline(state);
+                switch (cartridgePose.get()) {
+                    case IN_MOVEMENT:
+                        io.togglePipeline(false);
+                        break;
+                    case OPEN:
+                        io.togglePipeline(true);
+                        io.setRobotToCamera(ObjectDetectionConstants.CAMERA_TO_ROBOT_OPEN_CARTRIDGE_TRANSLATION);
+                        break;
+                    case CLOSE:
+                        io.togglePipeline(true);
+                        io.setRobotToCamera(ObjectDetectionConstants.CAMERA_TO_ROBOT_CLOSED_CARTRIDGE_TRANSLATION);
+                        break;
+                }
             }
         }
 
@@ -229,6 +241,24 @@ public class VisionSubsystem extends SubsystemBase {
         }
         updatingDetections = false;
 
+        List<Pose2d> detectedObjectPoses = new ArrayList<>();
+
+        for (var detection : detections) {
+            if (detection.cameraRelativeTargetTranslation().isPresent()) {
+                detectedObjectPoses.add(
+                    new Pose2d(
+                        detection.cameraRelativeTargetTranslation().get().getX(),
+                        detection.cameraRelativeTargetTranslation().get().getY(),
+                        new Rotation2d()
+                    )
+                );
+            }
+        }
+
+        if (field.isPresent()) {
+            field.get().getObject("Fuels").setPoses(detectedObjectPoses);
+        }
+
         // Log summary data
         Logger.recordOutput(
                 "Vision/Summary/TagPoses", allTagPoses.toArray(new Pose3d[allTagPoses.size()]));
@@ -243,15 +273,10 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     // returns all the objects the cameras can see
-    // TODO: Add logic to compare results between both cameras and find duplicates
     public List<Detection> getAllObjectDetections() {
         while (updatingDetections)
             Thread.onSpinWait();
         return detections;
-    }
-
-    private void consumeCartridgeDisplacement() {
-
     }
 
     @FunctionalInterface
