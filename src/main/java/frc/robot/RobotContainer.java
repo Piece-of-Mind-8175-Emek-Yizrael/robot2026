@@ -60,7 +60,8 @@ public class RobotContainer {
         public RobotContainer() {
                 switch (Constants.currentMode) {
                         case REAL:
-                                visionSubsystem = new VisionSubsystem(null, new ApriltagVisionIOReal[]{new ApriltagVisionIOReal(VisionConstants.backCameraName, VisionConstants.InitialRobotToBackCameraTranslation)}, null, /*FIXME: this isn't supposed to be a null pointer*/() -> (null));
+                                visionSubsystem = new VisionSubsystem(null, new ApriltagVisionIOReal[]{new ApriltagVisionIOReal(VisionConstants.backCameraName, VisionConstants.InitialRobotToBackCameraTranslation)}, /*FIXME: this isn't supposed to be a null pointer*/ null, /*FIXME: this isn't supposed to be a null pointer*/() -> (null),
+                                        /*FIXME: this isn't supposed to be a null pointer*/null);
                                 // Real robot, instantiate hardware IO implementations
                                 cartridge = new Cartridge(new CartridgeIOReal());
                                 cartridgeCommands = new CartridgeCommands(cartridge);
