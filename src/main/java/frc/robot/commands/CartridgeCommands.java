@@ -2,6 +2,7 @@ package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.robot.subsystems.cartridge.Cartridge;
 import static frc.robot.subsystems.cartridge.CartridgeConstants.*;
@@ -35,15 +36,24 @@ public class CartridgeCommands extends Command {
     }
 
     public Command openCartridge() {
-        return goToPosition(OPEN_CARTRIDGE_POS).andThen(setOpenVoltage()).withName("open cartridge");
+        return goToPosition(OPEN_CARTRIDGE_POS)
+                .andThen(setOpenVoltage())
+                .until(cartridge.getIO()::isOuterPressed)
+                .withName("open cartridge");
     }
 
     public Command closeCartridge() {
-        return goToPosition(CLOSE_CARTRIDGE_POS).andThen(setCloseVoltage().withName("close cartridge"));
+        return goToPosition(CLOSE_CARTRIDGE_POS)
+                .andThen(setCloseVoltage())
+                .until(cartridge.getIO()::isInnerPressed)
+                .withName("close cartridge");
     }
 
-    // public Command openAndCloseCartridge(){
-
-    // }
+    public Command openAndCloseCartridge(){
+        return new ConditionalCommand(
+            closeCartridge(), 
+            openCartridge(), 
+            cartridge.getIO()::isInnerPressed);
+    }
 
 }
