@@ -12,6 +12,7 @@ public interface ShooterArmIO {
         public double motorVoltage = 0.0;
         public double motorAppliedVoltage = 0.0;
         public boolean atGoal = false;
+        public boolean sensor = false;
     }
 
     public default void updateInputs(ShooterArmIOInputs inputs) {
@@ -48,4 +49,9 @@ public interface ShooterArmIO {
 
     public default void stayInCurrentGoal() {
     }
+
+    public default void resetIfPrees() {
+    }
+
+    
 }

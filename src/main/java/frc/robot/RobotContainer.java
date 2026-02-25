@@ -13,15 +13,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
 import frc.robot.commands.ShooterArmCommands;
 import frc.robot.subsystems.shooterArm.ShooterArm;
@@ -44,6 +40,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
         // Subsystems
         private ShooterArm arm;
+
+        private ShooterArmCommands armCommands;
         // Controller
         private final PS5Controller driverController = new PS5Controller(0);
         private final PomXboxController operatorController = new PomXboxController(1);
@@ -61,6 +59,7 @@ public class RobotContainer {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
                                 arm = new ShooterArm(new ShooterArmIOReal());
+                                armCommands = new ShooterArmCommands(arm);
                                 break;
 
                         case SIM:
@@ -98,13 +97,16 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                operatorController.RB().whileTrue(new ShooterArmCommands().setVoltage(1.0, arm));
-                operatorController.LB().whileTrue(new ShooterArmCommands().setVoltage(-1.0, arm));
-                operatorController.rightTrigger().whileTrue(new ShooterArmCommands().setVoltage(2.5, arm));
-                operatorController.leftTrigger().whileTrue(new ShooterArmCommands().setVoltage(-2.0, arm));
-                operatorController.a().whileTrue(new ShooterArmCommands().goToPosition(0.5, arm));
-                operatorController.x().whileTrue(new ShooterArmCommands().goToPosition(1, arm));
-                operatorController.b().whileTrue(new ShooterArmCommands().goToPosition(0, arm));
+                operatorController.RB().whileTrue(armCommands.setVoltage(1.0));
+                operatorController.LB().whileTrue(armCommands.setVoltage(-1.0));
+                operatorController.rightTrigger().whileTrue(armCommands.setVoltage(2.5));
+                operatorController.leftTrigger().whileTrue(armCommands.setVoltage(-2.0));
+
+                
+                operatorController.b().whileTrue(armCommands.goToPosition(0));
+                operatorController.a().whileTrue(armCommands.goToPosition(0.35));
+                operatorController.x().whileTrue(armCommands.goToPosition(0.7));
+                operatorController.y().onTrue(armCommands.ressistGravity());
         }
 
         public void displaSimFieldToAdvantageScope() {

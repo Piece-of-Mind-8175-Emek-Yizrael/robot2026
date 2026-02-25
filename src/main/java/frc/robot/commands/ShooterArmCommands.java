@@ -5,16 +5,20 @@ import static frc.robot.subsystems.shooterArm.ShooterArmConstants.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.shooterArm.ShooterArm;
-import frc.robot.subsystems.shooterArm.ShooterArmIO;
 
 public class ShooterArmCommands {
+    private ShooterArm arm;
 
-    public Command setVoltage(double voltage, ShooterArm arm) {
+    public ShooterArmCommands(ShooterArm arm){
+        this.arm = arm;
+    }
+
+    public Command setVoltage(double voltage) {
         return Commands.startEnd(() -> arm.getIO().setVoltage(voltage),
                 arm.getIO()::stopMotor, arm);
     }
 
-    public Command goToPosition(double position, ShooterArm arm) {
+    public Command goToPosition(double position) {
         return new Command() {
             @Override
             public void initialize() {
@@ -38,15 +42,20 @@ public class ShooterArmCommands {
         };
     }
 
-    public Command closeArm(ShooterArm arm) {
-        return goToPosition(CLOSE_POS, arm);
+    public Command closeArm() {
+        return goToPosition(CLOSE_POS);
     }
 
-    public Command openArm(ShooterArm arm) {
-        return goToPosition(OPEN_POS, arm);
+    public Command openArm() {
+        return goToPosition(OPEN_POS);
     }
 
-    public Command ressistGravity(ShooterArm arm) {
+    public Command ressistGravity() {
         return Commands.run(() -> arm.getIO().resistGravity(), arm);
     }
+    
+    public Command resetPos() {
+        return Commands.run(arm.getIO()::resetIfPrees, arm);
+    }
+
 }

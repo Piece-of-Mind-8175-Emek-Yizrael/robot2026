@@ -5,9 +5,6 @@ import static frc.robot.subsystems.shooterArm.ShooterArmConstants.*;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -15,6 +12,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.POM_lib.Motors.POMSparkMax;
+import frc.robot.POM_lib.sensors.POMDigitalInput;
 
 public class ShooterArmIOReal implements ShooterArmIO {
 
@@ -25,32 +23,32 @@ public class ShooterArmIOReal implements ShooterArmIO {
     private double currentGoal = 0.0;
     private boolean manualMode = false;
     private SparkMaxConfig config;
+    private POMDigitalInput sensor;
 
     public ShooterArmIOReal() {
         motor = new POMSparkMax(MOTOR_ID);
         encoder = motor.getEncoder();
+        sensor = new POMDigitalInput(SENSOR_ID);
 
         pidController = new ProfiledPIDController(kp, ki, kd,
                 new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
+        pidController.setTolerance(TOLERANCE);
         feedforward = new ArmFeedforward(ks, kg, kv);
 
         config = new SparkMaxConfig();
 
-        config.idleMode(IdleMode.kCoast)
-                // .inverted(INVERTED)
+        config.idleMode(IdleMode.kBrake)
                 .smartCurrentLimit(currentLimit)
                 .voltageCompensation(voltageCompensation)
                 .smartCurrentLimit(currentLimit);
 
         config.encoder.positionConversionFactor(gearRatio)
                 .velocityConversionFactor(velocityConversionFactor)
-                // .inverted(INVERTED)
                 .uvwMeasurementPeriod(20);
 
         motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
-        zeroPosition();
-
+        resetIfPrees();
     }
 
     @Override
@@ -58,9 +56,18 @@ public class ShooterArmIOReal implements ShooterArmIO {
         inputs.motorConnected = motor.getFirmwareVersion() != 0;
         inputs.armPosition = encoder.getPosition();
         inputs.armVelocity = encoder.getVelocity();
-        inputs.motorVoltage = motor.getBusVoltage();
+        inputs.motorVoltage = motor.getAppliedOutput();
         inputs.motorAppliedVoltage = motor.getAppliedOutput() * motor.getBusVoltage();
         inputs.atGoal = atGoal();
+        inputs.sensor = sensor.get();
+        resetIfPrees();
+    }
+
+    @Override
+    public void resetIfPrees() {
+        if(sensor.get()){
+            zeroPosition();
+        }
     }
 
     @Override
