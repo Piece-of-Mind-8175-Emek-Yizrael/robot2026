@@ -51,8 +51,10 @@ public class BallisticCalculator {
     private volatile boolean isProcessing = false;
     private volatile BallisticCalculatorParameters parameters;
     private volatile BallisticCalculatorResult result = null;
-    private Thread processingTread = null;
     private volatile Lock resultsLock;
+
+    // pre-computed variables for the simulation to avoid redundant computation in the loop
+    float[] cosA, sinA, vx0, vy0;
 
     private static BallisticCalculator instance;
 
@@ -76,15 +78,17 @@ public class BallisticCalculator {
                 new Translation2d(),
                 BallisticCalculatorMode.ACCURATE
         );
-        processingTread = new Thread(() -> {
-            BallisticCalculatorResult res = null;
-            while(true) {
-                while (!parametersUpdated) ;
+        preComputeParameters(parameters);
+
+        Thread processingTread = new Thread(() -> {
+            BallisticCalculatorResult res;
+            while (true) {
+                while (!parametersUpdated) Thread.onSpinWait();
                 isProcessing = true;
                 res = findConstrainedLaunchInMotion(parameters);
                 parametersUpdated = false;
                 isProcessing = false;
-                while (resultsLock.tryLock()) ;
+                while (resultsLock.tryLock()) Thread.onSpinWait() ;
                 try {
                     result = res;
                 } finally {
@@ -92,11 +96,11 @@ public class BallisticCalculator {
                 }
             }
         });
-        processingTread.run();
+        processingTread.start();
     }
 
     public BallisticCalculatorResult getLatestResults() {
-        while (resultsLock.tryLock()) ;
+        while (resultsLock.tryLock()) Thread.onSpinWait() ;
         try {
             return result;
         } finally {
@@ -119,6 +123,34 @@ public class BallisticCalculator {
                 parameters.mode()
         );
         parametersUpdated = true;
+    }
+
+    public void preComputeParameters(BallisticCalculatorParameters params) {
+        float aLow = Math.min(params.a1deg(), params.a2deg());
+        float aHigh = Math.max(params.a1deg(), params.a2deg());
+
+        final int nV = params.vRange().length;
+        final int nA = params.angleRange().length;
+        final int total = nV * nA;
+
+        for (int i = 0; i < nA; i++) {
+            float rad = (float)Math.toRadians(params.angleRange()[i]);
+            cosA[i] = (float)Math.cos(rad);
+            sinA[i] = (float)Math.sin(rad);
+        }
+
+        vx0 = new float[total];
+        vy0 = new float[total];
+
+        // TODO: check whether the X and Y of the targetCentricMovement are applied at the correct order
+        for (int iv = nV - 1; iv >= 0; iv--) {
+            float v0 = params.vRange()[iv];
+            int base = iv * nA;
+            for (int ia = 0; ia < nA; ia++) {
+                vx0[base + ia] = v0 * cosA[ia] + (float) params.targetCentricMovement().getX();
+                vy0[base + ia] = v0 * sinA[ia];
+            }
+        }
     }
 
     private BallisticCalculatorResult findConstrainedLaunchInMotion(
@@ -145,39 +177,15 @@ public class BallisticCalculator {
         float aLow = Math.min(params.a1deg(), params.a2deg());
         float aHigh = Math.max(params.a1deg(), params.a2deg());
 
-        final int nV = params.vRange().length;
         final int nA = params.angleRange().length;
-        final int total = nV * nA;
-
-        // precompute trig and flattened initial velocity components
-        float[] cosA = new float[nA];
-        float[] sinA = new float[nA];
-        for (int i = 0; i < nA; i++) {
-            float rad = (float)Math.toRadians(params.angleRange()[i]);
-            cosA[i] = (float)Math.cos(rad);
-            sinA[i] = (float)Math.sin(rad);
-        }
-        float[] vx0 = new float[total];
-        float[] vy0 = new float[total];
-
-        // TODO: check whether the X and Y of the targetCentricMovement are applied at the correct order
-        for (int iv = nV - 1; iv >= 0; iv--) {
-            float v0 = params.vRange()[iv];
-            int base = iv * nA;
-            for (int ia = 0; ia < nA; ia++) {
-                vx0[base + ia] = v0 * cosA[ia] + (float) params.targetCentricMovement().getX();
-                vy0[base + ia] = v0 * sinA[ia];
-            }
-        }
 
         // simulation parameters: coarse then fine
         final float coarseDt = params.mode().getCoarseDt();
         final int coarseMaxSteps = 800; // coarse sweep
-        final float coarseThresholdSq = 0.06f * 0.06f; // if coarse best below this, refine
+        final float coarseThresholdSq = 0.1f * 0.1f; // if coarse best below this, refine (10cm)
         final float fineDt = params.mode().getFineDt();
         final int fineMaxSteps = 2000; // refinement window (starting from saved coarse state)
-        final float xMargin = 0.5f;
-        final float yFloor = -1.0f;
+        final float xMargin = 0.3f;
 
         for (int idx = 0; idx < vx0.length; idx++) {
             float initVx = vx0[idx];
@@ -222,7 +230,7 @@ public class BallisticCalculator {
                     savedX = x;
                     savedY = y;
                 }
-                if (y < yFloor || x > params.targetX() + xMargin || (Math.abs(vx) < eps && Math.abs(vy) < eps)) break;
+                if (y < 0f || x > params.targetX() + xMargin || (Math.abs(vx) < eps && Math.abs(vy) < eps)) break;
             }
 
             // If coarse pass indicates not promising, skip
@@ -267,7 +275,7 @@ public class BallisticCalculator {
                     arrivalAngleDeg = (float)Math.toDegrees(Math.atan2(vy, vx));
                 }
 
-                if (y < yFloor || x > params.targetX() + xMargin || (Math.abs(vx) < eps && Math.abs(vy) < eps)) {
+                if (y < 0f || x > params.targetX() + xMargin || (Math.abs(vx) < eps && Math.abs(vy) < eps)) {
                     break;
                 }
             }
