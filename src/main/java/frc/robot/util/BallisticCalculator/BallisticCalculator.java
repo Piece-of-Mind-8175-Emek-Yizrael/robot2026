@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class BallisticCalculator {
 
@@ -66,6 +67,8 @@ public class BallisticCalculator {
     }
 
     public BallisticCalculator() {
+        resultsLock = new ReentrantLock();
+
         parameters = new BallisticCalculatorParameters(
                 0.0f,
                 0.0f,
