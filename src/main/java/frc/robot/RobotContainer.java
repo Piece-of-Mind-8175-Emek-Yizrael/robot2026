@@ -136,12 +136,14 @@ public class RobotContainer {
                 // Default command, normal field-relative drive
                 operatorController.a().whileTrue(shootCommands.setHoodGoal(50));
                 operatorController.b().whileTrue(intakeCommands.intake());
-                // operatorController.y().whileTrue(transferCommands.setVoltage());
-                operatorController.y().whileTrue(cartridgeCommands.openCartridge());
-                operatorController.x().whileTrue(cartridgeCommands.closeCartridge());
+                operatorController.y().whileTrue(intakeCommands.outake());
+                operatorController.x().whileTrue(transferCommands.setVoltage());
+                // operatorController.y().whileTrue(cartridgeCommands.openAndCloseCartridge());
+                // operatorController.x().whileTrue(cartridgeCommands.closeCartridge());
 
                 
         }
+
 
         public void displaSimFieldToAdvantageScope() {
                 if (Constants.currentMode != Constants.Mode.SIM)
