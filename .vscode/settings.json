@@ -1,5 +1,5 @@
 {
-  "files.autoSave": "onWindowChange",
+  "autoSave": "afterDelay",
   "java.configuration.updateBuildConfiguration": "automatic",
   "java.server.launchMode": "Standard",
   "files.exclude": {

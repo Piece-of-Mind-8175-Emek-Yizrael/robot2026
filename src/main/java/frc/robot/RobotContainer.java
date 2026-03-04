@@ -13,20 +13,19 @@
 
 package frc.robot;
 
-import org.ironmaple.simulation.SimulatedArena;
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Commands.IntakeCommands;
-import frc.robot.Commands.ShootCommands;
-import frc.robot.Commands.TransferCommands;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
+import frc.robot.commands.ShooterArmCommands;
+import frc.robot.subsystems.shooterArm.ShooterArm;
+import frc.robot.subsystems.shooterArm.ShooterArmIOReal;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIOKraken;
 import frc.robot.subsystems.shoot.Shoot;
@@ -51,6 +50,7 @@ import org.ironmaple.simulation.SimulatedArena;
 
 public class RobotContainer {
         // Subsystems
+        private ShooterArm arm;
         private Intake intake;
         private Shoot shoot;
         private Transfer transfer;
@@ -64,6 +64,7 @@ public class RobotContainer {
 
 
         
+        private ShooterArmCommands armCommands;
         // Controller
         private final PS5Controller driverController = new PS5Controller(0);
         private final PomXboxController operatorController = new PomXboxController(1);
@@ -92,11 +93,13 @@ public class RobotContainer {
                         cartridgeCommands = new CartridgeCommands(cartridge);
                         
                                 // Real robot, instantiate hardware IO implementations
+                                arm = new ShooterArm(new ShooterArmIOReal());
+                                armCommands = new ShooterArmCommands(arm);
                                 break;
 
                         case SIM:
                                 // Sim robot, instantiate physics sim IO implementations
-                                intake = null;
+                                arm = null;                                intake = null;
                                 shoot = null;
                                 transfer = null;
                                 cartridge = null;
@@ -105,10 +108,6 @@ public class RobotContainer {
 
                         default:
                                 // Replayed robot, disable IO implementations
-                                intake = null;
-                                shoot = null;
-                                transfer = null;
-                                cartridge = null;
                                 break;
                 }
 
@@ -126,7 +125,8 @@ public class RobotContainer {
         /**
          * Use this method to define your button->command mappings. Buttons can be
          * created by
-         * instantiating a {@link GenericHID} or one of its subclasses ({@link
+         * instantiating a {@link GenericHID} or one of its
+         * subclasses ({@link
          * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
          * 
          * it to a {@link
@@ -134,6 +134,11 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
+                operatorController.RB().whileTrue(armCommands.setVoltage(1.0));
+                operatorController.LB().whileTrue(armCommands.setVoltage(-1.0));
+                operatorController.rightTrigger().whileTrue(armCommands.setVoltage(2.5));
+                operatorController.leftTrigger().whileTrue(armCommands.setVoltage(-2.0));
+
                 // operatorController.a().whileTrue(shootCommands.setHoodGoal(50));
                 // operatorController.b().whileTrue(intakeCommands.intake());
                 // operatorController.y().whileTrue(intakeCommands.outake());
@@ -142,6 +147,10 @@ public class RobotContainer {
                 operatorController.x().whileTrue(cartridgeCommands.closeCartridge());
 
                 
+                operatorController.b().whileTrue(armCommands.closeArm());
+                operatorController.a().whileTrue(armCommands.goToPosition(0.5));
+                operatorController.x().whileTrue(armCommands.goToPosition(1.0));
+                operatorController.y().whileTrue(armCommands.ressistGravity());
         }
 
 
