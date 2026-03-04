@@ -103,10 +103,10 @@ public class RobotContainer {
                 operatorController.leftTrigger().whileTrue(armCommands.setVoltage(-2.0));
 
                 
-                operatorController.b().whileTrue(armCommands.goToPosition(0));
-                operatorController.a().whileTrue(armCommands.goToPosition(0.35));
-                operatorController.x().whileTrue(armCommands.goToPosition(0.7));
-                operatorController.y().onTrue(armCommands.ressistGravity());
+                operatorController.b().whileTrue(armCommands.closeArm());
+                operatorController.a().whileTrue(armCommands.goToPosition(0.5));
+                operatorController.x().whileTrue(armCommands.goToPosition(1.0));
+                operatorController.y().whileTrue(armCommands.ressistGravity());
         }
 
         public void displaSimFieldToAdvantageScope() {

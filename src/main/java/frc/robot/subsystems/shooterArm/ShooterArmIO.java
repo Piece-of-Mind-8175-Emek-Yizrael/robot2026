@@ -53,5 +53,9 @@ public interface ShooterArmIO {
     public default void resetIfPrees() {
     }
 
+    public default boolean getSensor() {
+        return false;
+    }
+
     
 }

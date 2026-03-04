@@ -2,6 +2,8 @@ package frc.robot.subsystems.shooterArm;
 
 import static frc.robot.subsystems.shooterArm.ShooterArmConstants.*;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
@@ -67,7 +69,13 @@ public class ShooterArmIOReal implements ShooterArmIO {
     public void resetIfPrees() {
         if(sensor.get()){
             zeroPosition();
+            feedforward.setKg(0.5);
+        } else if (encoder.getPosition() < 0.7){
+            feedforward.setKg(kg);
+        } else {
+            feedforward.setKg(kg + 0.4);
         }
+
     }
 
     @Override
@@ -132,6 +140,11 @@ public class ShooterArmIOReal implements ShooterArmIO {
             currentGoal = getAngle();
             resetPID();
         }
+    }
+
+    @Override
+    public boolean getSensor() {
+        return sensor.get();
     }
 
 }

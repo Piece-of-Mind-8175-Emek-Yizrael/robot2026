@@ -43,7 +43,9 @@ public class ShooterArmCommands {
     }
 
     public Command closeArm() {
-        return goToPosition(CLOSE_POS);
+        return goToPosition(CLOSE_POS)
+                .andThen(setVoltage(-1.0))
+                .until(arm.getIO()::getSensor);
     }
 
     public Command openArm() {
