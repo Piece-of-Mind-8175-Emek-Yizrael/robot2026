@@ -13,29 +13,35 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import java.util.function.BooleanSupplier;
+
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Commands.CartridgeCommands;
+import frc.robot.Commands.IntakeCommands;
+import frc.robot.Commands.ShootCommands;
+import frc.robot.Commands.ShooterArmCommands;
+import frc.robot.Commands.SuperCommands;
+import frc.robot.Commands.TransferCommands;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
-import frc.robot.commands.ShooterArmCommands;
-import frc.robot.subsystems.shooterArm.ShooterArm;
-import frc.robot.subsystems.shooterArm.ShooterArmIOReal;
+import frc.robot.subsystems.cartridge.Cartridge;
+import frc.robot.subsystems.cartridge.CartridgeIOReal;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIOKraken;
 import frc.robot.subsystems.shoot.Shoot;
 import frc.robot.subsystems.shoot.ShootIOReal;
+import frc.robot.subsystems.shooterArm.ShooterArm;
+import frc.robot.subsystems.shooterArm.ShooterArmIOReal;
 import frc.robot.subsystems.transfer.Transfer;
 import frc.robot.subsystems.transfer.TransferIOReal;
-import frc.robot.Commands.CartridgeCommands;
-import frc.robot.subsystems.cartridge.Cartridge;
-import frc.robot.subsystems.cartridge.CartridgeIOReal;
-import org.ironmaple.simulation.SimulatedArena;
 
 
 /**
@@ -60,11 +66,10 @@ public class RobotContainer {
         private ShootCommands shootCommands;
         private IntakeCommands intakeCommands;
         private TransferCommands transferCommands;
-        private CartridgeCommands cartridgeCommands;
-
-
-        
+        private CartridgeCommands cartridgeCommands;        
         private ShooterArmCommands armCommands;
+        private SuperCommands superCommands;
+
         // Controller
         private final PS5Controller driverController = new PS5Controller(0);
         private final PomXboxController operatorController = new PomXboxController(1);
@@ -80,29 +85,30 @@ public class RobotContainer {
         public RobotContainer() {
                 switch (Constants.currentMode) {
                         case REAL:
-                        intake = new Intake(new IntakeIOKraken());
-                        shoot = new Shoot(new ShootIOReal());
-                        transfer = new Transfer(new TransferIOReal());
-                        cartridge = new Cartridge(new CartridgeIOReal());
-                        
-                        
-
-                        shootCommands = new ShootCommands(shoot);
-                        intakeCommands = new IntakeCommands(intake);
-                        transferCommands = new TransferCommands(transfer);
-                        cartridgeCommands = new CartridgeCommands(cartridge);
-                        
-                                // Real robot, instantiate hardware IO implementations
+                                intake = new Intake(new IntakeIOKraken());
+                                shoot = new Shoot(new ShootIOReal());
+                                transfer = new Transfer(new TransferIOReal());
+                                cartridge = new Cartridge(new CartridgeIOReal());
                                 arm = new ShooterArm(new ShooterArmIOReal());
+                                
+                                
+                                intakeCommands = new IntakeCommands(intake);
+                                shootCommands = new ShootCommands(shoot);
+                                transferCommands = new TransferCommands(transfer);
+                                cartridgeCommands = new CartridgeCommands(cartridge);
                                 armCommands = new ShooterArmCommands(arm);
+
+                                superCommands = new SuperCommands(cartridge, intake, shoot, arm, transfer);
                                 break;
 
                         case SIM:
                                 // Sim robot, instantiate physics sim IO implementations
-                                arm = null;                                intake = null;
+                                intake = null;
                                 shoot = null;
                                 transfer = null;
                                 cartridge = null;
+                                arm = null;                                
+                                
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
                                 break;
 
@@ -134,23 +140,20 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                operatorController.RB().whileTrue(armCommands.setVoltage(1.0));
-                operatorController.LB().whileTrue(armCommands.setVoltage(-1.0));
-                operatorController.rightTrigger().whileTrue(armCommands.setVoltage(2.5));
-                operatorController.leftTrigger().whileTrue(armCommands.setVoltage(-2.0));
+                // operatorController.rightTrigger().whileTrue(armCommands.setVoltage(2.5));
+                // operatorController.leftTrigger().whileTrue(armCommands.setVoltage(-1.0));
 
-                // operatorController.a().whileTrue(shootCommands.setHoodGoal(50));
+                // operatorController.a().whileTrue(shootCommands.shootBoth(50));
                 // operatorController.b().whileTrue(intakeCommands.intake());
-                // operatorController.y().whileTrue(intakeCommands.outake());
                 // operatorController.x().whileTrue(transferCommands.setVoltage());
-                operatorController.y().whileTrue(cartridgeCommands.openCartridge());
-                operatorController.x().whileTrue(cartridgeCommands.closeCartridge());
+                // operatorController.y().whileTrue(cartridgeCommands.closeCartridge());
 
+                BooleanSupplier shootButton = () -> operatorController.getRightTriggerAxis() > 0.5;
+                Logger.recordOutput("Operator/Intake", shootButton.getAsBoolean());
                 
-                operatorController.b().whileTrue(armCommands.closeArm());
-                operatorController.a().whileTrue(armCommands.goToPosition(0.5));
-                operatorController.x().whileTrue(armCommands.goToPosition(1.0));
-                operatorController.y().whileTrue(armCommands.ressistGravity());
+                operatorController.leftTrigger().whileTrue(superCommands.intakeFuel());
+                operatorController.a().onTrue(cartridgeCommands.closeCartridge());
+                operatorController.b().whileTrue(superCommands.shootToHub(operatorController.getRightTriggerAxis() > 0.5));
         }
 
 

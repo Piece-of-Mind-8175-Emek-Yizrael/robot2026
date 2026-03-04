@@ -52,7 +52,7 @@ public class ShootCommands {
     }
 
 
-    public Command setHoodGoal(double goal) {
+    public Command shootBoth(double goal) {
         return new Command() {
             private boolean feedStarted = false;
             
@@ -89,4 +89,27 @@ public class ShootCommands {
         }.andThen(Commands.runOnce(shoot.getIO()::resetCommand, shoot));
     }
     
+    public Command setHoodGoal(double goal) {
+        return new Command() {            
+            {
+                addRequirements(shoot);
+                setName("set hood goal command");
+            }
+
+            @Override
+            public void initialize() {
+                shoot.getIO().setHoodSetpoint(goal);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                shoot.getIO().stopHood();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+    }
 }
