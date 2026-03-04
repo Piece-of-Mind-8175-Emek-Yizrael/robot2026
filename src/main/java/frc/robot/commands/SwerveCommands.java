@@ -661,14 +661,17 @@ public class SwerveCommands {
                 return Math.sqrt(x * x + y * y);
         }
 
+
+        private static Rotation2d angleToHub(Swerve swerve){
+                return HUB_CENTER_POINT.minus(swerve.getRobotPoseAsBlue().getTranslation()).getAngle();
+        }
+
         public static Command turnToHub(Swerve drive) {
-                Rotation2d hubAngle = new Rotation2d(); ////TODO put hub angle
-                return rotateToAngle(drive, () -> hubAngle);
+                return rotateToAngle(drive, () -> angleToHub(drive));
         }
 
         public static Command driveFaceToHub(Swerve drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
-                Rotation2d hubAngle = new Rotation2d(); //TODO put hub angle
-                return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> hubAngle);
+                return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> angleToHub(drive));
         }
 
 }

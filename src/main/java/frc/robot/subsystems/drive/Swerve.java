@@ -53,6 +53,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.Mode;
 import frc.robot.util.LocalADStarAK;
 
+import static frc.robot.subsystems.drive.FieldConstants.Hub;
+
+
 public class Swerve extends SubsystemBase {
     // ODED WAS HERE
     // HELLO ODED, YOAV JOHN BARAK-MAURICE WAS ALSO HERE :)
@@ -503,4 +506,27 @@ public class Swerve extends SubsystemBase {
                             "Robot Angle", () -> gyroInputs.yawPosition.getRadians(), null);
                 });
             }
+            
+        public boolean isRedAlliance(){
+            return DriverStation.getAlliance().orElse(Alliance.Red).equals(Alliance.Red);
+        }
+
+        public Pose2d flipAlliance(Pose2d pose){
+            return new Pose2d(FieldConstants.fieldLength - pose.getX(),
+                                                                    FieldConstants.fieldWidth - pose.getY(),
+                                                                    Rotation2d.fromDegrees(180
+                                                                                    + pose.getRotation().getDegrees()));
+
+        }
+
+        public Pose2d getRobotPoseAsBlue(){
+            if(isRedAlliance()){
+                return flipAlliance(getPose());
+            }
+            return getPose();
+        }
+
+        public double getDistanceFromHub() {
+            return HUB_CENTER_POINT.getDistance(getRobotPoseAsBlue().getTranslation());
+        }
 }
