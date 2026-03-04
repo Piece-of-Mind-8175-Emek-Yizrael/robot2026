@@ -111,7 +111,7 @@ public class RobotContainer {
                                 new ModuleIOReal(3));
 
                         
-                                superCommands = new SuperCommands(cartridge, intake, shoot, arm, transfer);
+                                superCommands = new SuperCommands(cartridge, intake, shoot, arm, transfer, swerve);
 
                                 break;
 
@@ -164,10 +164,7 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-
-                BooleanSupplier shootButton = () -> operatorController.getRightTriggerAxis() > 0.5;
-                Logger.recordOutput("Operator/Intake", shootButton.getAsBoolean());
-
+                
                 swerve.setDefaultCommand(
                         SwerveCommands.joystickDrive(swerve,
                         () -> driverController.getLeftY() * -0.35,
@@ -181,7 +178,7 @@ public class RobotContainer {
                 operatorController.leftTrigger().whileTrue(superCommands.intakeFuel());
                 operatorController.rightTrigger().whileTrue(cartridgeCommands.setOpenVoltage());
                 operatorController.a().onTrue(cartridgeCommands.closeCartridge());
-                operatorController.b().whileTrue(superCommands.shootToHub(operatorController.getRightTriggerAxis() > 0.5));
+                operatorController.b().whileTrue(superCommands.shootToHub(operatorController.rightTrigger()));
         }
 
 

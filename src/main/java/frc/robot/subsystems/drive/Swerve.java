@@ -6,8 +6,6 @@ import static edu.wpi.first.units.Units.Kilograms;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.currentMode;
-import static frc.robot.subsystems.drive.DriveConstants.driveBaseRadius;
-import static frc.robot.subsystems.drive.DriveConstants.maxSpeedMetersPerSec;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import java.util.concurrent.locks.Lock;
@@ -504,6 +502,5 @@ public class Swerve extends SubsystemBase {
                     builder.addDoubleProperty(
                             "Robot Angle", () -> gyroInputs.yawPosition.getRadians(), null);
                 });
-    }
-
+            }
 }
