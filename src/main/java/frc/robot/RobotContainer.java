@@ -21,19 +21,25 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.Commands.CartridgeCommands;
 import frc.robot.Commands.IntakeCommands;
 import frc.robot.Commands.ShootCommands;
 import frc.robot.Commands.ShooterArmCommands;
 import frc.robot.Commands.SuperCommands;
+import frc.robot.Commands.SwerveCommands;
 import frc.robot.Commands.TransferCommands;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
 import frc.robot.subsystems.cartridge.Cartridge;
 import frc.robot.subsystems.cartridge.CartridgeIOReal;
+import frc.robot.subsystems.drive.GyroIOPigeon2;
+import frc.robot.subsystems.drive.GyroIOSim;
+import frc.robot.subsystems.drive.ModuleIOReal;
+import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.Swerve;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIOKraken;
 import frc.robot.subsystems.shoot.Shoot;
@@ -42,7 +48,6 @@ import frc.robot.subsystems.shooterArm.ShooterArm;
 import frc.robot.subsystems.shooterArm.ShooterArmIOReal;
 import frc.robot.subsystems.transfer.Transfer;
 import frc.robot.subsystems.transfer.TransferIOReal;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -61,6 +66,7 @@ public class RobotContainer {
         private Shoot shoot;
         private Transfer transfer;
         private Cartridge cartridge;
+        private Swerve swerve;
 
         // Commands
         private ShootCommands shootCommands;
@@ -71,7 +77,7 @@ public class RobotContainer {
         private SuperCommands superCommands;
 
         // Controller
-        private final PS5Controller driverController = new PS5Controller(0);
+        private final CommandPS5Controller  driverController = new CommandPS5Controller (0);
         private final PomXboxController operatorController = new PomXboxController(1);
 
         // Dashboard inputs
@@ -97,8 +103,16 @@ public class RobotContainer {
                                 transferCommands = new TransferCommands(transfer);
                                 cartridgeCommands = new CartridgeCommands(cartridge);
                                 armCommands = new ShooterArmCommands(arm);
+                                
+                                swerve = new Swerve(new GyroIOPigeon2(),
+                                new ModuleIOReal(0),
+                                new ModuleIOReal(1),
+                                new ModuleIOReal(2),
+                                new ModuleIOReal(3));
 
+                        
                                 superCommands = new SuperCommands(cartridge, intake, shoot, arm, transfer);
+
                                 break;
 
                         case SIM:
@@ -110,10 +124,20 @@ public class RobotContainer {
                                 arm = null;                                
                                 
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
+ 
+                                swerve = 
+                                new Swerve(
+                                        new GyroIOSim(this.driveSimulation.getGyroSimulation()),
+                                        new ModuleIOSim(this.driveSimulation.getModules()[0]),
+                                        new ModuleIOSim(this.driveSimulation.getModules()[1]),
+                                        new ModuleIOSim(this.driveSimulation.getModules()[2]),
+                                        new ModuleIOSim(this.driveSimulation.getModules()[3]));
+                                        
                                 break;
-
+                                        
                         default:
                                 // Replayed robot, disable IO implementations
+                                swerve = null;
                                 break;
                 }
 
@@ -140,17 +164,20 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                // operatorController.rightTrigger().whileTrue(armCommands.setVoltage(2.5));
-                // operatorController.leftTrigger().whileTrue(armCommands.setVoltage(-1.0));
-
-                // operatorController.a().whileTrue(shootCommands.shootBoth(50));
-                // operatorController.b().whileTrue(intakeCommands.intake());
-                // operatorController.x().whileTrue(transferCommands.setVoltage());
-                // operatorController.y().whileTrue(cartridgeCommands.closeCartridge());
 
                 BooleanSupplier shootButton = () -> operatorController.getRightTriggerAxis() > 0.5;
                 Logger.recordOutput("Operator/Intake", shootButton.getAsBoolean());
-                
+
+                swerve.setDefaultCommand(
+                        SwerveCommands.joystickDrive(swerve,
+                        () -> driverController.getLeftY() * -0.35,
+                         () -> driverController.getLeftX() * -0.35,
+                          () -> driverController.getRightX() * -0.35)
+                );
+
+                driverController.triangle().onTrue(swerve.resetGyroCommand());
+
+        
                 operatorController.leftTrigger().whileTrue(superCommands.intakeFuel());
                 operatorController.a().onTrue(cartridgeCommands.closeCartridge());
                 operatorController.b().whileTrue(superCommands.shootToHub(operatorController.getRightTriggerAxis() > 0.5));
