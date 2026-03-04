@@ -16,7 +16,7 @@ public class IntakeCommands {
 
     public Command intake(){ 
         return Commands.runEnd(
-            () -> intake.getIO().setVoltage(-3) ,
+            () -> intake.getIO().setVoltage(-5) ,
             () -> intake.getIO().stopMotor(), 
             intake);
     }

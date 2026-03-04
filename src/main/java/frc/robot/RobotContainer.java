@@ -179,6 +179,7 @@ public class RobotContainer {
 
         
                 operatorController.leftTrigger().whileTrue(superCommands.intakeFuel());
+                operatorController.rightTrigger().whileTrue(cartridgeCommands.setOpenVoltage());
                 operatorController.a().onTrue(cartridgeCommands.closeCartridge());
                 operatorController.b().whileTrue(superCommands.shootToHub(operatorController.getRightTriggerAxis() > 0.5));
         }

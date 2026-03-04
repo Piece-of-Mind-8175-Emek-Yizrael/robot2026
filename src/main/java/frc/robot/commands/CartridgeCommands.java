@@ -20,7 +20,7 @@ public class CartridgeCommands extends Command {
     }
 
     public Command setOpenVoltage() {
-        return setVoltage(3).until(cartridge.getIO()::isOuterPressed);
+        return setVoltage(5).until(cartridge.getIO()::isOuterPressed);
     }
 
     public Command setCloseVoltage() {
