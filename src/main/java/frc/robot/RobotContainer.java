@@ -97,8 +97,8 @@ public class RobotContainer {
                 TransferCommands transferCommands = new TransferCommands();
                 operatorController.a().whileTrue(transferCommands.setVoltage(transfer, 5));
                 operatorController.b().whileTrue(transferCommands.setVoltage(transfer, -5));
-                operatorController.a().whileTrue(transferCommands.setVoltage(transfer, 3));
-                operatorController.a().whileTrue(transferCommands.stopMotor(transfer));
+                operatorController.x().whileTrue(transferCommands.setVoltage(transfer, 3));
+                operatorController.y().whileTrue(transferCommands.stopMotor(transfer));
                 
         }
 
