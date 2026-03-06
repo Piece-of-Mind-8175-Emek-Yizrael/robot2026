@@ -13,24 +13,20 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Commands.TransferCommands;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
-import frc.robot.commands.TransferCommands;
 import frc.robot.subsystems.transfer.Transfer;
 import frc.robot.subsystems.transfer.TransferIOReal;
-
-import org.ironmaple.simulation.SimulatedArena;
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -48,6 +44,8 @@ public class RobotContainer {
         private final PS5Controller driverController = new PS5Controller(0);
         private final PomXboxController operatorController = new PomXboxController(1);
 
+        private Transfer transfer;
+
         // Dashboard inputs
         private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -60,16 +58,18 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
+                                transfer = new Transfer(new TransferIOReal());
                                 break;
 
                         case SIM:
                                 // Sim robot, instantiate physics sim IO implementations
-
+                                transfer = null;
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
                                 break;
 
                         default:
                                 // Replayed robot, disable IO implementations
+                                transfer = null;
                                 break;
                 }
 
@@ -94,6 +94,11 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
+                TransferCommands transferCommands = new TransferCommands();
+                operatorController.a().whileTrue(transferCommands.setVoltage(transfer, 5));
+                operatorController.b().whileTrue(transferCommands.setVoltage(transfer, -5));
+                operatorController.a().whileTrue(transferCommands.setVoltage(transfer, 3));
+                operatorController.a().whileTrue(transferCommands.stopMotor(transfer));
                 
         }
 
