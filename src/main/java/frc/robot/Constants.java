@@ -46,7 +46,7 @@ public final class Constants {
 
   public static class VisionConstants {
     // THE translations FOR THE LEFT AND RIGHT CAMERAS
-    public static Translation3d l_camera_translation = new Translation3d(10.9, -0.07, 0.263);
+    public static Translation3d l_camera_translation = new Translation3d(0,0, 0.263);
     public static Translation3d r_camera_translation = new Translation3d(0, 0, 0.263);
 
     // THE ROTATION FOR THE LEFT AND RIGHT CAMERAS
