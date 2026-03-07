@@ -13,7 +13,16 @@
 
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.PS5Controller;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.POM_lib.Joysticks.PomXboxController;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -61,20 +70,6 @@ import frc.robot.subsystems.transfer.TransferIOReal;
 
 public class RobotContainer {
         // Subsystems
-        private ShooterArm arm;
-        private Intake intake;
-        private Shoot shoot;
-        private Transfer transfer;
-        private Cartridge cartridge;
-        private Swerve swerve;
-
-        // Commands
-        private ShootCommands shootCommands;
-        private IntakeCommands intakeCommands;
-        private TransferCommands transferCommands;
-        private CartridgeCommands cartridgeCommands;        
-        private ShooterArmCommands armCommands;
-        private SuperCommands superCommands;
 
         // Controller
         private final CommandPS5Controller  driverController = new CommandPS5Controller (0);
@@ -91,28 +86,7 @@ public class RobotContainer {
         public RobotContainer() {
                 switch (Constants.currentMode) {
                         case REAL:
-                                intake = new Intake(new IntakeIOKraken());
-                                shoot = new Shoot(new ShootIOReal());
-                                transfer = new Transfer(new TransferIOReal());
-                                cartridge = new Cartridge(new CartridgeIOReal());
-                                arm = new ShooterArm(new ShooterArmIOReal());
-                                
-                                
-                                intakeCommands = new IntakeCommands(intake);
-                                shootCommands = new ShootCommands(shoot);
-                                transferCommands = new TransferCommands(transfer);
-                                cartridgeCommands = new CartridgeCommands(cartridge);
-                                armCommands = new ShooterArmCommands(arm);
-                                
-                                swerve = new Swerve(new GyroIOPigeon2(),
-                                new ModuleIOReal(0),
-                                new ModuleIOReal(1),
-                                new ModuleIOReal(2),
-                                new ModuleIOReal(3));
-
-                        
-                                superCommands = new SuperCommands(cartridge, intake, shoot, arm, transfer, swerve);
-
+                                // Real robot, instantiate hardware IO implementations
                                 break;
 
                         case SIM:
@@ -165,24 +139,10 @@ public class RobotContainer {
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
                 
-                swerve.setDefaultCommand(
-                        SwerveCommands.joystickDrive(swerve,
-                        () -> driverController.getLeftY() * -0.35,
-                         () -> driverController.getLeftX() * -0.35,
-                          () -> driverController.getRightX() * -0.35)
-                );
-
-                driverController.triangle().onTrue(swerve.resetGyroCommand());
-
-        
-                operatorController.leftTrigger().whileTrue(superCommands.intakeFuel());
-                operatorController.rightTrigger().whileTrue(cartridgeCommands.setOpenVoltage());
-                operatorController.a().onTrue(cartridgeCommands.closeCartridge());
-                operatorController.b().whileTrue(superCommands.shootToHub(operatorController.rightTrigger()));
         }
 
 
-        public void displaSimFieldToAdvantageScope() {
+        public void displaySimFieldToAdvantageScope() {
                 if (Constants.currentMode != Constants.Mode.SIM)
                         return;
 
