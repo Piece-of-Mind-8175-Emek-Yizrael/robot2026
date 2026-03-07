@@ -58,9 +58,6 @@ public final class Constants {
     // THE TRANSFORMATION FOR THE LEFT AND RIGHT CAM ERAS
     public static Transform3d l_camera_transform = new Transform3d(l_camera_translation, l_camera_rotation); // here
     public static Transform3d r_camera_transform = new Transform3d(r_camera_translation, r_camera_rotation);
-
-    public static final Transform2d transformRightBranch = new Transform2d(0.384, 0.013, new Rotation2d(-0.1));
-    public static final Transform2d transformLeftBranch = new Transform2d(0.384, 0.013, new Rotation2d(-0.1));
   }
 
   public static enum Mode {
