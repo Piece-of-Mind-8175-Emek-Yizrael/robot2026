@@ -527,6 +527,7 @@ public class Swerve extends SubsystemBase {
         }
 
         public double getDistanceFromHub() {
-            return HUB_CENTER_POINT.getDistance(getRobotPoseAsBlue().getTranslation());
+            // return HUB_CENTER_POINT.getDistance(getRobotPoseAsBlue().getTranslation());
+            return 0.0;
         }
 }

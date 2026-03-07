@@ -12,13 +12,13 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.POM_lib.Motors.POMTalonFX;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
 
-public class IntakeIOKraken implements IntakeIO{
+public class IntakeIOReal implements IntakeIO{
     private final POMTalonFX motor;
     private final TalonFXConfiguration config = new TalonFXConfiguration();
 
     private VoltageOut voltageOut = new VoltageOut(0);
 
-    public IntakeIOKraken(){
+    public IntakeIOReal(){
         motor = new POMTalonFX(MOTOR_ID);
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         config.CurrentLimits.SupplyCurrentLimit = CURRENT_LIMIT;

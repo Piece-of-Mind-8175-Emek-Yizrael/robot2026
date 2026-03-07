@@ -13,17 +13,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.PS5Controller;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.POM_lib.Joysticks.PomXboxController;
-
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -34,13 +23,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
-import frc.robot.Commands.CartridgeCommands;
-import frc.robot.Commands.IntakeCommands;
-import frc.robot.Commands.ShootCommands;
-import frc.robot.Commands.ShooterArmCommands;
-import frc.robot.Commands.SuperCommands;
-import frc.robot.Commands.SwerveCommands;
-import frc.robot.Commands.TransferCommands;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
 import frc.robot.subsystems.cartridge.Cartridge;
 import frc.robot.subsystems.cartridge.CartridgeIOReal;
@@ -50,13 +32,15 @@ import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.IntakeIOKraken;
+import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.shoot.Shoot;
 import frc.robot.subsystems.shoot.ShootIOReal;
 import frc.robot.subsystems.shooterArm.ShooterArm;
 import frc.robot.subsystems.shooterArm.ShooterArmIOReal;
 import frc.robot.subsystems.transfer.Transfer;
 import frc.robot.subsystems.transfer.TransferIOReal;
+import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIOReal;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -70,6 +54,14 @@ import frc.robot.subsystems.transfer.TransferIOReal;
 
 public class RobotContainer {
         // Subsystems
+        private final Swerve swerve;
+        private final Intake intake;
+        private final Shoot shoot;
+        private final Transfer transfer;
+        private final Cartridge cartridge;
+        private final ShooterArm arm;
+        private final VisionSubsystem vision;
+        
 
         // Controller
         private final CommandPS5Controller  driverController = new CommandPS5Controller (0);
@@ -87,6 +79,22 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
+                                driveSimulation = null;
+                                swerve = new Swerve(new GyroIOPigeon2(), new ModuleIOReal(0), new ModuleIOReal(1), new ModuleIOReal(2), new ModuleIOReal(3));
+                                intake = new Intake(new IntakeIOReal());
+                                shoot = new Shoot(new ShootIOReal());
+                                transfer = new Transfer(new TransferIOReal());
+                                cartridge = new Cartridge(new CartridgeIOReal());
+                                arm = new ShooterArm(new ShooterArmIOReal());
+                                
+                                ApriltagVisionIOReal[] cameras = {
+                                                new ApriltagVisionIOReal("first_camera",
+                                                                Constants.VisionConstants.l_camera_transform),
+                                                new ApriltagVisionIOReal("seconde_camera",
+                                                                Constants.VisionConstants.r_camera_transform),
+                                };
+ 
+                                vision = new VisionSubsystem(swerve::addVisionMeasurement, cameras, null, null, null);
                                 break;
 
                         case SIM:
@@ -95,7 +103,8 @@ public class RobotContainer {
                                 shoot = null;
                                 transfer = null;
                                 cartridge = null;
-                                arm = null;                                
+                                arm = null;    
+                                vision = null;                            
                                 
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
  
@@ -112,6 +121,14 @@ public class RobotContainer {
                         default:
                                 // Replayed robot, disable IO implementations
                                 swerve = null;
+                                intake = null;
+                                shoot = null;
+                                transfer = null;
+                                cartridge = null;
+                                arm = null; 
+                                vision = null;                            
+
+                                
                                 break;
                 }
 
