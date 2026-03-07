@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.vision.VisionConstants;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -41,6 +42,8 @@ import frc.robot.subsystems.transfer.Transfer;
 import frc.robot.subsystems.transfer.TransferIOReal;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIOReal;
+
+import java.util.Optional;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -88,13 +91,13 @@ public class RobotContainer {
                                 arm = new ShooterArm(new ShooterArmIOReal());
                                 
                                 ApriltagVisionIOReal[] cameras = {
-                                                new ApriltagVisionIOReal("first_camera",
-                                                                Constants.VisionConstants.l_camera_transform),
-                                                new ApriltagVisionIOReal("seconde_camera",
-                                                                Constants.VisionConstants.r_camera_transform),
+                                                new ApriltagVisionIOReal("back_camera",
+                                                                VisionConstants.InitialRobotToBackCameraTranslation),
+                                                new ApriltagVisionIOReal("front_camera",
+                                                                VisionConstants.InitialRobotToFrontCameraTranslation),
                                 };
  
-                                vision = new VisionSubsystem(swerve::addVisionMeasurement, cameras, null, null, null);
+                                vision = new VisionSubsystem(swerve::addVisionMeasurement, cameras, null, cartridge.getIO()::getCartridgePose, Optional.empty());
                                 break;
 
                         case SIM:
