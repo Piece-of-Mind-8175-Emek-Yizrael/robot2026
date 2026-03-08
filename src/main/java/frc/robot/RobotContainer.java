@@ -24,10 +24,13 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
 import frc.robot.commands.CartridgeCommands;
+import frc.robot.commands.IntakeCommands;
 import frc.robot.commands.ShootCommands;
+import frc.robot.commands.ShooterArmCommands;
 import frc.robot.commands.SuperCommands;
 import frc.robot.commands.SwerveCommands;
 import frc.robot.subsystems.cartridge.Cartridge;
@@ -73,8 +76,8 @@ public class RobotContainer {
         
 
         // Controller
-        private final CommandPS5Controller  driverController = new CommandPS5Controller (0);
-        private final PomXboxController operatorController = new PomXboxController(1);
+        private final PomXboxController driverController = new PomXboxController(0);
+        private final CommandPS5Controller operatorController = new CommandPS5Controller (1);
 
         // Dashboard inputs
         private final LoggedDashboardChooser<Command> autoChooser;
@@ -97,8 +100,8 @@ public class RobotContainer {
                                 arm = new ShooterArm(new ShooterArmIOReal());
                                 
                                 ApriltagVisionIOReal[] cameras = {
-                                                new ApriltagVisionIOReal("first_camera",
-                                                                VisionConstants.InitialRobotToBackCameraTranslation),
+                                                // new ApriltagVisionIOReal("first_camera",
+                                                //                 VisionConstants.InitialRobotToBackCameraTranslation),
                                                 new ApriltagVisionIOReal("seconde_camera",
                                                                 VisionConstants.CAMERA_TO_ROBOT_CLOSED_CARTRIDGE_TRANSLATION),
                                 };
@@ -174,14 +177,20 @@ public class RobotContainer {
                                                 () -> driverController.getLeftX() * -0.5,
                                                 () -> driverController.getRightX() * -0.5));
 
-                driverController.triangle().onTrue(swerve.resetGyroCommand());
-                driverController.L2().whileTrue(superCommands.intakeFuel());
-                driverController.circle().whileTrue(superCommands.closeCartridge());
-                driverController.cross().whileTrue(superCommands.shootToHub(driverController.R2()));
-                driverController.square().toggleOnTrue(superCommands.shootToHub(driverController.R2()));
-                driverController.square().toggleOnFalse(new ShootCommands(shoot).stopBoth());
+                driverController.LB().whileTrue(SwerveCommands.joystickDrive(swerve,
+                                                () -> driverController.getLeftY() * -0.5,
+                                                () -> driverController.getLeftX() * -0.5,
+                                                () -> driverController.getRightX() * -0.5));
+
+                driverController.leftTrigger().whileTrue(superCommands.intakeFuel());
+                driverController.b().whileTrue(superCommands.closeCartridge());
+                driverController.x().whileTrue(superCommands.outtakeFuel());
+                driverController.RB().onTrue(superCommands.shootToHub(driverController.rightTrigger()));
+                driverController.a().onTrue(new ShootCommands(shoot).stopBoth().alongWith(new ShooterArmCommands(arm).closeArm()));
+                driverController.y().onTrue(swerve.resetGyroCommand());
 
         }
+
 
 
         public void displaySimFieldToAdvantageScope() {

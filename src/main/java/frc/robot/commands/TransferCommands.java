@@ -13,8 +13,8 @@ public class TransferCommands {
     public TransferCommands(Transfer transfer){
         this.transfer = transfer;
     }
-    public Command setVoltage() {
-        return Commands.runEnd(() -> transfer.getIO().setVoltage(TRANSFER_SPEED), () -> transfer.getIO().setVoltage(0), transfer);
+    public Command setVoltage(double voltage) {
+        return Commands.runEnd(() -> transfer.getIO().setVoltage(voltage), () -> transfer.getIO().setVoltage(0), transfer);
     }
 
     public Command stopMotor() {

@@ -17,19 +17,23 @@ import frc.robot.subsystems.transfer.Transfer;
 public class SuperCommands {
 
     //subsystems
-    Cartridge cartridge;
-    Intake intake;
-    Shoot shoot;
-    ShooterArm arm;
-    Transfer transfer;
-    Swerve swerve;
+    private Cartridge cartridge;
+    private Intake intake;
+    private Shoot shoot;
+    private ShooterArm arm;
+    private Transfer transfer;
+    private Swerve swerve;
 
     //commands
-    CartridgeCommands cartridgeCommands;
-    IntakeCommands intakeCommands;
-    ShootCommands shootCommands;
-    ShooterArmCommands armCommands;
-    TransferCommands transferCommands;
+    private CartridgeCommands cartridgeCommands;
+    private IntakeCommands intakeCommands;
+    private ShootCommands shootCommands;
+    private ShooterArmCommands armCommands;
+    private TransferCommands transferCommands;
+
+    private final double farArmAngle = 0.1;
+    private final double farShootSpeed = 55.0;
+
 
     public SuperCommands(Cartridge cartridge, Intake intake, Shoot shoot, ShooterArm arm, Transfer transfer, Swerve swerve) {
         this.cartridge = cartridge;
@@ -48,9 +52,16 @@ public class SuperCommands {
 
     public Command intakeFuel(){
         return Commands.parallel(
-            cartridgeCommands.openCartridge(),
+            (cartridgeCommands.openCartridge().withTimeout(1).andThen(cartridgeCommands.setVoltage(-2))),
             intakeCommands.intake(),
-            transferCommands.setVoltage()
+            transferCommands.setVoltage(4)
+        );
+    }
+
+    public Command outtakeFuel(){
+        return Commands.parallel(
+            intakeCommands.outake(),
+            transferCommands.setVoltage(-4)
         );
     }
     
@@ -65,32 +76,29 @@ public class SuperCommands {
     public Command shootToHub(BooleanSupplier readyToShoot) {
         return new Command() {
             {
-                addRequirements(intake, shoot, arm, transfer);
+                addRequirements(shoot, arm, transfer);
             }
 
             @Override
             public void initialize() {
-                shoot.getIO().setHoodSetpoint(50);//FIXME: placeholder value
-                arm.getIO().setGoal(0.1);//FIXME: placeholder value
+                shoot.getIO().setHoodSetpoint(farShootSpeed);//FIXME: placeholder value //55//45
+                arm.getIO().setGoal(farArmAngle);//FIXME: placeholder value //0.1//0.06
             }
 
             @Override
             public void execute() {
-                Logger.recordOutput("SuperCommand/ReadyToShoot", readyToShoot.getAsBoolean());
+                Logger.recordOutput("distance from hub", swerve.getDistanceFromHub());
                 if(readyToShoot.getAsBoolean()){
-                    shoot.getIO().setFeedVoltage(12.0);
+                    shoot.getIO().setFeedVoltage(8.0);
                     transfer.getIO().setVoltage(5.0);
-                    intake.getIO().setVoltage(-3);
                 }
-                arm.getIO().setGoal(0.1);//FIXME: placeholder value
-                
+                arm.getIO().setGoal(farArmAngle);//FIXME: placeholder value
             }
 
             @Override
             public void end(boolean interrupted) {
                 shoot.getIO().stopBoth();
                 transfer.getIO().stopMotor();
-                intake.getIO().stopMotor();
             }
 
             @Override
@@ -100,7 +108,19 @@ public class SuperCommands {
         };
     }
 
-    // private double getArmAngle(){
-    //     SwerveCommands.getDistanceFromHub(swerve);
-    // }
+    private double getArmAngle(){
+        if(swerve.getDistanceFromHub() < 1.5){
+            return 0.06;
+        } else {
+            return farArmAngle;
+        }
+    }
+
+    private double getShootSpeed(){
+        if(swerve.getDistanceFromHub() < 1.5){
+            return 45.0;
+        } else {
+            return farShootSpeed;
+        }
+    }
 }
