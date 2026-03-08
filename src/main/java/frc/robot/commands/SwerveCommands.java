@@ -29,7 +29,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 // import frc.robot.subsystems.Vision.VisionSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.drive.FieldConstants;
 import frc.robot.subsystems.drive.Swerve;
+import static frc.robot.subsystems.drive.FieldConstants.Hub.*;
 
 public class SwerveCommands {
         private static final double DEADBAND = 0.15;
@@ -651,20 +653,24 @@ public class SwerveCommands {
                 }
         }
 
+        // public double getDistanceFromHub(Swerve drive) {
+        //         Pose2d hubPos = new Pose2d(0, 0, new Rotation2d()); //TODO put hub position
+        //         double x = hubPos.getX() - drive.getPose().getX();
+        //         double y = hubPos.getY() - drive.getPose().getY();
+                
+        //         hubPos.getTranslation().getDistance(drive.getPose().getTranslation());
+
+        //         return Math.sqrt(x * x + y * y);
+        // }
+
         public double getDistanceFromHub(Swerve drive) {
-                Pose2d hubPos = new Pose2d(0, 0, new Rotation2d()); //TODO put hub position
-                double x = hubPos.getX() - drive.getPose().getX();
-                double y = hubPos.getY() - drive.getPose().getY();
-
-                hubPos.getTranslation().getDistance(drive.getPose().getTranslation());
-
-                return Math.sqrt(x * x + y * y);
+                Translation2d hubPos = HUB_CENTER_POINT;
+                return hubPos.getDistance(drive.getPose().getTranslation());
         }
 
 
         private static Rotation2d angleToHub(Swerve swerve){
-                // return HUB_CENTER_POINT.minus(swerve.getRobotPoseAsBlue().getTranslation()).getAngle();
-                return null;
+                return HUB_CENTER_POINT.minus(swerve.getRobotPoseAsBlue().getTranslation()).getAngle();
         }
 
         public static Command turnToHub(Swerve drive) {

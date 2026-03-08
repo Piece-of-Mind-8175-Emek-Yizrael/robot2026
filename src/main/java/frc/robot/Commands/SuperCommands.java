@@ -49,7 +49,8 @@ public class SuperCommands {
     public Command intakeFuel(){
         return Commands.parallel(
             cartridgeCommands.openCartridge(),
-            intakeCommands.intake()
+            intakeCommands.intake(),
+            transferCommands.setVoltage()
         );
     }
 
@@ -70,7 +71,7 @@ public class SuperCommands {
                 Logger.recordOutput("SuperCommand/ReadyToShoot", readyToShoot.getAsBoolean());
                 if(readyToShoot.getAsBoolean()){
                     shoot.getIO().setFeedVoltage(12.0);
-                    transfer.getIO().setVoltage(0.5);
+                    transfer.getIO().setVoltage(5.0);
                     intake.getIO().setVoltage(3);
                 }
                 

@@ -13,7 +13,8 @@
 
 package frc.robot;
 
-import frc.robot.subsystems.vision.VisionConstants;
+import java.util.Optional;
+
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -25,6 +26,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
+import frc.robot.commands.CartridgeCommands;
+import frc.robot.commands.ShootCommands;
+import frc.robot.commands.SuperCommands;
+import frc.robot.commands.SwerveCommands;
 import frc.robot.subsystems.cartridge.Cartridge;
 import frc.robot.subsystems.cartridge.CartridgeIOReal;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -40,10 +45,9 @@ import frc.robot.subsystems.shooterArm.ShooterArm;
 import frc.robot.subsystems.shooterArm.ShooterArmIOReal;
 import frc.robot.subsystems.transfer.Transfer;
 import frc.robot.subsystems.transfer.TransferIOReal;
+import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIOReal;
-
-import java.util.Optional;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -64,6 +68,8 @@ public class RobotContainer {
         private final Cartridge cartridge;
         private final ShooterArm arm;
         private final VisionSubsystem vision;
+        private final SuperCommands superCommands;
+
         
 
         // Controller
@@ -91,13 +97,15 @@ public class RobotContainer {
                                 arm = new ShooterArm(new ShooterArmIOReal());
                                 
                                 ApriltagVisionIOReal[] cameras = {
-                                                new ApriltagVisionIOReal("back_camera",
+                                                new ApriltagVisionIOReal("first_camera",
                                                                 VisionConstants.InitialRobotToBackCameraTranslation),
-                                                new ApriltagVisionIOReal("front_camera",
+                                                new ApriltagVisionIOReal("seconde_camera",
                                                                 VisionConstants.InitialRobotToFrontCameraTranslation),
                                 };
  
                                 vision = new VisionSubsystem(swerve::addVisionMeasurement, cameras, null, cartridge.getIO()::getCartridgePose, Optional.empty());
+
+                                superCommands = new SuperCommands(cartridge, intake, shoot, arm, transfer, swerve);
                                 break;
 
                         case SIM:
@@ -107,7 +115,8 @@ public class RobotContainer {
                                 transfer = null;
                                 cartridge = null;
                                 arm = null;    
-                                vision = null;                            
+                                vision = null; 
+                                superCommands = null;                           
                                 
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
  
@@ -130,6 +139,7 @@ public class RobotContainer {
                                 cartridge = null;
                                 arm = null; 
                                 vision = null;                            
+                                superCommands = null;                           
 
                                 
                                 break;
@@ -158,7 +168,19 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                
+                swerve.setDefaultCommand(
+                                SwerveCommands.joystickDriveRobotRelative(swerve,
+                                                () -> driverController.getLeftY() * -0.5,
+                                                () -> driverController.getLeftX() * -0.5,
+                                                () -> driverController.getRightX() * -0.5));
+
+                driverController.triangle().onTrue(swerve.resetGyroCommand());
+                driverController.L2().whileTrue(superCommands.intakeFuel());
+                driverController.circle().onTrue(new CartridgeCommands(cartridge).closeCartridge());
+                driverController.cross().whileTrue(superCommands.shootToHub(driverController.R2()));
+                driverController.square().toggleOnTrue(superCommands.shootToHub(driverController.R2()));
+                driverController.square().toggleOnFalse(new ShootCommands(shoot).stopBoth());
+
         }
 
 

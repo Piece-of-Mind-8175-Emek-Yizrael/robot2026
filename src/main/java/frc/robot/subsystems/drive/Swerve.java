@@ -6,7 +6,10 @@ import static edu.wpi.first.units.Units.Kilograms;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.currentMode;
-import static frc.robot.subsystems.drive.DriveConstants.*;
+import static frc.robot.subsystems.drive.DriveConstants.driveBaseRadius;
+import static frc.robot.subsystems.drive.DriveConstants.maxSpeedMetersPerSec;
+import static frc.robot.subsystems.drive.DriveConstants.moduleTranslations;
+import static frc.robot.subsystems.drive.DriveConstants.ppConfig;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -53,7 +56,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.Mode;
 import frc.robot.util.LocalADStarAK;
 
-import static frc.robot.subsystems.drive.FieldConstants.Hub;
+import static frc.robot.subsystems.drive.FieldConstants.Hub.*;
 
 
 public class Swerve extends SubsystemBase {
@@ -103,7 +106,7 @@ public class Swerve extends SubsystemBase {
                 this::runPureVelocity,
                 new PPHolonomicDriveController(new PIDConstants(2.5, 0.0, 0.0), new PIDConstants(2.5, 0.0, 0.0)), // TODOn
                                                                                                                   // pid
-                ppConfig, // FIXME on comment in drive constance
+                ppConfig, 
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 this);
 
@@ -457,7 +460,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public Command testSteeringCommand(DoubleSupplier x, DoubleSupplier y) {
-        return this.run(() -> { // TODO
+        return this.run(() -> { 
             Rotation2d angle = new Rotation2d(x.getAsDouble(), y.getAsDouble());
             double a = MathUtil.applyDeadband(Math.hypot(x.getAsDouble(), y.getAsDouble()), 0.15);
             Logger.recordOutput("wanted angle", angle.getRadians());
@@ -527,7 +530,6 @@ public class Swerve extends SubsystemBase {
         }
 
         public double getDistanceFromHub() {
-            // return HUB_CENTER_POINT.getDistance(getRobotPoseAsBlue().getTranslation());
-            return 0.0;
+            return HUB_CENTER_POINT.getDistance(getRobotPoseAsBlue().getTranslation());
         }
 }

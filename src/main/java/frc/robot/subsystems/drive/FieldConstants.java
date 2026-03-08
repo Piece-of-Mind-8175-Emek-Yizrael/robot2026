@@ -96,6 +96,9 @@ public class FieldConstants {
             AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(26).get().getX() + width / 2.0,
             fieldWidth / 2.0,
             height);
+    
+    public static final Translation2d HUB_CENTER_POINT = topCenterPoint.toTranslation2d();
+    
     public static final Translation3d innerCenterPoint =
         new Translation3d(
             AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(26).get().getX() + width / 2.0,
