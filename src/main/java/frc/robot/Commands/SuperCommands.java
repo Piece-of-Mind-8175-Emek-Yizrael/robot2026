@@ -53,6 +53,14 @@ public class SuperCommands {
             transferCommands.setVoltage()
         );
     }
+    
+    public Command closeCartridge(){
+        return Commands.race(
+            cartridgeCommands.closeCartridge(),
+            intakeCommands.intake()
+        );
+    }
+
 
     public Command shootToHub(BooleanSupplier readyToShoot) {
         return new Command() {
@@ -63,7 +71,7 @@ public class SuperCommands {
             @Override
             public void initialize() {
                 shoot.getIO().setHoodSetpoint(50);//FIXME: placeholder value
-                arm.getIO().setGoal(0);//FIXME: placeholder value
+                arm.getIO().setGoal(0.1);//FIXME: placeholder value
             }
 
             @Override
@@ -72,8 +80,9 @@ public class SuperCommands {
                 if(readyToShoot.getAsBoolean()){
                     shoot.getIO().setFeedVoltage(12.0);
                     transfer.getIO().setVoltage(5.0);
-                    intake.getIO().setVoltage(3);
+                    intake.getIO().setVoltage(-3);
                 }
+                arm.getIO().setGoal(0.1);//FIXME: placeholder value
                 
             }
 

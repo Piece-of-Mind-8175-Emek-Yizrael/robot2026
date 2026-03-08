@@ -138,9 +138,9 @@ public class CartridgeIOReal implements CartridgeIO {
                 ff.setKg(Kg);
                 pidController.setP(Kp);
             } else if (encoder.getPosition() < 0.4 && !isOuterPressed()){
-                ff.setKs(Ks + 1.3);
+                ff.setKs(Ks + 1.8);
                 ff.setKg(Kg);
-                pidController.setP(Kp);
+                pidController.setP(Kp + 0.2);
             } else {
                 ff.setKs(Ks);
                 ff.setKg(Kg);

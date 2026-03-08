@@ -111,24 +111,24 @@ public class VisionSubsystem extends SubsystemBase {
 
         // disable the front camera if it's moving
         boolean state = cartridgePose.get() != Constants.CartridgePose.IN_MOVEMENT;
-        // for (var io : objectDetectionIO) {
-        //     if (Objects.equals(io.getPipelineName(), frontCameraName)) {
-        //         io.togglePipeline(state);
-        //         switch (cartridgePose.get()) {
-        //             case IN_MOVEMENT:
-        //                 io.togglePipeline(false);
-        //                 break;
-        //             case OPEN:
-        //                 io.togglePipeline(true);
-        //                 io.setRobotToCamera(ObjectDetectionConstants.CAMERA_TO_ROBOT_OPEN_CARTRIDGE_TRANSLATION);
-        //                 break;
-        //             case CLOSE:
-        //                 io.togglePipeline(true);
-        //                 io.setRobotToCamera(ObjectDetectionConstants.CAMERA_TO_ROBOT_CLOSED_CARTRIDGE_TRANSLATION);
-        //                 break;
-        //         }
-        //     }
-        // }
+        for (var io : apriltagVisionIO) {
+            if (Objects.equals(io.getPipelineName(), frontCameraName)) {
+                io.togglePipeline(state);
+                switch (cartridgePose.get()) {
+                    case IN_MOVEMENT:
+                        io.togglePipeline(false);
+                        break;
+                    case OPEN:
+                        io.togglePipeline(true);
+                        io.setRobotToCamera(VisionConstants.CAMERA_TO_ROBOT_OPEN_CARTRIDGE_TRANSLATION);
+                        break;
+                    case CLOSE:
+                        io.togglePipeline(true);
+                        io.setRobotToCamera(VisionConstants.CAMERA_TO_ROBOT_CLOSED_CARTRIDGE_TRANSLATION);
+                        break;
+                }
+            }
+        }
 
         for (int i = 0; i < apriltagVisionIO.length; i++) {
             apriltagVisionIO[i].updateInputs(apriltagInputs[i]);

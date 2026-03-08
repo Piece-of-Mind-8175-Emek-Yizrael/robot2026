@@ -52,6 +52,14 @@ public class ShooterArmCommands {
         return goToPosition(OPEN_POS);
     }
 
+    public Command nearHub() {
+        return goToPosition(0.0);
+    }
+
+    public Command FarFromHub() {
+        return goToPosition(0.0);
+    }
+
     public Command ressistGravity() {
         return Commands.run(() -> arm.getIO().resistGravity(), arm);
     }

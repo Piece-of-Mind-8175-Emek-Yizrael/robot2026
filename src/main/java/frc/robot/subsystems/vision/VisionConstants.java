@@ -16,6 +16,8 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 
 // TODO: replace last years variables with this year's variables (2025 to 2026)
 public class VisionConstants {
@@ -42,9 +44,10 @@ public class VisionConstants {
 
     // Robot to camera transforms
     // (Not used by Limelight, configure in web UI instead)
-    public static Transform3d InitialRobotToBackCameraTranslation = new Transform3d(0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, 0.0));
-    public static Transform3d InitialRobotToFrontCameraTranslation = new Transform3d(-0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, Math.PI));
-
+    public static Transform3d InitialRobotToBackCameraTranslation = new Transform3d(0.0, 0.2921, 0.515, new Rotation3d(0, Units.degreesToRadians(38.0), Math.PI));    
+    public static Transform3d CAMERA_TO_ROBOT_CLOSED_CARTRIDGE_TRANSLATION = new Transform3d(0, 0.0, 0, new Rotation3d(0.0,0.0, 0.0)); // TODO: replace this with the actual value
+    public static Transform3d CAMERA_TO_ROBOT_OPEN_CARTRIDGE_TRANSLATION = new Transform3d(0, 0.0, 0, new Rotation3d(0.0,0.0, 0.0)); // TODO: replace this with the actual value
+    
     // Basic filtering thresholds
     public static double maxAmbiguity = 0.3;
     public static double maxZError = 0.75;
@@ -68,7 +71,5 @@ public class VisionConstants {
     public static class ObjectDetectionConstants {
         public static double FUEL_DIAMETER_METERS = 0.150114; // TODO: replace this with the diameter of the 2026 fuel object
 
-        public static Transform3d CAMERA_TO_ROBOT_CLOSED_CARTRIDGE_TRANSLATION = null; // TODO: replace this with the actual value
-        public static Transform3d CAMERA_TO_ROBOT_OPEN_CARTRIDGE_TRANSLATION = null; // TODO: replace this with the actual value
     }
 }

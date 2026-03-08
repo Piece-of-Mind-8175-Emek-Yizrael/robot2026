@@ -44,21 +44,7 @@ public final class Constants {
     };
   }
 
-  public static class VisionConstants {
-    // THE translations FOR THE LEFT AND RIGHT CAMERAS
-    public static Translation3d l_camera_translation = new Translation3d(0,0, 0.263);
-    public static Translation3d r_camera_translation = new Translation3d(0, 0, 0.263);
-
-    // THE ROTATION FOR THE LEFT AND RIGHT CAMERAS
-    public static Rotation3d l_camera_rotation = new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(0),
-        Units.degreesToRadians(13.92));
-    public static Rotation3d r_camera_rotation = new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(0),
-        Units.degreesToRadians(-13.92)); // TODO: check this is correct, maby 180 - [degrees]?
-
-    // THE TRANSFORMATION FOR THE LEFT AND RIGHT CAM ERAS
-    public static Transform3d l_camera_transform = new Transform3d(l_camera_translation, l_camera_rotation); // here
-    public static Transform3d r_camera_transform = new Transform3d(r_camera_translation, r_camera_rotation);
-  }
+ 
 
   public static enum Mode {
     /** Running on a real robot. */

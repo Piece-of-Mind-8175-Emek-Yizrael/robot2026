@@ -100,7 +100,7 @@ public class RobotContainer {
                                                 new ApriltagVisionIOReal("first_camera",
                                                                 VisionConstants.InitialRobotToBackCameraTranslation),
                                                 new ApriltagVisionIOReal("seconde_camera",
-                                                                VisionConstants.InitialRobotToFrontCameraTranslation),
+                                                                VisionConstants.CAMERA_TO_ROBOT_CLOSED_CARTRIDGE_TRANSLATION),
                                 };
  
                                 vision = new VisionSubsystem(swerve::addVisionMeasurement, cameras, null, cartridge.getIO()::getCartridgePose, Optional.empty());
@@ -169,14 +169,14 @@ public class RobotContainer {
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
                 swerve.setDefaultCommand(
-                                SwerveCommands.joystickDriveRobotRelative(swerve,
+                                SwerveCommands.joystickDrive(swerve,
                                                 () -> driverController.getLeftY() * -0.5,
                                                 () -> driverController.getLeftX() * -0.5,
                                                 () -> driverController.getRightX() * -0.5));
 
                 driverController.triangle().onTrue(swerve.resetGyroCommand());
                 driverController.L2().whileTrue(superCommands.intakeFuel());
-                driverController.circle().onTrue(new CartridgeCommands(cartridge).closeCartridge());
+                driverController.circle().whileTrue(superCommands.closeCartridge());
                 driverController.cross().whileTrue(superCommands.shootToHub(driverController.R2()));
                 driverController.square().toggleOnTrue(superCommands.shootToHub(driverController.R2()));
                 driverController.square().toggleOnFalse(new ShootCommands(shoot).stopBoth());
