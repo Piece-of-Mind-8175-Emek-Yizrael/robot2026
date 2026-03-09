@@ -87,7 +87,7 @@ public class SuperCommands {
 
             @Override
             public void execute() {
-                Logger.recordOutput("distance from hub", swerve.getDistanceFromHub());
+                // Logger.recordOutput("distance from hub", swerve.getDistanceFromHub());
                 if(readyToShoot.getAsBoolean()){
                     shoot.getIO().setFeedVoltage(8.0);
                     transfer.getIO().setVoltage(5.0);

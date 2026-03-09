@@ -173,26 +173,25 @@ public class RobotContainer {
                 // Default command, normal field-relative drive
                 swerve.setDefaultCommand(
                                 SwerveCommands.joystickDrive(swerve,
-                                                () -> driverController.getLeftY() * -0.5,
-                                                () -> driverController.getLeftX() * -0.5,
-                                                () -> driverController.getRightX() * -0.5));
+                                                () -> driverController.getLeftY() * 0.5,
+                                                () -> driverController.getLeftX() * 0.5,
+                                                () -> driverController.getRightX() * 0.5));
 
                 driverController.LB().whileTrue(SwerveCommands.joystickDrive(swerve,
-                                                () -> driverController.getLeftY() * -0.5,
-                                                () -> driverController.getLeftX() * -0.5,
-                                                () -> driverController.getRightX() * -0.5));
+                                                () -> driverController.getLeftY() * 0.5,
+                                                () -> driverController.getLeftX() * 0.5,
+                                                () -> driverController.getRightX() * 0.5));
 
                 driverController.leftTrigger().whileTrue(superCommands.intakeFuel());
                 driverController.b().whileTrue(superCommands.closeCartridge());
                 driverController.x().whileTrue(superCommands.outtakeFuel());
                 driverController.RB().onTrue(superCommands.shootToHub(driverController.rightTrigger()));
                 driverController.y().onTrue(new ShootCommands(shoot).stopBoth().alongWith(new ShooterArmCommands(arm).closeArm()));
-                // driverController.a().whileTrue(SwerveCommands.driveFaceToHub(swerve,
-                //                                 () -> driverController.getLeftY() * -0.5,
-                //                                 () -> driverController.getLeftX() * -0.5));
+                driverController.a().whileTrue(SwerveCommands.driveFaceToHub(swerve,
+                                                () -> driverController.getLeftY() * -0.5,
+                                                () -> driverController.getLeftX() * -0.5));
                 driverController.PovUp().onTrue(swerve.resetGyroCommand());
                 
-                operatorController.R1().onTrue(superCommands.shootToHub(operatorController.R2()));
 
         }
 
