@@ -186,8 +186,13 @@ public class RobotContainer {
                 driverController.b().whileTrue(superCommands.closeCartridge());
                 driverController.x().whileTrue(superCommands.outtakeFuel());
                 driverController.RB().onTrue(superCommands.shootToHub(driverController.rightTrigger()));
-                driverController.a().onTrue(new ShootCommands(shoot).stopBoth().alongWith(new ShooterArmCommands(arm).closeArm()));
-                driverController.y().onTrue(swerve.resetGyroCommand());
+                driverController.y().onTrue(new ShootCommands(shoot).stopBoth().alongWith(new ShooterArmCommands(arm).closeArm()));
+                // driverController.a().whileTrue(SwerveCommands.driveFaceToHub(swerve,
+                //                                 () -> driverController.getLeftY() * -0.5,
+                //                                 () -> driverController.getLeftX() * -0.5));
+                driverController.PovUp().onTrue(swerve.resetGyroCommand());
+                
+                operatorController.R1().onTrue(superCommands.shootToHub(operatorController.R2()));
 
         }
 
