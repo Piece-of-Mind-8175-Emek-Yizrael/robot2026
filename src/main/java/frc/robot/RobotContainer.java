@@ -13,21 +13,21 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.PS5Controller;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.POM_lib.Joysticks.PomXboxController;
-
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.PS5Controller;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.POM_lib.Joysticks.PomXboxController;
+import frc.robot.commands.LEDsCommands;
+import frc.robot.subsystems.LEDs.LEDs;
+import frc.robot.subsystems.LEDs.LEDsIOReal;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -40,10 +40,11 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
         // Subsystems
+        private LEDs leds;
 
         // Controller
-        private final PS5Controller driverController = new PS5Controller(0);
-        private final PomXboxController operatorController = new PomXboxController(1);
+        private final PomXboxController driverController = new PomXboxController(0);
+        private final PS5Controller operatorController = new PS5Controller(1);
 
         // Dashboard inputs
         private final LoggedDashboardChooser<Command> autoChooser;
@@ -56,18 +57,20 @@ public class RobotContainer {
         public RobotContainer() {
                 switch (Constants.currentMode) {
                         case REAL:
+                                leds = new LEDs(new LEDsIOReal());
                                 // Real robot, instantiate hardware IO implementations
                                 break;
 
                         case SIM:
                                 // Sim robot, instantiate physics sim IO implementations
-
+                                leds = null; // No simulation for LEDs, use real implementation
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
 
                                 break;
 
                         default:
                                 // Replayed robot, disable IO implementations
+                                leds = null;
                                 break;
                 }
 
@@ -92,7 +95,8 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                
+                driverController.rightTrigger().whileTrue(LEDsCommands.setAll(leds, Color.kPurple));
+                leds.setDefaultCommand(LEDsCommands.setAll(leds, Color.kPurple));
         }
 
         public void displaSimFieldToAdvantageScope() {
