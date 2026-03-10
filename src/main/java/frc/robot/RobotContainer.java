@@ -197,6 +197,8 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
+
+                //driverController
                 swerve.setDefaultCommand(
                                 SwerveCommands.joystickDrive(swerve,
                                                 () -> driverController.getLeftY() * 0.5,
@@ -217,13 +219,13 @@ public class RobotContainer {
                                                 () -> driverController.getLeftY() * 0.5,
                                                 () -> driverController.getLeftX() * 0.5));
                 driverController.PovDown().onTrue(swerve.resetGyroCommand());
-
                 driverController.PovUp().onTrue(SwerveCommands.stopWithX(swerve));
                 
 
-                //ירי, הזנה, שינוי זווית, מחסנית, איסוף, טרנספר
 
-                new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1).whileTrue(cartridgeCommands.openOrCloseManual(() -> operatorController.getLeftY()));//פתיחה וסגירה ידנית של המחסנית
+                //operatorController
+                new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1).whileTrue
+                        (cartridgeCommands.openOrCloseManual(() -> operatorController.getLeftY()));//פתיחה וסגירה של המחסנית
                                 
                 operatorController.R1().whileTrue(armCommands.openArmManual());//פתיחת שינוי זווית
                 operatorController.L1().whileTrue(armCommands.closeArmManual());//סגירת שינוי זווית
