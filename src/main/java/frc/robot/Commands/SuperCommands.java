@@ -66,10 +66,11 @@ public class SuperCommands {
     }
     
     public Command closeCartridge(){
-        return Commands.race(
-            cartridgeCommands.closeCartridge(),
-            intakeCommands.intake()
-        );
+        // return Commands.race(
+        //     cartridgeCommands.closeCartridge(),
+        //     intakeCommands.intake()
+        // );
+        return cartridgeCommands.closeCartridge();
     }
 
 
