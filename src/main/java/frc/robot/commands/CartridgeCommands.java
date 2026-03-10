@@ -1,11 +1,15 @@
 package frc.robot.commands;
 
+import static frc.robot.subsystems.cartridge.CartridgeConstants.CLOSE_CARTRIDGE_POS;
+import static frc.robot.subsystems.cartridge.CartridgeConstants.OPEN_CARTRIDGE_POS;
+
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.robot.subsystems.cartridge.Cartridge;
-import static frc.robot.subsystems.cartridge.CartridgeConstants.*;
 
 public class CartridgeCommands extends Command {
 
@@ -19,12 +23,30 @@ public class CartridgeCommands extends Command {
         return Commands.runEnd(() -> cartridge.getIO().setVoltage(voltage), cartridge.getIO()::stop, cartridge);
     }
 
-    public Command setOpenVoltage() {
-        return setVoltage(5);
+    public Command setVoltage(DoubleSupplier voltage) {
+        return Commands.runEnd(() -> cartridge.getIO().setVoltage(voltage.getAsDouble()), cartridge.getIO()::stop, cartridge);
     }
 
-    public Command setCloseVoltage() {
-        return setVoltage(-4);
+    public Command openOrCloseManual(DoubleSupplier voltage) {
+        DoubleSupplier volt = () -> {
+            double result = Math.copySign(Math.pow(voltage.getAsDouble(), 2) * 5.0, voltage.getAsDouble());
+            if(cartridge.getIO().isOuterPressed()){
+                result = Math.min(result, 0);
+            }
+            if(cartridge.getIO().isInnerPressed()){
+                result = Math.max(result, 0);
+            }
+            return result;
+        };
+        return setVoltage(volt);
+    }
+
+    public Command setOpenVoltage(double voltage) {
+        return setVoltage(voltage).until(cartridge.getIO()::isOuterPressed);
+    }
+    
+    public Command setCloseVoltage(double voltage) {
+        return setVoltage(voltage).until(cartridge.getIO()::isInnerPressed);
     }
 
     public Command goToPosition(double postion) {
@@ -37,14 +59,14 @@ public class CartridgeCommands extends Command {
 
     public Command openCartridge() {
         return goToPosition(OPEN_CARTRIDGE_POS)
-                .andThen(setOpenVoltage())
+                .andThen(setOpenVoltage(5.0))
                 .until(cartridge.getIO()::isOuterPressed)
                 .withName("open cartridge");
     }
 
     public Command closeCartridge() {
         return goToPosition(CLOSE_CARTRIDGE_POS)
-                .andThen(setCloseVoltage())
+                .andThen(setCloseVoltage(-5.0))
                 .until(cartridge.getIO()::isInnerPressed)
                 .withName("close cartridge");
     }

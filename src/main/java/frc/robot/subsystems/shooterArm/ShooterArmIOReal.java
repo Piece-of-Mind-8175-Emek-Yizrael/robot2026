@@ -69,12 +69,13 @@ public class ShooterArmIOReal implements ShooterArmIO {
     public void resetIfPrees() {
         if(sensor.get()){
             zeroPosition();
-            feedforward.setKg(0.5);
-        } else if (encoder.getPosition() < 0.7){
-            feedforward.setKg(kg);
-        } else {
-            feedforward.setKg(kg + 0.4);
-        }
+            // feedforward.setKg(0.5);
+        } 
+        // else if (encoder.getPosition() < 0.7){
+        //     feedforward.setKg(kg);
+        // } else {
+        //     feedforward.setKg(kg + 0.4);
+        // }
 
     }
 

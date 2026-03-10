@@ -91,8 +91,12 @@ public class SuperCommands {
                 if(readyToShoot.getAsBoolean()){
                     shoot.getIO().setFeedVoltage(8.0);
                     transfer.getIO().setVoltage(5.0);
+                } else {
+                    shoot.getIO().stopFeed();
+                    transfer.getIO().stopMotor();
                 }
-                arm.getIO().setGoal(farArmAngle);//FIXME: placeholder value
+                // arm.getIO().setGoal(farArmAngle);//FIXME: placeholder value
+                arm.getIO().setVoltage(1.0);//FIXME: placeholder value
             }
 
             @Override

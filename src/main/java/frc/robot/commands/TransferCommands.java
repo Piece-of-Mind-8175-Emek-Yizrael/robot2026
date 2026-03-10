@@ -17,6 +17,16 @@ public class TransferCommands {
         return Commands.runEnd(() -> transfer.getIO().setVoltage(voltage), () -> transfer.getIO().setVoltage(0), transfer);
     }
 
+    public Command setForwoard() {
+        double voltage = 5.0;
+        return setVoltage(voltage);
+    }
+    
+    public Command setBackward() {
+        double voltage = -5.0;
+        return setVoltage(voltage);
+    }
+
     public Command stopMotor() {
         return Commands.runOnce(() -> transfer.getIO().setVoltage(0));
     }
