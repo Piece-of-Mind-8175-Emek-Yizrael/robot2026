@@ -24,17 +24,20 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Commands.CartridgeCommands;
+import frc.robot.Commands.IntakeCommands;
+import frc.robot.Commands.LEDsCommands;
+import frc.robot.Commands.ShootCommands;
+import frc.robot.Commands.ShooterArmCommands;
+import frc.robot.Commands.SuperCommands;
+import frc.robot.Commands.SwerveCommands;
+import frc.robot.Commands.TransferCommands;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
-import frc.robot.commands.CartridgeCommands;
-import frc.robot.commands.IntakeCommands;
-import frc.robot.commands.ShootCommands;
-import frc.robot.commands.ShooterArmCommands;
-import frc.robot.commands.SuperCommands;
-import frc.robot.commands.SwerveCommands;
-import frc.robot.commands.TransferCommands;
+import frc.robot.subsystems.LEDs.LEDs;
+import frc.robot.subsystems.LEDs.LEDsIO;
+import frc.robot.subsystems.LEDs.LEDsIOReal;
 import frc.robot.subsystems.cartridge.Cartridge;
 import frc.robot.subsystems.cartridge.CartridgeIOReal;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -74,6 +77,7 @@ public class RobotContainer {
         private final ShooterArm arm;
         private final VisionSubsystem vision;
         private final SuperCommands superCommands;
+        private final LEDs leds;
 
         //Commands
         private final IntakeCommands intakeCommands;
@@ -81,6 +85,7 @@ public class RobotContainer {
         private final TransferCommands transferCommands;
         private final CartridgeCommands cartridgeCommands;
         private final ShooterArmCommands armCommands;
+        private final LEDsCommands ledsCommands;
 
 
         // Controller
@@ -106,7 +111,8 @@ public class RobotContainer {
                                 transfer = new Transfer(new TransferIOReal());
                                 cartridge = new Cartridge(new CartridgeIOReal());
                                 arm = new ShooterArm(new ShooterArmIOReal());
-                                
+                                leds = new LEDs(new LEDsIOReal());
+
                                 ApriltagVisionIOReal[] cameras = {
                                                 // new ApriltagVisionIOReal("first_camera",
                                                 //                 VisionConstants.InitialRobotToBackCameraTranslation),
@@ -123,6 +129,7 @@ public class RobotContainer {
                                 transferCommands = new TransferCommands(transfer);
                                 cartridgeCommands = new CartridgeCommands(cartridge);
                                 armCommands = new ShooterArmCommands(arm);
+                                ledsCommands = new LEDsCommands();
 
                                 break;
 
@@ -134,13 +141,15 @@ public class RobotContainer {
                                 cartridge = null;
                                 arm = null;    
                                 vision = null; 
-                                superCommands = null;     
+                                superCommands = null;  
+                                leds = null;   
                                 
                                 intakeCommands = null;
                                 shootCommands = null;
                                 transferCommands = null;
                                 cartridgeCommands = null;
                                 armCommands = null;
+                                ledsCommands = null;
                                 
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
  
@@ -162,9 +171,11 @@ public class RobotContainer {
                                 transfer = null;
                                 cartridge = null;
                                 arm = null; 
-                                vision = null;                            
-                                superCommands = null;                           
-
+                                vision = null; 
+                                leds = null;                           
+                                
+                                superCommands = null;   
+                                ledsCommands = null;
                                 intakeCommands = null;
                                 shootCommands = null;
                                 transferCommands = null;
@@ -197,6 +208,7 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
+                leds.setDefaultCommand(ledsCommands.rainbow(leds));
 
                 //driverController
                 swerve.setDefaultCommand(

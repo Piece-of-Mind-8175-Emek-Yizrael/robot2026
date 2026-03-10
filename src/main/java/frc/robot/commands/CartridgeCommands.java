@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.Commands;
 
 import static frc.robot.subsystems.cartridge.CartridgeConstants.CLOSE_CARTRIDGE_POS;
 import static frc.robot.subsystems.cartridge.CartridgeConstants.OPEN_CARTRIDGE_POS;

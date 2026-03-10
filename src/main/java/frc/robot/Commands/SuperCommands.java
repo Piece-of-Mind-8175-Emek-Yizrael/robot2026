@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.Commands;
 
 import java.util.function.BooleanSupplier;
 
@@ -66,11 +66,10 @@ public class SuperCommands {
     }
     
     public Command closeCartridge(){
-        // return Commands.race(
-        //     cartridgeCommands.closeCartridge(),
-        //     intakeCommands.intake()
-        // );
-        return cartridgeCommands.closeCartridge();
+        return Commands.race(
+            cartridgeCommands.closeCartridge(),
+            intakeCommands.intake()
+        );
     }
 
 

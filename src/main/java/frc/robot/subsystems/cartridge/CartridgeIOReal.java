@@ -126,7 +126,7 @@ public class CartridgeIOReal implements CartridgeIO {
             }
         } else {
             if(encoder.getPosition() > 0.9){
-                ff.setKs(Ks + 12);
+                ff.setKs(Ks + 7);
                 ff.setKg(Kg - 1.2);
                 pidController.setP(Kp + 0.3);
             } else if (encoder.getPosition() > 0.7){
