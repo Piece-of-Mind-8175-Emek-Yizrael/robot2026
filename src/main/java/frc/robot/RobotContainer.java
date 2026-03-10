@@ -40,7 +40,6 @@ import frc.robot.subsystems.LEDs.LEDsIOReal;
  */
 public class RobotContainer {
         // Subsystems
-        private LEDs leds;
 
         // Controller
         private final PomXboxController driverController = new PomXboxController(0);
@@ -57,20 +56,17 @@ public class RobotContainer {
         public RobotContainer() {
                 switch (Constants.currentMode) {
                         case REAL:
-                                leds = new LEDs(new LEDsIOReal());
                                 // Real robot, instantiate hardware IO implementations
                                 break;
 
                         case SIM:
                                 // Sim robot, instantiate physics sim IO implementations
-                                leds = null; // No simulation for LEDs, use real implementation
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
 
                                 break;
 
                         default:
                                 // Replayed robot, disable IO implementations
-                                leds = null;
                                 break;
                 }
 
@@ -95,8 +91,6 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                driverController.rightTrigger().whileTrue(LEDsCommands.setAll(leds, Color.kPurple));
-                leds.setDefaultCommand(LEDsCommands.setAll(leds, Color.kPurple));
         }
 
         public void displaSimFieldToAdvantageScope() {
