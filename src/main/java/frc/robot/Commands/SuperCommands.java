@@ -13,11 +13,11 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shoot.Shoot;
 import frc.robot.subsystems.shooterArm.ShooterArm;
 import frc.robot.subsystems.transfer.Transfer;
-
+import frc.robot.util.ShooterCalculator;
 
 public class SuperCommands {
 
-    //subsystems
+    // subsystems
     private Cartridge cartridge;
     private Intake intake;
     private Shoot shoot;
@@ -25,7 +25,7 @@ public class SuperCommands {
     private Transfer transfer;
     private Swerve swerve;
 
-    //commands
+    // commands
     private CartridgeCommands cartridgeCommands;
     private IntakeCommands intakeCommands;
     private ShootCommands shootCommands;
@@ -36,17 +36,15 @@ public class SuperCommands {
     private final double farShootSpeed = 55.0;
     LoggedNetworkNumber tuneSpeed = new LoggedNetworkNumber("farShootSpeed", farShootSpeed);
 
-    
-
-
-    public SuperCommands(Cartridge cartridge, Intake intake, Shoot shoot, ShooterArm arm, Transfer transfer, Swerve swerve) {
+    public SuperCommands(Cartridge cartridge, Intake intake, Shoot shoot, ShooterArm arm, Transfer transfer,
+            Swerve swerve) {
         this.cartridge = cartridge;
         this.intake = intake;
         this.shoot = shoot;
         this.arm = arm;
         this.transfer = transfer;
         this.swerve = swerve;
-        
+
         this.cartridgeCommands = new CartridgeCommands(cartridge);
         this.intakeCommands = new IntakeCommands(intake);
         this.shootCommands = new ShootCommands(shoot);
@@ -54,28 +52,24 @@ public class SuperCommands {
         this.transferCommands = new TransferCommands(transfer);
     }
 
-    public Command intakeFuel(){
+    public Command intakeFuel() {
         return Commands.parallel(
-            (cartridgeCommands.openCartridge().withTimeout(1).andThen(cartridgeCommands.setVoltage(-2))),
-            intakeCommands.intake(),
-            transferCommands.setVoltage(4)
-        );
+                (cartridgeCommands.openCartridge().withTimeout(1).andThen(cartridgeCommands.setVoltage(-2))),
+                intakeCommands.intake(),
+                transferCommands.setVoltage(4));
     }
 
-    public Command outtakeFuel(){
+    public Command outtakeFuel() {
         return Commands.parallel(
-            intakeCommands.outake(),
-            transferCommands.setVoltage(-4)
-        );
+                intakeCommands.outake(),
+                transferCommands.setVoltage(-4));
     }
-    
-    public Command closeCartridge(){
+
+    public Command closeCartridge() {
         return Commands.race(
-            cartridgeCommands.closeCartridge(),
-            intakeCommands.intake()
-        );
+                cartridgeCommands.closeCartridge(),
+                intakeCommands.intake());
     }
-
 
     public Command shootToHub(BooleanSupplier readyToShoot) {
         return new Command() {
@@ -85,14 +79,23 @@ public class SuperCommands {
 
             @Override
             public void initialize() {
-                shoot.getIO().setHoodSetpoint(tuneSpeed.get());//FIXME: placeholder value //55//45
-                arm.getIO().setGoal(farArmAngle);//FIXME: placeholder value //0.1//0.06
+                shoot.getIO().setHoodSetpoint(tuneSpeed.get());// FIXME: placeholder value //55//45
+
+                arm.getIO().setGoal(farArmAngle);// FIXME: placeholder value //0.1//0.06
             }
 
             @Override
-            public void execute() {
+            public void execute() { // TODO - uncomment when finished interpolation tuning
+                // double distance = swerve.getDistanceFromHub();
+                // shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(distance));
+                // if (ShooterCalculator.isFar(distance)) {
+                // arm.getIO().setVoltage(1);
+                // } else {
+                // arm.getIO().stopMotor();
+                // }
+
                 // Logger.recordOutput("distance from hub", swerve.getDistanceFromHub());
-                if(readyToShoot.getAsBoolean()){
+                if (readyToShoot.getAsBoolean()) {
                     shoot.getIO().setFeedVoltage(8.0);
                     transfer.getIO().setVoltage(5.0);
                 } else {
@@ -100,7 +103,7 @@ public class SuperCommands {
                     transfer.getIO().stopMotor();
                 }
                 // arm.getIO().setGoal(farArmAngle);//FIXME: placeholder value
-                arm.getIO().setVoltage(1.0);//FIXME: placeholder value
+                arm.getIO().setVoltage(1.0);// FIXME: placeholder value
             }
 
             @Override
@@ -116,19 +119,20 @@ public class SuperCommands {
         };
     }
 
-    private double getArmAngle(){
-        if(swerve.getDistanceFromHub() < 1.5){
+    private double getArmAngle() {
+        if (swerve.getDistanceFromHub() < 1.5) {
             return 0.06;
         } else {
             return farArmAngle;
         }
     }
 
-    private double getShootSpeed(){
-        if(swerve.getDistanceFromHub() < 1.5){
+    private double getShootSpeed() {
+        if (swerve.getDistanceFromHub() < 1.5) {
             return 45.0;
         } else {
             return farShootSpeed;
         }
     }
+
 }

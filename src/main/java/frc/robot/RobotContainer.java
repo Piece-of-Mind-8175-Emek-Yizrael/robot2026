@@ -56,6 +56,7 @@ import frc.robot.subsystems.transfer.TransferIOReal;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIOReal;
+import frc.robot.util.ShooterCalculator;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -79,7 +80,7 @@ public class RobotContainer {
         private final SuperCommands superCommands;
         private final LEDs leds;
 
-        //Commands
+        // Commands
         private final IntakeCommands intakeCommands;
         private final ShootCommands shootCommands;
         private final TransferCommands transferCommands;
@@ -87,10 +88,9 @@ public class RobotContainer {
         private final ShooterArmCommands armCommands;
         private final LEDsCommands ledsCommands;
 
-
         // Controller
         private final PomXboxController driverController = new PomXboxController(0);
-        private final CommandPS5Controller operatorController = new CommandPS5Controller (1);
+        private final CommandPS5Controller operatorController = new CommandPS5Controller(1);
 
         // Dashboard inputs
         private final LoggedDashboardChooser<Command> autoChooser;
@@ -101,11 +101,13 @@ public class RobotContainer {
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
         public RobotContainer() {
+                ShooterCalculator.init();
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
                                 driveSimulation = null;
-                                swerve = new Swerve(new GyroIOPigeon2(), new ModuleIOReal(0), new ModuleIOReal(1), new ModuleIOReal(2), new ModuleIOReal(3));
+                                swerve = new Swerve(new GyroIOPigeon2(), new ModuleIOReal(0), new ModuleIOReal(1),
+                                                new ModuleIOReal(2), new ModuleIOReal(3));
                                 intake = new Intake(new IntakeIOReal());
                                 shoot = new Shoot(new ShootIOReal());
                                 transfer = new Transfer(new TransferIOReal());
@@ -115,12 +117,13 @@ public class RobotContainer {
 
                                 ApriltagVisionIOReal[] cameras = {
                                                 // new ApriltagVisionIOReal("first_camera",
-                                                //                 VisionConstants.InitialRobotToBackCameraTranslation),
+                                                // VisionConstants.InitialRobotToBackCameraTranslation),
                                                 new ApriltagVisionIOReal("seconde_camera",
                                                                 VisionConstants.InitialRobotToShooterCameraTranslation),
                                 };
- 
-                                vision = new VisionSubsystem(swerve::addVisionMeasurement, cameras, null, cartridge.getIO()::getCartridgePose, Optional.empty());
+
+                                vision = new VisionSubsystem(swerve::addVisionMeasurement, cameras, null,
+                                                cartridge.getIO()::getCartridgePose, Optional.empty());
 
                                 superCommands = new SuperCommands(cartridge, intake, shoot, arm, transfer, swerve);
 
@@ -139,30 +142,29 @@ public class RobotContainer {
                                 shoot = null;
                                 transfer = null;
                                 cartridge = null;
-                                arm = null;    
-                                vision = null; 
-                                superCommands = null;  
-                                leds = null;   
-                                
+                                arm = null;
+                                vision = null;
+                                superCommands = null;
+                                leds = null;
+
                                 intakeCommands = null;
                                 shootCommands = null;
                                 transferCommands = null;
                                 cartridgeCommands = null;
                                 armCommands = null;
                                 ledsCommands = null;
-                                
+
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
- 
-                                swerve = 
-                                new Swerve(
-                                        new GyroIOSim(this.driveSimulation.getGyroSimulation()),
-                                        new ModuleIOSim(this.driveSimulation.getModules()[0]),
-                                        new ModuleIOSim(this.driveSimulation.getModules()[1]),
-                                        new ModuleIOSim(this.driveSimulation.getModules()[2]),
-                                        new ModuleIOSim(this.driveSimulation.getModules()[3]));
-                                        
+
+                                swerve = new Swerve(
+                                                new GyroIOSim(this.driveSimulation.getGyroSimulation()),
+                                                new ModuleIOSim(this.driveSimulation.getModules()[0]),
+                                                new ModuleIOSim(this.driveSimulation.getModules()[1]),
+                                                new ModuleIOSim(this.driveSimulation.getModules()[2]),
+                                                new ModuleIOSim(this.driveSimulation.getModules()[3]));
+
                                 break;
-                                        
+
                         default:
                                 // Replayed robot, disable IO implementations
                                 swerve = null;
@@ -170,18 +172,18 @@ public class RobotContainer {
                                 shoot = null;
                                 transfer = null;
                                 cartridge = null;
-                                arm = null; 
-                                vision = null; 
-                                leds = null;                           
-                                
-                                superCommands = null;   
+                                arm = null;
+                                vision = null;
+                                leds = null;
+
+                                superCommands = null;
                                 ledsCommands = null;
                                 intakeCommands = null;
                                 shootCommands = null;
                                 transferCommands = null;
                                 cartridgeCommands = null;
                                 armCommands = null;
-                                
+
                                 break;
                 }
 
@@ -210,7 +212,7 @@ public class RobotContainer {
                 // Default command, normal field-relative drive
                 leds.setDefaultCommand(ledsCommands.rainbow(leds));
 
-                //driverController
+                // driverController
                 swerve.setDefaultCommand(
                                 SwerveCommands.joystickDrive(swerve,
                                                 () -> driverController.getLeftY() * 0.5,
@@ -218,9 +220,9 @@ public class RobotContainer {
                                                 () -> driverController.getRightX() * 0.5));
 
                 driverController.LB().whileTrue(SwerveCommands.joystickDrive(swerve,
-                                                () -> driverController.getLeftY() * 0.5,
-                                                () -> driverController.getLeftX() * 0.5,
-                                                () -> driverController.getRightX() * 0.5));
+                                () -> driverController.getLeftY() * 0.5,
+                                () -> driverController.getLeftX() * 0.5,
+                                () -> driverController.getRightX() * 0.5));
 
                 driverController.leftTrigger().whileTrue(superCommands.intakeFuel());
                 driverController.b().whileTrue(superCommands.closeCartridge());
@@ -228,11 +230,10 @@ public class RobotContainer {
                 driverController.RB().onTrue(superCommands.shootToHub(driverController.rightTrigger()));
                 driverController.y().onTrue(shootCommands.stopBoth().alongWith(armCommands.closeArm()));
                 driverController.a().whileTrue(SwerveCommands.driveFaceToHub(swerve,
-                                                () -> driverController.getLeftY() * 0.5,
-                                                () -> driverController.getLeftX() * 0.5));
+                                () -> driverController.getLeftY() * 0.5,
+                                () -> driverController.getLeftX() * 0.5));
                 driverController.PovDown().onTrue(swerve.resetGyroCommand());
                 driverController.PovUp().onTrue(SwerveCommands.stopWithX(swerve));
-                
 
                 // driverCo[]\ntroller.LB().whileTrue(armCommands.goToPosition(2));
                 // driverController.RB().whileTrue(armCommands.goToPosition(0));
@@ -240,25 +241,25 @@ public class RobotContainer {
                 // driverController.rightTrigger().whileTrue(armCommands.openArmManual());
                 // driverController.leftTrigger().whileTrue(armCommands.closeArmManual());
 
-                //operatorController
-                new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1).whileTrue
-                        (cartridgeCommands.openOrCloseManual(() -> operatorController.getLeftY()));//פתיחה וסגירה של המחסנית
-                              
-                operatorController.cross().whileTrue(shootCommands.setHoodVoltage());//ירי
-                operatorController.triangle().whileTrue(shootCommands.setFeedVoltage());//הזנה
-                operatorController.R1().whileTrue(armCommands.openArmManual());//פתיחת שינוי זווית
-                operatorController.L1().whileTrue(armCommands.closeArmManual());//סגירת שינוי זווית
+                // operatorController
+                new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1)
+                                .whileTrue(cartridgeCommands.openOrCloseManual(() -> operatorController.getLeftY()));// פתיחה
+                                                                                                                     // וסגירה
+                                                                                                                     // של
+                                                                                                                     // המחסנית
 
+                operatorController.cross().whileTrue(shootCommands.setHoodVoltage());// ירי
+                operatorController.triangle().whileTrue(shootCommands.setFeedVoltage());// הזנה
+                operatorController.R1().whileTrue(armCommands.openArmManual());// פתיחת שינוי זווית
+                operatorController.L1().whileTrue(armCommands.closeArmManual());// סגירת שינוי זווית
 
-                operatorController.povUp().whileTrue(transferCommands.setForwoard());//טרנספר קדימה
-                operatorController.povDown().whileTrue(transferCommands.setBackward());//טרנספר אחורה
+                operatorController.povUp().whileTrue(transferCommands.setForwoard());// טרנספר קדימה
+                operatorController.povDown().whileTrue(transferCommands.setBackward());// טרנספר אחורה
 
-                operatorController.R1().whileTrue(intakeCommands.intake());//איסוף
-                operatorController.L1().whileTrue(intakeCommands.outake());//פליטה
-                
+                operatorController.R1().whileTrue(intakeCommands.intake());// איסוף
+                operatorController.L1().whileTrue(intakeCommands.outake());// פליטה
+
         }
-
-
 
         public void displaySimFieldToAdvantageScope() {
                 if (Constants.currentMode != Constants.Mode.SIM)
