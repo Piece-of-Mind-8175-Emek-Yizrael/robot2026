@@ -528,7 +528,8 @@ public class Swerve extends SubsystemBase {
             }
             return getPose();
         }
-
+        
+        @AutoLogOutput(key = "Odometry/distance from hub")
         public double getDistanceFromHub() {
             return HUB_CENTER_POINT.getDistance(getRobotPoseAsBlue().getTranslation());
         }

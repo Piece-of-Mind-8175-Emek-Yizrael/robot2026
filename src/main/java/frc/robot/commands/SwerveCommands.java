@@ -10,6 +10,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
@@ -655,21 +656,6 @@ public class SwerveCommands {
                         // return m_timer.hasElapsed(5) ||
                         return (m_controllerX.atGoal() && m_controllerY.atGoal() && m_controllerTheta.atGoal());
                 }
-        }
-
-        // public double getDistanceFromHub(Swerve drive) {
-        //         Pose2d hubPos = new Pose2d(0, 0, new Rotation2d()); //TODO put hub position
-        //         double x = hubPos.getX() - drive.getPose().getX();
-        //         double y = hubPos.getY() - drive.getPose().getY();
-                
-        //         hubPos.getTranslation().getDistance(drive.getPose().getTranslation());
-
-        //         return Math.sqrt(x * x + y * y);
-        // }
-
-        public double getDistanceFromHub(Swerve drive) {
-                Translation2d hubPos = HUB_CENTER_POINT;
-                return hubPos.getDistance(drive.getPose().getTranslation());
         }
 
 

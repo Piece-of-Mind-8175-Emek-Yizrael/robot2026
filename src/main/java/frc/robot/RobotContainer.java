@@ -234,16 +234,21 @@ public class RobotContainer {
                 driverController.PovUp().onTrue(SwerveCommands.stopWithX(swerve));
                 
 
+                // driverCo[]\ntroller.LB().whileTrue(armCommands.goToPosition(2));
+                // driverController.RB().whileTrue(armCommands.goToPosition(0));
+
+                // driverController.rightTrigger().whileTrue(armCommands.openArmManual());
+                // driverController.leftTrigger().whileTrue(armCommands.closeArmManual());
 
                 //operatorController
                 new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1).whileTrue
                         (cartridgeCommands.openOrCloseManual(() -> operatorController.getLeftY()));//פתיחה וסגירה של המחסנית
-                                
+                              
+                operatorController.cross().whileTrue(shootCommands.setHoodVoltage());//ירי
+                operatorController.triangle().whileTrue(shootCommands.setFeedVoltage());//הזנה
                 operatorController.R1().whileTrue(armCommands.openArmManual());//פתיחת שינוי זווית
                 operatorController.L1().whileTrue(armCommands.closeArmManual());//סגירת שינוי זווית
 
-                operatorController.cross().whileTrue(shootCommands.setHoodVoltage());//ירי
-                operatorController.triangle().whileTrue(shootCommands.setFeedVoltage());//הזנה
 
                 operatorController.povUp().whileTrue(transferCommands.setForwoard());//טרנספר קדימה
                 operatorController.povDown().whileTrue(transferCommands.setBackward());//טרנספר אחורה

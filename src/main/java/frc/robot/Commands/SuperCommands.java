@@ -3,6 +3,7 @@ package frc.robot.Commands;
 import java.util.function.BooleanSupplier;
 
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -33,6 +34,9 @@ public class SuperCommands {
 
     private final double farArmAngle = 0.1;
     private final double farShootSpeed = 55.0;
+    LoggedNetworkNumber tuneSpeed = new LoggedNetworkNumber("farShootSpeed", farShootSpeed);
+
+    
 
 
     public SuperCommands(Cartridge cartridge, Intake intake, Shoot shoot, ShooterArm arm, Transfer transfer, Swerve swerve) {
@@ -81,7 +85,7 @@ public class SuperCommands {
 
             @Override
             public void initialize() {
-                shoot.getIO().setHoodSetpoint(farShootSpeed);//FIXME: placeholder value //55//45
+                shoot.getIO().setHoodSetpoint(tuneSpeed.get());//FIXME: placeholder value //55//45
                 arm.getIO().setGoal(farArmAngle);//FIXME: placeholder value //0.1//0.06
             }
 
