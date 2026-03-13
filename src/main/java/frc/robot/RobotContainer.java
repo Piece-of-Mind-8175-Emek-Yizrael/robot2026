@@ -210,7 +210,7 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                leds.setDefaultCommand(ledsCommands.rainbow(leds));
+                leds.setDefaultCommand(LEDsCommands.rainbow(leds));
 
                 // driverController
                 swerve.setDefaultCommand(

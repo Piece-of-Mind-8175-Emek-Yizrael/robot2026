@@ -118,21 +118,4 @@ public class SuperCommands {
             }
         };
     }
-
-    private double getArmAngle() {
-        if (swerve.getDistanceFromHub() < 1.5) {
-            return 0.06;
-        } else {
-            return farArmAngle;
-        }
-    }
-
-    private double getShootSpeed() {
-        if (swerve.getDistanceFromHub() < 1.5) {
-            return 45.0;
-        } else {
-            return farShootSpeed;
-        }
-    }
-
 }
