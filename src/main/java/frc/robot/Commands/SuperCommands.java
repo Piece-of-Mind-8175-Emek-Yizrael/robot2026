@@ -55,6 +55,12 @@ public class SuperCommands {
     public Command intakeFuel() {
         return Commands.parallel(
                 (cartridgeCommands.openCartridge().withTimeout(1).andThen(cartridgeCommands.setVoltage(-2))),
+                intakeCommands.intake());
+    }
+
+    public Command intakeFuelWithTransfer() {
+        return Commands.parallel(
+                (cartridgeCommands.openCartridge().withTimeout(1).andThen(cartridgeCommands.setVoltage(-2))),
                 intakeCommands.intake(),
                 transferCommands.setVoltage(4));
     }
@@ -68,7 +74,8 @@ public class SuperCommands {
     public Command closeCartridge() {
         return Commands.race(
                 cartridgeCommands.closeCartridge(),
-                intakeCommands.intake());
+                intakeCommands.intake(),
+                transferCommands.setVoltage(5));
     }
 
     public Command shootToHub(BooleanSupplier readyToShoot) {
@@ -103,7 +110,8 @@ public class SuperCommands {
                     transfer.getIO().stopMotor();
                 }
                 // arm.getIO().setGoal(farArmAngle);//FIXME: placeholder value
-                arm.getIO().setVoltage(1.0);// FIXME: placeholder value
+
+                arm.getIO().setVoltage(1.0);// FIXME: placeholder value[\]
             }
 
             @Override

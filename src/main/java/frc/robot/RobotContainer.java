@@ -234,6 +234,7 @@ public class RobotContainer {
                                 () -> driverController.getLeftX() * 0.5));
                 driverController.PovDown().onTrue(swerve.resetGyroCommand());
                 driverController.PovUp().onTrue(SwerveCommands.stopWithX(swerve));
+                driverController.PovLeft().whileTrue(superCommands.intakeFuel());
 
                 // driverCo[]\ntroller.LB().whileTrue(armCommands.goToPosition(2));
                 // driverController.RB().whileTrue(armCommands.goToPosition(0));
