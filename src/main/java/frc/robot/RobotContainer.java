@@ -235,12 +235,6 @@ public class RobotContainer {
                 driverController.PovDown().onTrue(swerve.resetGyroCommand());
                 driverController.PovUp().onTrue(SwerveCommands.stopWithX(swerve));
 
-                // driverCo[]\ntroller.LB().whileTrue(armCommands.goToPosition(2));
-                // driverController.RB().whileTrue(armCommands.goToPosition(0));
-
-                // driverController.rightTrigger().whileTrue(armCommands.openArmManual());
-                // driverController.leftTrigger().whileTrue(armCommands.closeArmManual());
-
                 // operatorController
                 new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1)
                                 .whileTrue(cartridgeCommands.openOrCloseManual(() -> operatorController.getLeftY()));// פתיחה
