@@ -66,7 +66,7 @@ public class SuperCommands {
     }
 
     public Command closeCartridge() {
-        return Commands.race(
+        return Commands.parallel(
                 cartridgeCommands.closeCartridge(),
                 intakeCommands.intake());
     }
@@ -81,20 +81,19 @@ public class SuperCommands {
             public void initialize() {
                 shoot.getIO().setHoodSetpoint(tuneSpeed.get());// FIXME: placeholder value //55//45
 
-                arm.getIO().setGoal(farArmAngle);// FIXME: placeholder value //0.1//0.06
+                // arm.getIO().setGoal(farArmAngle);// FIXME: placeholder value //0.1//0.06
             }
 
             @Override
             public void execute() { // TODO - uncomment when finished interpolation tuning
-                // double distance = swerve.getDistanceFromHub();
-                // shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(distance));
-                // if (ShooterCalculator.isFar(distance)) {
-                // arm.getIO().setVoltage(1);
-                // } else {
-                // arm.getIO().stopMotor();
-                // }
+                double distance = swerve.getDistanceFromHub();
+                shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(distance));
+                if (ShooterCalculator.isFar(distance)) {
+                arm.getIO().setVoltage(1);
+                } else {
+                arm.getIO().stopMotor();
+                }
 
-                // Logger.recordOutput("distance from hub", swerve.getDistanceFromHub());
                 if (readyToShoot.getAsBoolean()) {
                     shoot.getIO().setFeedVoltage(8.0);
                     transfer.getIO().setVoltage(5.0);
@@ -102,8 +101,12 @@ public class SuperCommands {
                     shoot.getIO().stopFeed();
                     transfer.getIO().stopMotor();
                 }
-                // arm.getIO().setGoal(farArmAngle);//FIXME: placeholder value
-                arm.getIO().setVoltage(1.0);// FIXME: placeholder value
+                if (ShooterCalculator.isFar(distance)) {
+                arm.getIO().setVoltage(1);
+                } else {
+                arm.getIO().stopMotor();
+                }
+
             }
 
             @Override

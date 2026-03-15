@@ -104,7 +104,7 @@ public class CartridgeIOReal implements CartridgeIO {
     public void goToPos(double goal) { //TODO change to const ks
         if(goal > encoder.getPosition()){
             if(encoder.getPosition() < 0.1 || motor.getAppliedOutput() < 0.2){
-                ff.setKs(Ks + 2);
+                ff.setKs(Ks + 5);
                 ff.setKg(Kg + 2);
                 pidController.setP(Kp + 0.3);
             } else if (encoder.getPosition() < 0.4){
@@ -125,7 +125,7 @@ public class CartridgeIOReal implements CartridgeIO {
                 pidController.setP(Kp);
             }
         } else {
-            if(encoder.getPosition() > 0.9){
+            if(encoder.getPosition() > 0.9 || motor.getAppliedOutput() < -0.2){
                 ff.setKs(Ks + 7);
                 ff.setKg(Kg - 1.2);
                 pidController.setP(Kp + 0.3);
