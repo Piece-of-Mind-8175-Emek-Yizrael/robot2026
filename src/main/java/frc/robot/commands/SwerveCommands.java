@@ -235,10 +235,10 @@ public class SwerveCommands {
 
                 // Create PID controller ANGLE_KP ANGLE_KD ANGLE_MAX_VELOCITY ANGLE_MAX_ACCELERATION
                 ProfiledPIDController angleController = new ProfiledPIDController(
-                                1.0,
+                                0.7,
                                 0.0,
                                 0.0,
-                                new TrapezoidProfile.Constraints(1.0 ,1.0 ));
+                                new TrapezoidProfile.Constraints(5.0 ,5.0 ));
                 angleController.enableContinuousInput(-Math.PI, Math.PI);
                 angleController.setTolerance(TOLERANCE);
 

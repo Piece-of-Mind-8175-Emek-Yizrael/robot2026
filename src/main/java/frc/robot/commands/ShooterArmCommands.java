@@ -18,6 +18,10 @@ public class ShooterArmCommands {
                 arm.getIO()::stopMotor, arm);
     }
 
+    public Command stopArm() {
+        return setVoltage(0);
+    }
+
     public Command goToPosition(double position) {
         return new Command() {
             @Override

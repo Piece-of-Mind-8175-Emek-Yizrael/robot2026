@@ -61,13 +61,15 @@ public class SuperCommands {
 
     public Command outtakeFuel() {
         return Commands.parallel(
+                (cartridgeCommands.openCartridge().withTimeout(1).andThen(cartridgeCommands.setVoltage(-2))),
                 intakeCommands.outake(),
                 transferCommands.setVoltage(-4));
     }
 
     public Command closeCartridge() {
         return Commands.parallel(
-                cartridgeCommands.closeCartridge(),
+                Commands.sequence(cartridgeCommands.closeCartridge().withTimeout(0.1),
+                                cartridgeCommands.setCloseVoltage(6)),
                 intakeCommands.intake());
     }
 
