@@ -234,6 +234,7 @@ public class RobotContainer {
                                 () -> driverController.getLeftX() * 0.5));
                 driverController.PovDown().onTrue(swerve.resetGyroCommand());
                 driverController.PovUp().onTrue(SwerveCommands.stopWithX(swerve));
+                driverController.PovLeft().whileTrue(superCommands.intakeFuel());
 
                 // operatorController
                 new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1)

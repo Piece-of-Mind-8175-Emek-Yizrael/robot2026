@@ -55,6 +55,12 @@ public class SuperCommands {
     public Command intakeFuel() {
         return Commands.parallel(
                 (cartridgeCommands.openCartridge().withTimeout(1).andThen(cartridgeCommands.setVoltage(-2))),
+                intakeCommands.intake());
+    }
+
+    public Command intakeFuelWithTransfer() {
+        return Commands.parallel(
+                (cartridgeCommands.openCartridge().withTimeout(1).andThen(cartridgeCommands.setVoltage(-2))),
                 intakeCommands.intake(),
                 transferCommands.setVoltage(4));
     }
@@ -82,8 +88,6 @@ public class SuperCommands {
             @Override
             public void initialize() {
                 shoot.getIO().setHoodSetpoint(tuneSpeed.get());// FIXME: placeholder value //55//45
-
-                // arm.getIO().setGoal(farArmAngle);// FIXME: placeholder value //0.1//0.06
             }
 
             @Override
