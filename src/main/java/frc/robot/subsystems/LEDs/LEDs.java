@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Commands.LEDsCommands;
+import frc.robot.commands.LEDsCommands;
 
 public class LEDs extends SubsystemBase {
 

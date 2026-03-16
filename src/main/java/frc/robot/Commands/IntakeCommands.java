@@ -1,4 +1,4 @@
-package frc.robot.Commands;
+package frc.robot.commands;
 import static frc.robot.subsystems.intake.IntakeConstants.INTAKE_VOLTS;
 import static frc.robot.subsystems.intake.IntakeConstants.OUTAKE_VOLTS;
 
