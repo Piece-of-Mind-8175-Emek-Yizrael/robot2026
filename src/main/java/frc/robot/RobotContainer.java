@@ -225,34 +225,34 @@ public class RobotContainer {
                                 () -> driverController.getRightX() * 0.5));
 
                 driverController.leftTrigger().whileTrue(superCommands.intakeFuel());
-                driverController.b().whileTrue(superCommands.closeCartridge());
-                driverController.x().whileTrue(superCommands.outtakeFuel());
-                driverController.RB().onTrue(superCommands.shootToHub(driverController.rightTrigger()));
-                driverController.y().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm()));
+                driverController.RB().whileTrue(superCommands.closeCartridge());
+                driverController.b().whileTrue(superCommands.outtakeFuel());
                 driverController.a().whileTrue(SwerveCommands.driveFaceToHub(swerve,
                                 () -> driverController.getLeftY() * 0.5,
                                 () -> driverController.getLeftX() * 0.5));
                 driverController.PovDown().onTrue(swerve.resetGyroCommand());
-                driverController.PovUp().onTrue(SwerveCommands.stopWithX(swerve));
-                driverController.PovLeft().whileTrue(superCommands.intakeFuel());
+                driverController.x().onTrue(SwerveCommands.stopWithX(swerve));
 
                 // operatorController
-                new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1)
-                                .whileTrue(cartridgeCommands.openOrCloseManual(() -> operatorController.getLeftY()));// פתיחה
+                new Trigger(() -> Math.abs(operatorController.getRightY()) > 0.1)
+                                .whileTrue(cartridgeCommands.openOrCloseManual(() -> operatorController.getRightY()));// פתיחה
                                                                                                                      // וסגירה
                                                                                                                      // של
                                                                                                                      // המחסנית
 
                 operatorController.cross().whileTrue(shootCommands.setHoodVoltage());// ירי
                 operatorController.triangle().whileTrue(shootCommands.setFeedVoltage());// הזנה
-                operatorController.R1().whileTrue(armCommands.openArmManual());// פתיחת שינוי זווית
-                operatorController.L1().whileTrue(armCommands.closeArmManual());// סגירת שינוי זווית
+                operatorController.povRight().whileTrue(armCommands.openArmManual());// פתיחת שינוי זווית
+                operatorController.povLeft().whileTrue(armCommands.closeArmManual());// סגירת שינוי זווית
 
                 operatorController.povUp().whileTrue(transferCommands.setForwoard());// טרנספר קדימה
                 operatorController.povDown().whileTrue(transferCommands.setBackward());// טרנספר אחורה
 
-                operatorController.R1().whileTrue(intakeCommands.intake());// איסוף
-                operatorController.L1().whileTrue(intakeCommands.outake());// פליטה
+                operatorController.R2().whileTrue(intakeCommands.intake());// איסוף
+                operatorController.L2().whileTrue(intakeCommands.outake());// פליטה
+
+                operatorController.R1().onTrue(superCommands.shootToHub(driverController.rightTrigger())); // הכנה של ירי
+                operatorController.R2().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm())); // עצירת ירי
 
         }
 
