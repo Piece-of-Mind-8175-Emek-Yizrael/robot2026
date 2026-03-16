@@ -18,11 +18,14 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
@@ -69,7 +72,7 @@ public class RobotContainer {
         private final CommandPS5Controller operatorController = new CommandPS5Controller(1);
 
         // Dashboard inputs
-        private final LoggedDashboardChooser<Command> autoChooser;
+        private final SendableChooser<Command> autoChooser;
 
         private SwerveDriveSimulation driveSimulation = null;
 
@@ -171,7 +174,15 @@ public class RobotContainer {
                 SendableChooser<Command> c = new SendableChooser<>();
 
                 // Set up auto routines
-                autoChooser = new LoggedDashboardChooser<>("Auto Choices", c); // TODO use auto builder
+                autoChooser = AutoBuilder.buildAutoChooser();
+                // new LoggedDashboardChooser<>("Auto Choices", c); // TODO use auto builder
+                // autoChooser.addDefaultOption("nothing", null);
+
+
+                SmartDashboard.putData("autoChooser", autoChooser);
+
+
+
 
                 // Set up SysId routines
 
@@ -261,6 +272,6 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-                return autoChooser.get();
+                return autoChooser.getSelected();
         }
 }
