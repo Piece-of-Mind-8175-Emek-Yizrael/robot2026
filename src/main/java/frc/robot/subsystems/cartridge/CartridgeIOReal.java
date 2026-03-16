@@ -19,7 +19,8 @@ import frc.robot.POM_lib.Motors.POMSparkMax;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
 
 public class CartridgeIOReal implements CartridgeIO {
-    private final POMSparkMax motor;
+    private final POMSparkMax rightMotorLeader;
+    private final POMSparkMax leftMotorFollower;
     private final RelativeEncoder encoder;
     private final POMDigitalInput innerSwitch;
     private final POMDigitalInput outerSwitch;
@@ -29,8 +30,10 @@ public class CartridgeIOReal implements CartridgeIO {
     private final SparkMaxConfig config;
 
     public CartridgeIOReal() {
-        motor = new POMSparkMax(MOTOR_ID);
-        encoder = motor.getEncoder();
+        rightMotorLeader = new POMSparkMax(RIGHT_MOTOR_ID);
+        leftMotorFollower = new POMSparkMax(LEFT_MOTOR_ID);
+
+        encoder = rightMotorLeader.getEncoder();
         innerSwitch = new POMDigitalInput(INNER_SWITCH_CHANNEL, INNER_NORMALLY_OPEN);
         outerSwitch = new POMDigitalInput(OUTER_SWITCH_CHANNEL, OUTER_NORMALLY_OPEN);
         pidController = new ProfiledPIDController(Kp, Ki, Kd,
@@ -48,17 +51,19 @@ public class CartridgeIOReal implements CartridgeIO {
         config.encoder.positionConversionFactor(positionConversionFactor)
                 .velocityConversionFactor(velocityConversionFactor);
 
-        resetIfPressed();
+        rightMotorLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        config.follow(rightMotorLeader, true);
+        leftMotorFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         pidController.setTolerance(TOLERANCE);
+        resetIfPressed();
     }
 
     @Override
     public void updateInputs(CartridgeIOInputs inputs) {
-        inputs.voltage = motor.getAppliedOutput() * motor.getBusVoltage();
-        inputs.output = motor.getAppliedOutput();
+        inputs.voltage = rightMotorLeader.getAppliedOutput() * rightMotorLeader.getBusVoltage();
+        inputs.output = rightMotorLeader.getAppliedOutput();
         inputs.velocity = encoder.getVelocity();
         inputs.postion = encoder.getPosition();
         inputs.isInnerPressed = isInnerPressed();
@@ -82,12 +87,12 @@ public class CartridgeIOReal implements CartridgeIO {
 
     @Override
     public void setVoltage(double voltage) {
-        motor.setVoltage(voltage);
+        rightMotorLeader.setVoltage(voltage);
     }
 
     @Override
     public void stop() {
-        motor.stop();
+        rightMotorLeader.stop();
     }
 
     @Override
@@ -101,21 +106,21 @@ public class CartridgeIOReal implements CartridgeIO {
     }
 
     @Override
-    public void goToPos(double goal) { //TODO change to const ks
-        if(goal > encoder.getPosition()){
-            if(encoder.getPosition() < 0.1 || motor.getAppliedOutput() < 0.2){
+    public void goToPos(double goal) { // TODO change to const ks
+        if (goal > encoder.getPosition()) {
+            if (encoder.getPosition() < 0.1 || rightMotorLeader.getAppliedOutput() < 0.2) {
                 ff.setKs(Ks + 2);
                 ff.setKg(Kg + 2);
                 pidController.setP(Kp + 0.3);
-            } else if (encoder.getPosition() < 0.4){
+            } else if (encoder.getPosition() < 0.4) {
                 ff.setKs(Ks + 1.5);
                 ff.setKg(Kg);
                 pidController.setP(Kp);
-            } else if (encoder.getPosition() < 0.7){
+            } else if (encoder.getPosition() < 0.7) {
                 ff.setKs(Ks + 1);
                 ff.setKg(Kg);
                 pidController.setP(Kp + 0.7);
-            } else if (encoder.getPosition() > 0.7 && !isInnerPressed()){
+            } else if (encoder.getPosition() > 0.7 && !isInnerPressed()) {
                 ff.setKs(Ks);
                 ff.setKg(Kg);
                 pidController.setP(Kp);
@@ -125,19 +130,19 @@ public class CartridgeIOReal implements CartridgeIO {
                 pidController.setP(Kp);
             }
         } else {
-            if(encoder.getPosition() > 0.9){
+            if (encoder.getPosition() > 0.9) {
                 ff.setKs(Ks + 7);
                 ff.setKg(Kg - 1.2);
                 pidController.setP(Kp + 0.3);
-            } else if (encoder.getPosition() > 0.7){
+            } else if (encoder.getPosition() > 0.7) {
                 ff.setKs(Ks + 3.5);
                 ff.setKg(Kg);
                 pidController.setP(Kp);
-            } else if (encoder.getPosition() > 0.4){
+            } else if (encoder.getPosition() > 0.4) {
                 ff.setKs(Ks + 2.5);
                 ff.setKg(Kg);
                 pidController.setP(Kp);
-            } else if (encoder.getPosition() < 0.4 && !isOuterPressed()){
+            } else if (encoder.getPosition() < 0.4 && !isOuterPressed()) {
                 ff.setKs(Ks + 1.8);
                 ff.setKg(Kg);
                 pidController.setP(Kp + 0.2);
@@ -147,7 +152,8 @@ public class CartridgeIOReal implements CartridgeIO {
                 pidController.setP(Kp);
             }
         }
-        motor.setVoltage(pidController.calculate(getPos(), goal) + ff.calculate(pidController.getSetpoint().velocity));
+        rightMotorLeader.setVoltage(
+                pidController.calculate(getPos(), goal) + ff.calculate(pidController.getSetpoint().velocity));
         Logger.recordOutput("feed forward value", ff.calculate(goal - encoder.getPosition()));
     }
 
