@@ -83,7 +83,7 @@ public class Swerve extends SubsystemBase {
                     new SwerveModulePosition()
             };
     private SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, rawGyroRotation,
-            lastModulePositions, new Pose2d(3, 3, new Rotation2d()));
+            lastModulePositions, new Pose2d(0, 0, new Rotation2d()));
 
     public Swerve(GyroIO gyroIO, ModuleIO flModuleIO, ModuleIO frModuleIO, ModuleIO blModuleIO, ModuleIO brModuleIO) {
         this.gyroIO = gyroIO;
@@ -528,7 +528,8 @@ public class Swerve extends SubsystemBase {
             }
             return getPose();
         }
-
+        
+        @AutoLogOutput(key = "Odometry/distance from hub")
         public double getDistanceFromHub() {
             return HUB_CENTER_POINT.getDistance(getRobotPoseAsBlue().getTranslation());
         }

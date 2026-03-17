@@ -18,6 +18,10 @@ public class ShooterArmCommands {
                 arm.getIO()::stopMotor, arm);
     }
 
+    public Command stopArm() {
+        return setVoltage(0);
+    }
+
     public Command goToPosition(double position) {
         return new Command() {
             @Override
@@ -42,9 +46,17 @@ public class ShooterArmCommands {
         };
     }
 
+    public Command closeArmManual() {
+        return setVoltage(-1.0)
+                .until(arm.getIO()::getSensor);
+    }
+
+    public Command openArmManual() {
+        return setVoltage(1.0);
+    }
+
     public Command closeArm() {
-        return goToPosition(CLOSE_POS)
-                .andThen(setVoltage(-1.0))
+        return goToPosition(0.0).andThen(setVoltage(-1.0))
                 .until(arm.getIO()::getSensor);
     }
 

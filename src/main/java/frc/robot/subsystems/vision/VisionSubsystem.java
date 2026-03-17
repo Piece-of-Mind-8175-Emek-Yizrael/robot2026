@@ -112,7 +112,7 @@ public class VisionSubsystem extends SubsystemBase {
         // disable the front camera if it's moving
         boolean state = cartridgePose.get() != Constants.CartridgePose.IN_MOVEMENT;
         for (var io : apriltagVisionIO) {
-            if (Objects.equals(io.getPipelineName(), frontCameraName)) {
+            if (Objects.equals(io.getPipelineName(), backCameraName)) {
                 io.togglePipeline(state);
                 switch (cartridgePose.get()) {
                     case IN_MOVEMENT:

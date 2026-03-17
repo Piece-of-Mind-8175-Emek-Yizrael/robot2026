@@ -10,6 +10,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
@@ -31,6 +32,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.FieldConstants;
 import frc.robot.subsystems.drive.Swerve;
+import lombok.extern.java.Log;
+
 import static frc.robot.subsystems.drive.FieldConstants.Hub.*;
 
 public class SwerveCommands {
@@ -230,12 +233,12 @@ public class SwerveCommands {
                         DoubleSupplier ySupplier,
                         Supplier<Rotation2d> rotationSupplier) {
 
-                // Create PID controller
+                // Create PID controller ANGLE_KP ANGLE_KD ANGLE_MAX_VELOCITY ANGLE_MAX_ACCELERATION
                 ProfiledPIDController angleController = new ProfiledPIDController(
-                                ANGLE_KP,
+                                0.7,
                                 0.0,
-                                ANGLE_KD,
-                                new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+                                0.0,
+                                new TrapezoidProfile.Constraints(5.0 ,5.0 ));
                 angleController.enableContinuousInput(-Math.PI, Math.PI);
                 angleController.setTolerance(TOLERANCE);
 
@@ -251,6 +254,8 @@ public class SwerveCommands {
                                         double omega = angleController.calculate(
                                                         drive.getRotation().getRadians(),
                                                         rotationSupplier.get().getRadians());
+                                                        Logger.recordOutput("rotation goal", rotationSupplier.get().getRadians());
+                                                        Logger.recordOutput("rotation current", drive.getRotation().getRadians());
 
                                         // Convert to field relative speeds & send command
                                         ChassisSpeeds speeds = new ChassisSpeeds(
@@ -653,21 +658,6 @@ public class SwerveCommands {
                 }
         }
 
-        // public double getDistanceFromHub(Swerve drive) {
-        //         Pose2d hubPos = new Pose2d(0, 0, new Rotation2d()); //TODO put hub position
-        //         double x = hubPos.getX() - drive.getPose().getX();
-        //         double y = hubPos.getY() - drive.getPose().getY();
-                
-        //         hubPos.getTranslation().getDistance(drive.getPose().getTranslation());
-
-        //         return Math.sqrt(x * x + y * y);
-        // }
-
-        public double getDistanceFromHub(Swerve drive) {
-                Translation2d hubPos = HUB_CENTER_POINT;
-                return hubPos.getDistance(drive.getPose().getTranslation());
-        }
-
 
         private static Rotation2d angleToHub(Swerve swerve){
                 return HUB_CENTER_POINT.minus(swerve.getRobotPoseAsBlue().getTranslation()).getAngle();
@@ -679,6 +669,10 @@ public class SwerveCommands {
 
         public static Command driveFaceToHub(Swerve drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
                 return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> angleToHub(drive));
+        }
+
+        public static Command stopWithX(Swerve drive){
+                return Commands.runOnce(() -> drive.stopWithX(), drive);
         }
 
 }

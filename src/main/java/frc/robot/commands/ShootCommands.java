@@ -22,13 +22,23 @@ public class ShootCommands {
             shoot
             ).withName("set voltage both");
     }
-
-    public Command setFeedVoltage(double feedVoltage) {
+    
+    public Command setHoodVoltage() {
+        double hoodVoltage = 5.5;
+        return Commands.runEnd(
+            () -> shoot.getIO().setHoodVoltage(hoodVoltage),
+            shoot.getIO()::stopHood,
+            shoot
+            ).withName("set hood voltage");
+    }
+    
+    public Command setFeedVoltage() {
+        double feedVoltage = 8.0;
         return Commands.runEnd(
             () -> shoot.getIO().setFeedVoltage(feedVoltage),
             shoot.getIO()::stopFeed,
             shoot
-            ).withName("set feed both");
+            ).withName("set feed voltage");
     }
 
     public Command stopBoth() {

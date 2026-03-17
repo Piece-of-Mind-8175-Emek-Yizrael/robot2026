@@ -13,6 +13,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.POM_lib.Motors.POMSparkMax;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
 
@@ -26,6 +27,7 @@ public class ShooterArmIOReal implements ShooterArmIO {
     private boolean manualMode = false;
     private SparkMaxConfig config;
     private POMDigitalInput sensor;
+
 
     public ShooterArmIOReal() {
         motor = new POMSparkMax(MOTOR_ID);
@@ -63,18 +65,20 @@ public class ShooterArmIOReal implements ShooterArmIO {
         inputs.atGoal = atGoal();
         inputs.sensor = sensor.get();
         resetIfPrees();
+
     }
 
     @Override
     public void resetIfPrees() {
         if(sensor.get()){
             zeroPosition();
-            feedforward.setKg(0.5);
-        } else if (encoder.getPosition() < 0.7){
-            feedforward.setKg(kg);
-        } else {
-            feedforward.setKg(kg + 0.4);
-        }
+            // feedforward.setKg(0.5);
+        } 
+        // else if (encoder.getPosition() < 0.7){
+        //     feedforward.setKg(kg);
+        // } else {
+        //     feedforward.setKg(kg + 0.4);
+        // }
 
     }
 
