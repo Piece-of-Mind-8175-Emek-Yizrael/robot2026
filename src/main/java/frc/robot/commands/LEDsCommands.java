@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
