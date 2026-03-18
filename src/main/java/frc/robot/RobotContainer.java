@@ -23,7 +23,9 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.CartridgeCommands;
@@ -39,7 +41,7 @@ import frc.robot.subsystems.LEDs.LEDs;
 import frc.robot.subsystems.LEDs.LEDsIO;
 import frc.robot.subsystems.LEDs.LEDsIOReal;
 import frc.robot.subsystems.cartridge.Cartridge;
-import frc.robot.subsystems.cartridge.CartridgeIOReal;
+import frc.robot.subsystems.cartridge.CartridgeIOTalon;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIOReal;
@@ -111,7 +113,7 @@ public class RobotContainer {
                                 intake = new Intake(new IntakeIOReal());
                                 shoot = new Shoot(new ShootIOReal());
                                 transfer = new Transfer(new TransferIOReal());
-                                cartridge = new Cartridge(new CartridgeIOReal());
+                                cartridge = new Cartridge(new CartridgeIOTalon());
                                 arm = new ShooterArm(new ShooterArmIOReal());
                                 leds = new LEDs(new LEDsIOReal());
 
@@ -210,7 +212,15 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
+                // leds.setDefaultCommand(LEDsCommands.setAll(leds, Color.kPurple));
                 leds.setDefaultCommand(LEDsCommands.rainbow(leds));
+
+                cartridge.setDefaultCommand(
+                        new ConditionalCommand(
+                                cartridgeCommands.setOpenVoltage(0.5), 
+                                cartridgeCommands.setCloseVoltage(0.0), 
+                                cartridge.getIO()::isInnerPressed));
+
 
                 // driverController
                 swerve.setDefaultCommand(
