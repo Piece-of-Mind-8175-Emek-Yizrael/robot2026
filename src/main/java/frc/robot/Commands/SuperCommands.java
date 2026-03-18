@@ -54,29 +54,35 @@ public class SuperCommands {
 
     public Command intakeFuel() {
         return Commands.parallel(
-                (cartridgeCommands.openCartridge().withTimeout(1).andThen(cartridgeCommands.setVoltage(-2))),
+                cartridgeCommands.openCartridge(),
                 intakeCommands.intake());
     }
 
     public Command intakeFuelWithTransfer() {
         return Commands.parallel(
-                (cartridgeCommands.openCartridge().withTimeout(1).andThen(cartridgeCommands.setVoltage(-2))),
+                cartridgeCommands.openCartridge(),
                 intakeCommands.intake(),
                 transferCommands.setVoltage(4));
     }
 
     public Command outtakeFuel() {
         return Commands.parallel(
-                (cartridgeCommands.openCartridge().withTimeout(1).andThen(cartridgeCommands.setVoltage(-2))),
+                cartridgeCommands.openCartridge(),
                 intakeCommands.outake(),
                 transferCommands.setVoltage(-4));
     }
 
     public Command closeCartridge() {
         return Commands.parallel(
-                Commands.sequence(cartridgeCommands.closeCartridge().withTimeout(0.1),
-                                cartridgeCommands.setCloseVoltage(6)),
+                cartridgeCommands.closeCartridge(),
                 intakeCommands.intake());
+    }
+
+    public Command closeCartridgeWithTransfer() {
+        return Commands.parallel(
+                cartridgeCommands.closeCartridge(),
+                intakeCommands.intake(),
+                transferCommands.setVoltage(4));
     }
 
     public Command shootToHub(BooleanSupplier readyToShoot) {

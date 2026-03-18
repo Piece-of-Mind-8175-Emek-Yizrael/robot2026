@@ -19,6 +19,10 @@ public class CartridgeCommands extends Command {
         this.cartridge = cartridge;
     }
 
+    public Command stop(){
+        return Commands.runOnce(cartridge.getIO()::stop, cartridge);
+    }
+
     public Command setVoltage(double voltage) {
         return Commands.runEnd(() -> cartridge.getIO().setVoltage(voltage), cartridge.getIO()::stop, cartridge);
     }

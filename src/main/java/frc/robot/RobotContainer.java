@@ -212,29 +212,29 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                // leds.setDefaultCommand(LEDsCommands.setAll(leds, Color.kPurple));
                 leds.setDefaultCommand(LEDsCommands.rainbow(leds));
 
-                cartridge.setDefaultCommand(
-                        new ConditionalCommand(
-                                cartridgeCommands.setOpenVoltage(0.5), 
-                                cartridgeCommands.setCloseVoltage(0.0), 
-                                cartridge.getIO()::isInnerPressed));
+                // cartridge.setDefaultCommand(
+                //         new ConditionalCommand(
+                //                 cartridgeCommands.stop(), 
+                //                 cartridgeCommands.setCloseVoltage(-0.2), 
+                //                 cartridge.getIO()::isInnerPressed));
 
 
                 // driverController
                 swerve.setDefaultCommand(
                                 SwerveCommands.joystickDrive(swerve,
-                                                () -> driverController.getLeftY() * 0.5,
-                                                () -> driverController.getLeftX() * 0.5,
-                                                () -> driverController.getRightX() * 0.5));
+                                                () -> driverController.getLeftY() * 0.4,
+                                                () -> driverController.getLeftX() * 0.4,
+                                                () -> driverController.getRightX() * 0.4));
 
                 driverController.LB().whileTrue(SwerveCommands.joystickDrive(swerve,
                                 () -> driverController.getLeftY() * 0.5,
                                 () -> driverController.getLeftX() * 0.5,
                                 () -> driverController.getRightX() * 0.5));
 
-                driverController.leftTrigger().whileTrue(superCommands.intakeFuel());
+                driverController.leftTrigger().whileTrue(superCommands.intakeFuelWithTransfer());
+
                 driverController.RB().whileTrue(superCommands.closeCartridge());
                 driverController.b().whileTrue(superCommands.outtakeFuel());
                 driverController.a().whileTrue(SwerveCommands.driveFaceToHub(swerve,
@@ -243,15 +243,15 @@ public class RobotContainer {
                 driverController.PovDown().onTrue(swerve.resetGyroCommand());
                 driverController.x().onTrue(SwerveCommands.stopWithX(swerve));
 
-                // operatorController
-                new Trigger(() -> Math.abs(operatorController.getRightY()) > 0.1)
-                                .whileTrue(cartridgeCommands.openOrCloseManual(() -> operatorController.getRightY()));// פתיחה
-                                                                                                                     // וסגירה
-                                                                                                                     // של
-                                                                                                                     // המחסנית
+                driverController.y().onTrue(superCommands.shootToHub(driverController.rightTrigger())); // הכנה של ירי
+                driverController.PovUp().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm())); // עצירת ירי
 
+
+                // operatorController
+                
                 operatorController.cross().whileTrue(shootCommands.setHoodVoltage());// ירי
                 operatorController.triangle().whileTrue(shootCommands.setFeedVoltage());// הזנה
+
                 operatorController.povRight().whileTrue(armCommands.openArmManual());// פתיחת שינוי זווית
                 operatorController.povLeft().whileTrue(armCommands.closeArmManual());// סגירת שינוי זווית
 
@@ -263,6 +263,9 @@ public class RobotContainer {
 
                 operatorController.R1().onTrue(superCommands.shootToHub(driverController.rightTrigger())); // הכנה של ירי
                 operatorController.R2().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm())); // עצירת ירי
+
+                operatorController.square().whileTrue(cartridgeCommands.setOpenVoltage(1.5));
+                operatorController.circle().whileTrue(cartridgeCommands.setCloseVoltage(-1));
 
         }
 
