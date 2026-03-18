@@ -23,7 +23,9 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.CartridgeCommands;
@@ -210,7 +212,15 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
+                // leds.setDefaultCommand(LEDsCommands.setAll(leds, Color.kPurple));
                 leds.setDefaultCommand(LEDsCommands.rainbow(leds));
+
+                cartridge.setDefaultCommand(
+                        new ConditionalCommand(
+                                cartridgeCommands.setOpenVoltage(0.5), 
+                                cartridgeCommands.setCloseVoltage(0.0), 
+                                cartridge.getIO()::isInnerPressed));
+
 
                 // driverController
                 swerve.setDefaultCommand(
@@ -237,22 +247,27 @@ public class RobotContainer {
                 driverController.PovLeft().whileTrue(superCommands.intakeFuel());
 
                 // operatorController
-                new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1)
-                                .whileTrue(cartridgeCommands.openOrCloseManual(() -> operatorController.getLeftY()));// פתיחה
-                                                                                                                     // וסגירה
-                                                                                                                     // של
-                                                                                                                     // המחסנית
+                // new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1)
+                //                 .whileTrue(cartridgeCommands.openOrCloseManual(() -> operatorController.getLeftY()));// פתיחה
+                //                                                                                                      // וסגירה
+                //                                                                                                      // של
+                //                                                                                                      // המחסנית
 
                 operatorController.cross().whileTrue(shootCommands.setHoodVoltage());// ירי
                 operatorController.triangle().whileTrue(shootCommands.setFeedVoltage());// הזנה
-                operatorController.R1().whileTrue(armCommands.openArmManual());// פתיחת שינוי זווית
-                operatorController.L1().whileTrue(armCommands.closeArmManual());// סגירת שינוי זווית
+                operatorController.R2().whileTrue(armCommands.openArmManual());// פתיחת שינוי זווית
+                operatorController.L2().whileTrue(armCommands.closeArmManual());// סגירת שינוי זווית
 
                 operatorController.povUp().whileTrue(transferCommands.setForwoard());// טרנספר קדימה
                 operatorController.povDown().whileTrue(transferCommands.setBackward());// טרנספר אחורה
 
                 operatorController.R1().whileTrue(intakeCommands.intake());// איסוף
                 operatorController.L1().whileTrue(intakeCommands.outake());// פליטה
+
+                operatorController.circle().whileTrue(cartridgeCommands.setOpenVoltage(2));
+                operatorController.square().whileTrue(cartridgeCommands.setCloseVoltage(-2));
+                // operatorController.circle().whileTrue(cartridgeCommands.openCartridge());
+                // operatorController.square().whileTrue(cartridgeCommands.closeCartridge());
 
         }
 

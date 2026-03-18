@@ -58,16 +58,12 @@ public class CartridgeCommands extends Command {
     }
 
     public Command openCartridge() {
-        return goToPosition(OPEN_CARTRIDGE_POS)
-                .andThen(setOpenVoltage(5.0))
-                .until(cartridge.getIO()::isOuterPressed)
+        return setOpenVoltage(2)
                 .withName("open cartridge");
     }
 
     public Command closeCartridge() {
-        return goToPosition(CLOSE_CARTRIDGE_POS)
-                .andThen(setCloseVoltage(-5.0))
-                .until(cartridge.getIO()::isInnerPressed)
+        return setCloseVoltage(-1.5)
                 .withName("close cartridge");
     }
 
