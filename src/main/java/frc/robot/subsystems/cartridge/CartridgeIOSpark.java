@@ -18,9 +18,8 @@ import frc.robot.Constants.CartridgePose;
 import frc.robot.POM_lib.Motors.POMSparkMax;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
 
-public class CartridgeIOReal implements CartridgeIO {
-    private final POMSparkMax rightMotorLeader;
-    private final POMSparkMax leftMotorFollower;
+public class CartridgeIOSpark implements CartridgeIO {
+    private final POMSparkMax motor;
     private final RelativeEncoder encoder;
     private final POMDigitalInput innerSwitch;
     private final POMDigitalInput outerSwitch;
@@ -29,18 +28,22 @@ public class CartridgeIOReal implements CartridgeIO {
     private final CartridgeTuning tuning;
     private final SparkMaxConfig config;
 
-    public CartridgeIOReal() {
-        rightMotorLeader = new POMSparkMax(RIGHT_MOTOR_ID);
-        leftMotorFollower = new POMSparkMax(LEFT_MOTOR_ID);
+    public CartridgeIOSpark() {
+        motor = new POMSparkMax(MOTOR_ID);
 
-        encoder = rightMotorLeader.getEncoder();
+        encoder = motor.getEncoder();
+
         innerSwitch = new POMDigitalInput(INNER_SWITCH_CHANNEL, INNER_NORMALLY_OPEN);
         outerSwitch = new POMDigitalInput(OUTER_SWITCH_CHANNEL, OUTER_NORMALLY_OPEN);
+
         pidController = new ProfiledPIDController(Kp, Ki, Kd,
                 new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
         pidController.setTolerance(TOLERANCE);
+
         ff = new ElevatorFeedforward(Ks, Kg, Kv);
+
         tuning = new CartridgeTuning();
+
         config = new SparkMaxConfig();
 
         config.idleMode(IdleMode.kBrake)
@@ -48,22 +51,20 @@ public class CartridgeIOReal implements CartridgeIO {
                 .voltageCompensation(VOLTAGE_COMPENSATION)
                 .inverted(INVERTED);
 
-        config.encoder.positionConversionFactor(positionConversionFactor)
-                .velocityConversionFactor(velocityConversionFactor);
+        config.encoder.positionConversionFactor(CONVERSION_FACTOR)
+                .velocityConversionFactor(VELOCITY_CONVERSION_FACTOR);
 
-        rightMotorLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        config.follow(rightMotorLeader, true);
-        leftMotorFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        config.follow(motor, true);
 
-        pidController.setTolerance(TOLERANCE);
         resetIfPressed();
     }
 
     @Override
     public void updateInputs(CartridgeIOInputs inputs) {
-        inputs.voltage = rightMotorLeader.getAppliedOutput() * rightMotorLeader.getBusVoltage();
-        inputs.output = rightMotorLeader.getAppliedOutput();
+        inputs.voltage = motor.getAppliedOutput() * motor.getBusVoltage();
+        inputs.output = motor.getAppliedOutput();
         inputs.velocity = encoder.getVelocity();
         inputs.postion = encoder.getPosition();
         inputs.isInnerPressed = isInnerPressed();
@@ -87,12 +88,12 @@ public class CartridgeIOReal implements CartridgeIO {
 
     @Override
     public void setVoltage(double voltage) {
-        rightMotorLeader.setVoltage(voltage);
+        motor.setVoltage(voltage);
     }
 
     @Override
     public void stop() {
-        rightMotorLeader.stop();
+        motor.stop();
     }
 
     @Override
@@ -108,7 +109,7 @@ public class CartridgeIOReal implements CartridgeIO {
     @Override
     public void goToPos(double goal) { // TODO change to const ks
         if (goal > encoder.getPosition()) {
-            if (encoder.getPosition() < 0.1 || rightMotorLeader.getAppliedOutput() < 0.2) {
+            if (encoder.getPosition() < 0.1 || motor.getAppliedOutput() < 0.2) {
                 ff.setKs(Ks + 2);
                 ff.setKg(Kg + 2);
                 pidController.setP(Kp + 0.3);
@@ -152,7 +153,7 @@ public class CartridgeIOReal implements CartridgeIO {
                 pidController.setP(Kp);
             }
         }
-        rightMotorLeader.setVoltage(
+        motor.setVoltage(
                 pidController.calculate(getPos(), goal) + ff.calculate(pidController.getSetpoint().velocity));
         Logger.recordOutput("feed forward value", ff.calculate(goal - encoder.getPosition()));
     }
