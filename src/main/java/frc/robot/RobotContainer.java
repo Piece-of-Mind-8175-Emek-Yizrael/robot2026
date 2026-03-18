@@ -39,7 +39,7 @@ import frc.robot.subsystems.LEDs.LEDs;
 import frc.robot.subsystems.LEDs.LEDsIO;
 import frc.robot.subsystems.LEDs.LEDsIOReal;
 import frc.robot.subsystems.cartridge.Cartridge;
-import frc.robot.subsystems.cartridge.CartridgeIOSpark;
+import frc.robot.subsystems.cartridge.CartridgeIOTalon;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIOReal;
@@ -111,7 +111,7 @@ public class RobotContainer {
                                 intake = new Intake(new IntakeIOReal());
                                 shoot = new Shoot(new ShootIOReal());
                                 transfer = new Transfer(new TransferIOReal());
-                                cartridge = new Cartridge(new CartridgeIOSpark());
+                                cartridge = new Cartridge(new CartridgeIOTalon());
                                 arm = new ShooterArm(new ShooterArmIOReal());
                                 leds = new LEDs(new LEDsIOReal());
 
