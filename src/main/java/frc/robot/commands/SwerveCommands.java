@@ -667,9 +667,13 @@ public class SwerveCommands {
                 return rotateToAngle(drive, () -> angleToHub(drive));
         }
 
-//        public static Translation2d getHubCentricVelocity(Swerve swerve) {
-//            ChassisSpeeds rocotCentricSpeeds = swerve.getChassisSpeeds();
-//        }
+        public static Translation2d getHubCentricVelocity(Swerve swerve) {
+            ChassisSpeeds robotCentricSpeeds = swerve.getChassisSpeeds();
+            Translation2d speedsTranslation = new Translation2d(robotCentricSpeeds.vxMetersPerSecond, robotCentricSpeeds.vyMetersPerSecond); // TODO: make sure this is the right order
+            speedsTranslation.rotateBy(swerve.getPose().getRotation());
+            speedsTranslation.rotateBy(angleToHub(swerve));
+            return speedsTranslation;
+        }
 
         public static Command driveFaceToHub(Swerve drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
                 return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> angleToHub(drive));
