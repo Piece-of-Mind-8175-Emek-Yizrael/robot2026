@@ -10,6 +10,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import frc.robot.util.InterpolatorResult;
+import frc.robot.util.ShooterCalculator;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -677,6 +679,15 @@ public class SwerveCommands {
 
         public static Command driveFaceToHub(Swerve drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
                 return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> angleToHub(drive));
+        }
+
+        public static Command driveFaceToHubWithVelocity(Swerve drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+            double distance = drive.getDistanceFromHub();
+
+            Translation2d velocity = getHubCentricVelocity(drive);
+            InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getY(), velocity.getX()); // TODO: is this the correct order?
+
+            return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> angleToHub(drive).plus(Rotation2d.fromRadians(result.rotation())));
         }
 
         public static Command stopWithX(Swerve drive){

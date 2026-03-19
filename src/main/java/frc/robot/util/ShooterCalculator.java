@@ -61,25 +61,20 @@ public class ShooterCalculator {
 
         return closeSpeeds.get(distance);
     }
-    
+
     public static InterpolatorResult getTargetSpeedAndRotation(double radialDistance, double radialVelocity, double perpendicularVelocity) {
         double radialError = flyTime.get(farSpeeds.get(radialDistance)) * radialVelocity;
         radialDistance += radialError;
-        
+
         double flightTime = flyTime.get(farSpeeds.get(radialDistance));
-        
+
         double perpendicularError = perpendicularVelocity * flightTime;
-        
+
         double normalizedDistance = Math.sqrt(perpendicularError * perpendicularError + radialDistance * radialDistance);
-        
+
         double angle = Math.atan2(perpendicularError, radialDistance);
         double velocity = farSpeeds.get(normalizedDistance);
-        
+
         return new InterpolatorResult(velocity, angle);
     }
-    
-    
-}
-record InterpolatorResult(double speed, double rotation) {
-    
 }

@@ -6,6 +6,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import frc.robot.util.InterpolatorResult;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
@@ -18,6 +19,8 @@ import frc.robot.subsystems.shoot.Shoot;
 import frc.robot.subsystems.shooterArm.ShooterArm;
 import frc.robot.subsystems.transfer.Transfer;
 import frc.robot.util.ShooterCalculator;
+
+import static frc.robot.Commands.SwerveCommands.getHubCentricVelocity;
 
 public class SuperCommands {
 
@@ -136,17 +139,10 @@ public class SuperCommands {
             public boolean isFinished() {
                 return false;
             }
-
-            void test() {
-                ChassisSpeeds speeds = new ChassisSpeeds();
-                double angleToHub = 0;
-                Translation2d velocity = new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
-                velocity.rotateBy(Rotation2d.fromDegrees(angleToHub));
-            }
         };
     }
 
-    public Command shootToHubInMovment(BooleanSupplier readyToShoot) {
+    public Command shootToHubInMovement(BooleanSupplier readyToShoot) {
         return new Command() {
             {
                 addRequirements(shoot, arm, transfer);
@@ -160,7 +156,12 @@ public class SuperCommands {
             @Override
             public void execute() { // TODO - uncomment when finished interpolation tuning
                 double distance = swerve.getDistanceFromHub();
-                shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(distance));
+
+                Translation2d velocity = getHubCentricVelocity(swerve);
+                InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getY(), velocity.getX()); // TODO: is this the correct order?
+
+                shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(result.speed()));
+
                 if (ShooterCalculator.isFar(distance)) {
                 arm.getIO().setVoltage(1);
                 } else {
