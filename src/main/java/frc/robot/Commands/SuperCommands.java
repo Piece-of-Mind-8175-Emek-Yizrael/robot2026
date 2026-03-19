@@ -58,6 +58,8 @@ public class SuperCommands {
         this.shootCommands = new ShootCommands(shoot);
         this.armCommands = new ShooterArmCommands(arm);
         this.transferCommands = new TransferCommands(transfer);
+        shootCommands = new ShootCommands(shoot);
+                
     }
 
     public Command intakeFuel() {
@@ -195,15 +197,5 @@ public class SuperCommands {
             }
         };
     }
-
-    // public Command movingShootAngle(DoubleSupplier xSupplier, DoubleSupplier ySupplier){
-    //     return swerveCommands.joystickDriveAtAngle(swerve, xSupplier, ySupplier,
-    //                             () -> (swerveCommands.angleToHub(swerve).minus(
-    //                                     ShooterCalculator.getTargetSpeedAndRotation(
-    //                                         swerve.getDistanceFromHub(), 0, 0).)));
-    // }
-
-
-
     
 }
