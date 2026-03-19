@@ -667,6 +667,10 @@ public class SwerveCommands {
                 return rotateToAngle(drive, () -> angleToHub(drive));
         }
 
+//        public static Translation2d getHubCentricVelocity(Swerve swerve) {
+//            ChassisSpeeds rocotCentricSpeeds = swerve.getChassisSpeeds();
+//        }
+
         public static Command driveFaceToHub(Swerve drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
                 return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> angleToHub(drive));
         }

@@ -3,6 +3,9 @@ package frc.robot.Commands;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
@@ -132,6 +135,13 @@ public class SuperCommands {
             @Override
             public boolean isFinished() {
                 return false;
+            }
+
+            void test() {
+                ChassisSpeeds speeds = new ChassisSpeeds();
+                double angleToHub = 0;
+                Translation2d velocity = new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
+                velocity.rotateBy(Rotation2d.fromDegrees(angleToHub));
             }
         };
     }
