@@ -670,8 +670,9 @@ public class SwerveCommands {
         }
 
         public static Translation2d getHubCentricVelocity(Swerve swerve) {
+            // TODO: check whether the directions of the chassis speeds are the same as I was expecting, or do I need to put a minus or flip by 180 degrees
             ChassisSpeeds robotCentricSpeeds = swerve.getChassisSpeeds();
-            Translation2d speedsTranslation = new Translation2d(robotCentricSpeeds.vxMetersPerSecond, robotCentricSpeeds.vyMetersPerSecond); // TODO: make sure this is the right order
+            Translation2d speedsTranslation = new Translation2d(-robotCentricSpeeds.vxMetersPerSecond, robotCentricSpeeds.vyMetersPerSecond); // TODO: make sure this is the right order
             speedsTranslation.rotateBy(swerve.getPose().getRotation());
             speedsTranslation.rotateBy(angleToHub(swerve));
             return speedsTranslation;
