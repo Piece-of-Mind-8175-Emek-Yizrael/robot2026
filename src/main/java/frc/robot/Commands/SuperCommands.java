@@ -107,7 +107,7 @@ public class SuperCommands {
             }
 
             @Override
-            public void execute() { // TODO - uncomment when finished interpolation tuning
+            public void execute() { 
                 double distance = swerve.getDistanceFromHub();
                 shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(distance));
                 if (ShooterCalculator.isFar(distance)) {
@@ -156,11 +156,11 @@ public class SuperCommands {
             }
 
             @Override
-            public void execute() { // TODO - uncomment when finished interpolation tuning
+            public void execute() { 
                 double distance = swerve.getDistanceFromHub();
 
                 Translation2d velocity = getHubCentricVelocity(swerve);
-                InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getX(), velocity.getY()); // TODO: is this the correct order?
+                InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getY(), velocity.getX()); // TODO: is this the correct order?
 
                 shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(result.speed()));
 
