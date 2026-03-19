@@ -688,7 +688,8 @@ public class SwerveCommands {
             Translation2d velocity = getHubCentricVelocity(drive);
             InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getX(), velocity.getY()); // TODO: is this the correct order?
 
-            return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> angleToHub(drive).plus(Rotation2d.fromRadians(result.rotation())));
+            return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> angleToHub(drive).plus(Rotation2d.fromRadians(result.rotation()).plus(Rotation2d.fromRadians(result.rotation()))));
+
         }
 
         public static Command stopWithX(Swerve drive){

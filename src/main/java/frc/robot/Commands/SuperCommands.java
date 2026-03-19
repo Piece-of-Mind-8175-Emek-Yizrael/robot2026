@@ -162,7 +162,7 @@ public class SuperCommands {
                 Translation2d velocity = getHubCentricVelocity(swerve);
                 InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getY(), velocity.getX()); // TODO: is this the correct order?
 
-                shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(result.speed()));
+                shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(result.speed()-6));
 
                 if (ShooterCalculator.isFar(distance)) {
                 arm.getIO().setVoltage(1);
@@ -177,11 +177,11 @@ public class SuperCommands {
                     shoot.getIO().stopFeed();
                     transfer.getIO().stopMotor();
                 }
-                if (ShooterCalculator.isFar(distance)) {
-                arm.getIO().setVoltage(1);
-                } else {
-                arm.getIO().stopMotor();
-                }
+                // if (ShooterCalculator.isFar(distance)) {
+                // arm.getIO().setVoltage(1);
+                // } else {
+                // arm.getIO().stopMotor();
+                // }
 
             }
 
