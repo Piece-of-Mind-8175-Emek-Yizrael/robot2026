@@ -659,7 +659,7 @@ public class SwerveCommands {
         }
 
 
-        private static Rotation2d angleToHub(Swerve swerve){
+        public static Rotation2d angleToHub(Swerve swerve){
                 return HUB_CENTER_POINT.minus(swerve.getRobotPoseAsBlue().getTranslation()).getAngle();
         }
 

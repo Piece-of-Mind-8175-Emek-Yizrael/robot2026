@@ -5,6 +5,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 public class ShooterCalculator {
     private static InterpolatingDoubleTreeMap farSpeeds, closeSpeeds;
+    private static InterpolatingDoubleTreeMap flyTime;
 
     private static final double FAR_MIN_DISTANCE = 2.0;
 
@@ -22,17 +23,33 @@ public class ShooterCalculator {
         farSpeeds.put(2.6, 49.0);
         farSpeeds.put(2.8, 51.0);
         farSpeeds.put(3.0, 52.0);
-        farSpeeds.put(3.2, 53.0);
-        farSpeeds.put(3.5, 56.0);
-        farSpeeds.put(3.7, 58.0);
-        farSpeeds.put(4.0, 59.0);
-        farSpeeds.put(4.2, 61.0);
-        farSpeeds.put(4.5, 61.0);
+        farSpeeds.put(3.2, 53.0);//TODO need to change
+        farSpeeds.put(3.5, 56.0);//TODO need to change
+        farSpeeds.put(3.7, 58.0);//TODO need to change
+        farSpeeds.put(4.0, 59.0);//TODO need to change
+        farSpeeds.put(4.2, 61.0);//TODO need to change
+        farSpeeds.put(4.5, 61.0);//TODO need to change
         farSpeeds.put(4.7, 62.0);
         farSpeeds.put(5.0, 63.0);
         farSpeeds.put(5.2, 65.0);
-    }
 
+        flyTime = new InterpolatingDoubleTreeMap();
+        flyTime.put(43.0,0.72);
+        flyTime.put(44.0,0.8);
+        flyTime.put(46.0,0.87);
+        flyTime.put(48.0,1.1);
+        flyTime.put(49.0,1.2);
+        flyTime.put(51.0,1.21);
+        flyTime.put(52.0,1.21);
+        flyTime.put(53.0,0.0);//TODO need to change
+        flyTime.put(56.0,0.0);//TODO need to change
+        flyTime.put(58.0,0.0);//TODO need to change
+        flyTime.put(59.0,0.0);//TODO need to change
+        flyTime.put(61.0,0.0);//TODO need to change
+        flyTime.put(62.0,0.0);
+        flyTime.put(63.0,0.0);
+        flyTime.put(65.0,0.0);
+    }
     public static boolean isFar(double distance) {
         return distance > FAR_MIN_DISTANCE;
     }
@@ -44,5 +61,25 @@ public class ShooterCalculator {
 
         return closeSpeeds.get(distance);
     }
-
+    
+    public static InterpolatorResult getTargetSpeedAndRotation(double radialDistance, double radialVelocity, double perpendicularVelocity) {
+        double radialError = flyTime.get(farSpeeds.get(radialDistance)) * radialVelocity;
+        radialDistance += radialError;
+        
+        double flightTime = flyTime.get(farSpeeds.get(radialDistance));
+        
+        double perpendicularError = perpendicularVelocity * flightTime;
+        
+        double normalizedDistance = Math.sqrt(perpendicularError * perpendicularError + radialDistance * radialDistance);
+        
+        double angle = Math.atan2(perpendicularError, radialDistance);
+        double velocity = farSpeeds.get(normalizedDistance);
+        
+        return new InterpolatorResult(velocity, angle);
+    }
+    
+    
+}
+record InterpolatorResult(double speed, double rotation) {
+    
 }

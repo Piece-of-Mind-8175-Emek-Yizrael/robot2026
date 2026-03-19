@@ -1,6 +1,7 @@
 package frc.robot.Commands;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -31,6 +32,7 @@ public class SuperCommands {
     private ShootCommands shootCommands;
     private ShooterArmCommands armCommands;
     private TransferCommands transferCommands;
+    private SwerveCommands swerveCommands;
 
     private final double farArmAngle = 0.1;
     private final double farShootSpeed = 55.0;
@@ -133,4 +135,64 @@ public class SuperCommands {
             }
         };
     }
+
+    public Command shootToHubInMovment(BooleanSupplier readyToShoot) {
+        return new Command() {
+            {
+                addRequirements(shoot, arm, transfer);
+            }
+
+            @Override
+            public void initialize() {
+                shoot.getIO().setHoodSetpoint(tuneSpeed.get());// FIXME: placeholder value //55//45
+            }
+
+            @Override
+            public void execute() { // TODO - uncomment when finished interpolation tuning
+                double distance = swerve.getDistanceFromHub();
+                shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(distance));
+                if (ShooterCalculator.isFar(distance)) {
+                arm.getIO().setVoltage(1);
+                } else {
+                arm.getIO().stopMotor();
+                }
+
+                if (readyToShoot.getAsBoolean()) {
+                    shoot.getIO().setFeedVoltage(8.0);
+                    transfer.getIO().setVoltage(5.0);
+                } else {
+                    shoot.getIO().stopFeed();
+                    transfer.getIO().stopMotor();
+                }
+                if (ShooterCalculator.isFar(distance)) {
+                arm.getIO().setVoltage(1);
+                } else {
+                arm.getIO().stopMotor();
+                }
+
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                shoot.getIO().stopBoth();
+                transfer.getIO().stopMotor();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+    }
+
+    // public Command movingShootAngle(DoubleSupplier xSupplier, DoubleSupplier ySupplier){
+    //     return swerveCommands.joystickDriveAtAngle(swerve, xSupplier, ySupplier,
+    //                             () -> (swerveCommands.angleToHub(swerve).minus(
+    //                                     ShooterCalculator.getTargetSpeedAndRotation(
+    //                                         swerve.getDistanceFromHub(), 0, 0).)));
+    // }
+
+
+
+    
 }

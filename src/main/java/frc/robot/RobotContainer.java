@@ -214,12 +214,6 @@ public class RobotContainer {
                 // Default command, normal field-relative drive
                 leds.setDefaultCommand(LEDsCommands.rainbow(leds));
 
-                // cartridge.setDefaultCommand(
-                //         new ConditionalCommand(
-                //                 cartridgeCommands.stop(), 
-                //                 cartridgeCommands.setCloseVoltage(-0.2), 
-                //                 cartridge.getIO()::isInnerPressed));
-
 
                 // driverController
                 swerve.setDefaultCommand(
@@ -237,7 +231,7 @@ public class RobotContainer {
 
                 driverController.RB().whileTrue(superCommands.closeCartridge());
                 driverController.b().whileTrue(superCommands.outtakeFuel());
-                driverController.a().whileTrue(SwerveCommands.driveFaceToHub(swerve,
+                driverController.rightTrigger().whileTrue(SwerveCommands.driveFaceToHub(swerve,
                                 () -> driverController.getLeftY() * 0.5,
                                 () -> driverController.getLeftX() * 0.5));
                 driverController.PovDown().onTrue(swerve.resetGyroCommand());
@@ -264,8 +258,8 @@ public class RobotContainer {
                 operatorController.R1().onTrue(superCommands.shootToHub(driverController.rightTrigger())); // הכנה של ירי
                 operatorController.R2().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm())); // עצירת ירי
 
-                operatorController.square().whileTrue(cartridgeCommands.setOpenVoltage(1.5));
-                operatorController.circle().whileTrue(cartridgeCommands.setCloseVoltage(-1));
+                operatorController.square().whileTrue(cartridgeCommands.setOpenVoltage(1.5));// פתיחת מחסנית
+                operatorController.circle().whileTrue(cartridgeCommands.setCloseVoltage(-1)); // סגירת מחסנית
 
         }
 
