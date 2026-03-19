@@ -158,7 +158,7 @@ public class SuperCommands {
                 double distance = swerve.getDistanceFromHub();
 
                 Translation2d velocity = getHubCentricVelocity(swerve);
-                InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getY(), velocity.getX()); // TODO: is this the correct order?
+                InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getX(), velocity.getY()); // TODO: is this the correct order?
 
                 shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(result.speed()));
 
