@@ -13,51 +13,29 @@
 
 package frc.robot;
 
-import java.util.Optional;
-
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Commands.CartridgeCommands;
-import frc.robot.Commands.IntakeCommands;
-import frc.robot.Commands.LEDsCommands;
-import frc.robot.Commands.ShootCommands;
-import frc.robot.Commands.ShooterArmCommands;
-import frc.robot.Commands.SuperCommands;
 import frc.robot.Commands.SwerveCommands;
-import frc.robot.Commands.TransferCommands;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
-import frc.robot.subsystems.LEDs.LEDs;
-import frc.robot.subsystems.LEDs.LEDsIO;
-import frc.robot.subsystems.LEDs.LEDsIOReal;
-import frc.robot.subsystems.cartridge.Cartridge;
-import frc.robot.subsystems.cartridge.CartridgeIOTalon;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.Swerve;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.IntakeIOReal;
-import frc.robot.subsystems.shoot.Shoot;
-import frc.robot.subsystems.shoot.ShootIOReal;
-import frc.robot.subsystems.shooterArm.ShooterArm;
-import frc.robot.subsystems.shooterArm.ShooterArmIOReal;
-import frc.robot.subsystems.transfer.Transfer;
-import frc.robot.subsystems.transfer.TransferIOReal;
-import frc.robot.subsystems.vision.VisionConstants;
-import frc.robot.subsystems.vision.VisionSubsystem;
-import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIOReal;
 import frc.robot.util.ShooterCalculator;
 
 /**
@@ -73,29 +51,29 @@ import frc.robot.util.ShooterCalculator;
 public class RobotContainer {
         // Subsystems
         private final Swerve swerve;
-        private final Intake intake;
-        private final Shoot shoot;
-        private final Transfer transfer;
-        private final Cartridge cartridge;
-        private final ShooterArm arm;
-        private final VisionSubsystem vision;
-        private final SuperCommands superCommands;
-        private final LEDs leds;
+        // private final Intake intake;
+        // private final Shoot shoot;
+        // private final Transfer transfer;
+        // private final Cartridge cartridge;
+        // private final ShooterArm arm;
+        // private final VisionSubsystem vision;
+        // private final SuperCommands superCommands;
+        // private final LEDs leds;
 
-        // Commands
-        private final IntakeCommands intakeCommands;
-        private final ShootCommands shootCommands;
-        private final TransferCommands transferCommands;
-        private final CartridgeCommands cartridgeCommands;
-        private final ShooterArmCommands armCommands;
-        private final LEDsCommands ledsCommands;
+        // // Commands
+        // private final IntakeCommands intakeCommands;
+        // private final ShootCommands shootCommands;
+        // private final TransferCommands transferCommands;
+        // private final CartridgeCommands cartridgeCommands;
+        // private final ShooterArmCommands armCommands;
+        // private final LEDsCommands ledsCommands;
 
         // Controller
         private final PomXboxController driverController = new PomXboxController(0);
         private final CommandPS5Controller operatorController = new CommandPS5Controller(1);
 
         // Dashboard inputs
-        private final LoggedDashboardChooser<Command> autoChooser;
+        private final SendableChooser<Command> autoChooser;
 
         private SwerveDriveSimulation driveSimulation = null;
 
@@ -104,60 +82,65 @@ public class RobotContainer {
          */
         public RobotContainer() {
                 ShooterCalculator.init();
+                System.out.println("Current mode: " + Constants.currentMode);
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
-                                driveSimulation = null;
+                                // driveSimulation = null;
                                 swerve = new Swerve(new GyroIOPigeon2(), new ModuleIOReal(0), new ModuleIOReal(1),
                                                 new ModuleIOReal(2), new ModuleIOReal(3));
-                                intake = new Intake(new IntakeIOReal());
-                                shoot = new Shoot(new ShootIOReal());
-                                transfer = new Transfer(new TransferIOReal());
-                                cartridge = new Cartridge(new CartridgeIOTalon());
-                                arm = new ShooterArm(new ShooterArmIOReal());
-                                leds = new LEDs(new LEDsIOReal());
+                                // intake = new Intake(new IntakeIOReal());
+                                // shoot = new Shoot(new ShootIOReal());
+                                // transfer = new Transfer(new TransferIOReal());
+                                // cartridge = new Cartridge(new CartridgeIOReal());
+                                // arm = new ShooterArm(new ShooterArmIOReal());
+                                // leds = new LEDs(new LEDsIOReal());
 
-                                ApriltagVisionIOReal[] cameras = {
-                                                // new ApriltagVisionIOReal("first_camera",
-                                                // VisionConstants.InitialRobotToBackCameraTranslation),
-                                                new ApriltagVisionIOReal("seconde_camera",
-                                                                VisionConstants.InitialRobotToShooterCameraTranslation),
-                                };
+                                // ApriltagVisionIOReal[] cameras = {
+                                // // new ApriltagVisionIOReal("first_camera",
+                                // // VisionConstants.InitialRobotToBackCameraTranslation),
+                                // new ApriltagVisionIOReal("seconde_camera",
+                                // VisionConstants.InitialRobotToShooterCameraTranslation),
+                                // };
 
-                                vision = new VisionSubsystem(swerve::addVisionMeasurement, cameras, null,
-                                                cartridge.getIO()::getCartridgePose, Optional.empty());
+                                // vision = new VisionSubsystem(swerve::addVisionMeasurement, cameras, null,
+                                // cartridge.getIO()::getCartridgePose, Optional.empty());
 
-                                superCommands = new SuperCommands(cartridge, intake, shoot, arm, transfer, swerve);
+                                // superCommands = new SuperCommands(cartridge, intake, shoot, arm, transfer,
+                                // swerve);
 
-                                intakeCommands = new IntakeCommands(intake);
-                                shootCommands = new ShootCommands(shoot);
-                                transferCommands = new TransferCommands(transfer);
-                                cartridgeCommands = new CartridgeCommands(cartridge);
-                                armCommands = new ShooterArmCommands(arm);
-                                ledsCommands = new LEDsCommands();
+                                // intakeCommands = new IntakeCommands(intake);
+                                // shootCommands = new ShootCommands(shoot);
+                                // transferCommands = new TransferCommands(transfer);
+                                // cartridgeCommands = new CartridgeCommands(cartridge);
+                                // armCommands = new ShooterArmCommands(arm);
+                                // ledsCommands = new LEDsCommands();
 
                                 break;
 
                         case SIM:
                                 // Sim robot, instantiate physics sim IO implementations
-                                intake = null;
-                                shoot = null;
-                                transfer = null;
-                                cartridge = null;
-                                arm = null;
-                                vision = null;
-                                superCommands = null;
-                                leds = null;
+                                // intake = null;
+                                // shoot = null;
+                                // transfer = null;
+                                // cartridge = null;
+                                // arm = null;
+                                // vision = null;
+                                // superCommands = null;
+                                // leds = null;
 
-                                intakeCommands = null;
-                                shootCommands = null;
-                                transferCommands = null;
-                                cartridgeCommands = null;
-                                armCommands = null;
-                                ledsCommands = null;
+                                // intakeCommands = null;
+                                // shootCommands = null;
+                                // transferCommands = null;
+                                // cartridgeCommands = null;
+                                // armCommands = null;
+                                // ledsCommands = null;
+                                this.driveSimulation = new SwerveDriveSimulation(
+                                                Swerve.maplesimConfig,
+                                                new Pose2d(0, 0, new Rotation2d(0)));
 
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-
+                                
                                 swerve = new Swerve(
                                                 new GyroIOSim(this.driveSimulation.getGyroSimulation()),
                                                 new ModuleIOSim(this.driveSimulation.getModules()[0]),
@@ -170,21 +153,21 @@ public class RobotContainer {
                         default:
                                 // Replayed robot, disable IO implementations
                                 swerve = null;
-                                intake = null;
-                                shoot = null;
-                                transfer = null;
-                                cartridge = null;
-                                arm = null;
-                                vision = null;
-                                leds = null;
+                                // intake = null;
+                                // shoot = null;
+                                // transfer = null;
+                                // cartridge = null;
+                                // arm = null;
+                                // vision = null;
+                                // leds = null;
 
-                                superCommands = null;
-                                ledsCommands = null;
-                                intakeCommands = null;
-                                shootCommands = null;
-                                transferCommands = null;
-                                cartridgeCommands = null;
-                                armCommands = null;
+                                // superCommands = null;
+                                // ledsCommands = null;
+                                // intakeCommands = null;
+                                // shootCommands = null;
+                                // transferCommands = null;
+                                // cartridgeCommands = null;
+                                // armCommands = null;
 
                                 break;
                 }
@@ -192,7 +175,15 @@ public class RobotContainer {
                 SendableChooser<Command> c = new SendableChooser<>();
 
                 // Set up auto routines
-                autoChooser = new LoggedDashboardChooser<>("Auto Choices", c); // TODO use auto builder
+                autoChooser = AutoBuilder.buildAutoChooser();
+                // new LoggedDashboardChooser<>("Auto Choices", c); // TODO use auto builder
+                // autoChooser.addDefaultOption("nothing", null);
+
+
+                SmartDashboard.putData("autoChooser", autoChooser);
+
+
+
 
                 // Set up SysId routines
 
@@ -212,8 +203,7 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                leds.setDefaultCommand(LEDsCommands.rainbow(leds));
-
+                // leds.setDefaultCommand(LEDsCommands.rainbow(leds));
 
                 // driverController
                 swerve.setDefaultCommand(
@@ -227,39 +217,43 @@ public class RobotContainer {
                                 () -> driverController.getLeftX() * 0.5,
                                 () -> driverController.getRightX() * 0.5));
 
-                driverController.leftTrigger().whileTrue(superCommands.intakeFuelWithTransfer());
+                // driverController.leftTrigger().whileTrue(superCommands.intakeFuel());
+                // driverController.RB().whileTrue(superCommands.closeCartridge());
+                // driverController.b().whileTrue(superCommands.outtakeFuel());
+                // driverController.a().whileTrue(SwerveCommands.driveFaceToHub(swerve,
+                // () -> driverController.getLeftY() * 0.5,
+                // () -> driverController.getLeftX() * 0.5));
+                // driverController.PovDown().onTrue(swerve.resetGyroCommand());
+                // driverController.x().onTrue(SwerveCommands.stopWithX(swerve));
 
-                driverController.RB().whileTrue(superCommands.closeCartridge());
-                driverController.b().whileTrue(superCommands.outtakeFuel());
-                driverController.rightTrigger().whileTrue(SwerveCommands.driveFaceToHub(swerve,
-                                () -> driverController.getLeftY() * 0.5,
-                                () -> driverController.getLeftX() * 0.5));
-                driverController.PovDown().onTrue(swerve.resetGyroCommand());
-                driverController.x().onTrue(SwerveCommands.stopWithX(swerve));
+                // // operatorController
+                // new Trigger(() -> Math.abs(operatorController.getRightY()) > 0.1)
+                // .whileTrue(cartridgeCommands.openOrCloseManual(() ->
+                // operatorController.getRightY()));// פתיחה
+                // // וסגירה
+                // // של
+                // // המחסנית
 
-                driverController.y().onTrue(superCommands.shootToHub(driverController.rightTrigger())); // הכנה של ירי
-                driverController.PovUp().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm())); // עצירת ירי
+                // operatorController.cross().whileTrue(shootCommands.setHoodVoltage());// ירי
+                // operatorController.triangle().whileTrue(shootCommands.setFeedVoltage());//
+                // הזנה
+                // operatorController.povRight().whileTrue(armCommands.openArmManual());// פתיחת
+                // שינוי זווית
+                // operatorController.povLeft().whileTrue(armCommands.closeArmManual());// סגירת
+                // שינוי זווית
 
+                // operatorController.povUp().whileTrue(transferCommands.setForwoard());//
+                // טרנספר קדימה
+                // operatorController.povDown().whileTrue(transferCommands.setBackward());//
+                // טרנספר אחורה
 
-                // operatorController
-                
-                operatorController.cross().whileTrue(shootCommands.setHoodVoltage());// ירי
-                operatorController.triangle().whileTrue(shootCommands.setFeedVoltage());// הזנה
+                // operatorController.R2().whileTrue(intakeCommands.intake());// איסוף
+                // operatorController.L2().whileTrue(intakeCommands.outake());// פליטה
 
-                operatorController.povRight().whileTrue(armCommands.openArmManual());// פתיחת שינוי זווית
-                operatorController.povLeft().whileTrue(armCommands.closeArmManual());// סגירת שינוי זווית
-
-                operatorController.povUp().whileTrue(transferCommands.setForwoard());// טרנספר קדימה
-                operatorController.povDown().whileTrue(transferCommands.setBackward());// טרנספר אחורה
-
-                operatorController.R2().whileTrue(intakeCommands.intake());// איסוף
-                operatorController.L2().whileTrue(intakeCommands.outake());// פליטה
-
-                operatorController.R1().onTrue(superCommands.shootToHub(driverController.rightTrigger())); // הכנה של ירי
-                operatorController.R2().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm())); // עצירת ירי
-
-                operatorController.square().whileTrue(cartridgeCommands.setOpenVoltage(1.5));// פתיחת מחסנית
-                operatorController.circle().whileTrue(cartridgeCommands.setCloseVoltage(-1)); // סגירת מחסנית
+                // operatorController.R1().onTrue(superCommands.shootToHub(driverController.rightTrigger()));
+                // // הכנה של ירי
+                // operatorController.R2().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm()));
+                // // עצירת ירי
 
         }
 
@@ -279,6 +273,6 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-                return autoChooser.get();
+                return autoChooser.getSelected();
         }
 }
