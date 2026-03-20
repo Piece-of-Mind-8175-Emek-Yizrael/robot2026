@@ -10,6 +10,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import frc.robot.util.InterpolatorResult;
+import frc.robot.util.ShooterCalculator;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -659,7 +661,7 @@ public class SwerveCommands {
         }
 
 
-        private static Rotation2d angleToHub(Swerve swerve){
+        public static Rotation2d angleToHub(Swerve swerve){
                 return HUB_CENTER_POINT.minus(swerve.getRobotPoseAsBlue().getTranslation()).getAngle();
         }
 
@@ -667,8 +669,27 @@ public class SwerveCommands {
                 return rotateToAngle(drive, () -> angleToHub(drive));
         }
 
+        public static Translation2d getHubCentricVelocity(Swerve swerve) {
+            // TODO: check whether the directions of the chassis speeds are the same as I was expecting, or do I need to put a minus or flip by 180 degrees
+            ChassisSpeeds robotCentricSpeeds = swerve.getChassisSpeeds();
+            Translation2d speedsTranslation = new Translation2d(-robotCentricSpeeds.vxMetersPerSecond, robotCentricSpeeds.vyMetersPerSecond); // TODO: make sure this is the right order
+            speedsTranslation.rotateBy(swerve.getPose().getRotation());
+            speedsTranslation.rotateBy(angleToHub(swerve));
+            return speedsTranslation;
+        }
+
         public static Command driveFaceToHub(Swerve drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
                 return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> angleToHub(drive));
+        }
+
+        public static Command driveFaceToHubWithVelocity(Swerve drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+            double distance = drive.getDistanceFromHub();
+
+            Translation2d velocity = getHubCentricVelocity(drive);
+            InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getX(), velocity.getY()); // TODO: is this the correct order?
+
+            return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> angleToHub(drive).plus(Rotation2d.fromRadians(result.rotation()).plus(Rotation2d.fromRadians(result.rotation()))));
+
         }
 
         public static Command stopWithX(Swerve drive){
