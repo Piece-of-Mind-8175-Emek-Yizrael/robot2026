@@ -37,7 +37,7 @@ public class DriveConstants {
 
         public static final double ALGAE_OUTTAKE_DRIVE_BACK_SPEED = 0.5;
 
-        public static final double maxSpeedMetersPerSec = 4;
+        public static final double maxSpeedMetersPerSec = 6;
         public static final double odometryFrequency = 50.0; // Hz TODO
         public static final double trackWidth = 0.55245;
         public static final double wheelBase = 0.55245;
@@ -130,7 +130,7 @@ public class DriveConstants {
         public static final double turnPIDMaxOutput = 0.25; // percent
 
         // PathPlanner configuration
-        public static final double robotMassKg = 40;
+        public static final double robotMassKg = 52.0;
         public static final double robotMOI = 1 / 12.0 * robotMassKg * (2 * trackWidth * trackWidth);
         public static final double wheelCOF = 1.2;
         public static final RobotConfig ppConfig = new RobotConfig(
