@@ -141,6 +141,7 @@ public class RobotContainer {
                                 NamedCommands.registerCommand("shootToHub", superCommands.autoShootToHub());
                                 NamedCommands.registerCommand("turnToHub", SwerveCommands.turnToHub(swerve));
                                 NamedCommands.registerCommand("shakeCartridge", cartridgeCommands.shakeCartridge());
+                                NamedCommands.registerCommand("openCartridge", cartridgeCommands.openCartridge());
                                 // NamedCommands.registerCommand("delevary", null);// TODO add delevary command
 
                                 break;
