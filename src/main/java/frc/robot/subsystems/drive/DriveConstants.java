@@ -38,7 +38,7 @@ public class DriveConstants {
         public static final double ALGAE_OUTTAKE_DRIVE_BACK_SPEED = 0.5;
 
         public static final double maxSpeedMetersPerSec = 6;
-        public static final double odometryFrequency = 50.0; // Hz TODO
+        public static final double odometryFrequency = 50.0; // Hz 
         public static final double trackWidth = 0.55245;
         public static final double wheelBase = 0.55245;
         public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);

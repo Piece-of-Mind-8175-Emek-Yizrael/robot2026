@@ -12,7 +12,6 @@ import java.util.function.Supplier;
 
 import frc.robot.util.InterpolatorResult;
 import frc.robot.util.ShooterCalculator;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
@@ -32,10 +31,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 // import frc.robot.subsystems.Vision.VisionSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
-import frc.robot.subsystems.drive.FieldConstants;
 import frc.robot.subsystems.drive.Swerve;
-import lombok.extern.java.Log;
-
 import static frc.robot.subsystems.drive.FieldConstants.Hub.*;
 
 public class SwerveCommands {
@@ -672,7 +668,7 @@ public class SwerveCommands {
         public static Translation2d getHubCentricVelocity(Swerve swerve) {
             // TODO: check whether the directions of the chassis speeds are the same as I was expecting, or do I need to put a minus or flip by 180 degrees
             ChassisSpeeds robotCentricSpeeds = swerve.getChassisSpeeds();
-            Translation2d speedsTranslation = new Translation2d(-robotCentricSpeeds.vxMetersPerSecond, robotCentricSpeeds.vyMetersPerSecond); // TODO: make sure this is the right order
+            Translation2d speedsTranslation = new Translation2d(-robotCentricSpeeds.vxMetersPerSecond, robotCentricSpeeds.vyMetersPerSecond);
             speedsTranslation.rotateBy(swerve.getPose().getRotation());
             speedsTranslation.rotateBy(angleToHub(swerve));
             return speedsTranslation;
@@ -686,7 +682,7 @@ public class SwerveCommands {
             double distance = drive.getDistanceFromHub();
 
             Translation2d velocity = getHubCentricVelocity(drive);
-            InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getX(), velocity.getY()); // TODO: is this the correct order?
+            InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getX(), velocity.getY());
 
             return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> angleToHub(drive).plus(Rotation2d.fromRadians(result.rotation()).plus(Rotation2d.fromRadians(result.rotation()))));
 

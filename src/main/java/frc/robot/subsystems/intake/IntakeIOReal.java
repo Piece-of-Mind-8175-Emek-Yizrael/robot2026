@@ -10,7 +10,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.POM_lib.Motors.POMTalonFX;
-import frc.robot.POM_lib.sensors.POMDigitalInput;
 
 public class IntakeIOReal implements IntakeIO{
     private final POMTalonFX motor;

@@ -1,13 +1,8 @@
 package frc.robot.Commands;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.util.InterpolatorResult;
-import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,6 +38,7 @@ public class SuperCommands {
     private final double farArmAngle = 0.1;
     private final double farShootSpeed = 55.0;
     LoggedNetworkNumber tuneSpeed = new LoggedNetworkNumber("farShootSpeed", farShootSpeed);
+    private boolean readyToShoot = false;
 
     public SuperCommands(Cartridge cartridge, Intake intake, Shoot shoot, ShooterArm arm, Transfer transfer,
             Swerve swerve) {
@@ -103,7 +99,7 @@ public class SuperCommands {
 
             @Override
             public void initialize() {
-                shoot.getIO().setHoodSetpoint(tuneSpeed.get());// FIXME: placeholder value //55//45
+                shoot.getIO().setHoodSetpoint(tuneSpeed.get());
             }
 
             @Override
@@ -143,54 +139,54 @@ public class SuperCommands {
             }
         };
     }
-
+    
     public Command shootToHubInMovement(BooleanSupplier readyToShoot) {
         return new Command() {
             {
                 addRequirements(shoot, arm, transfer);
             }
-
+            
             @Override
             public void initialize() {
-                shoot.getIO().setHoodSetpoint(tuneSpeed.get());// FIXME: placeholder value //55//45
+                shoot.getIO().setHoodSetpoint(tuneSpeed.get());
             }
 
             @Override
             public void execute() { 
                 double distance = swerve.getDistanceFromHub();
-
+                
                 Translation2d velocity = getHubCentricVelocity(swerve);
-                InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getY(), velocity.getX()); // TODO: is this the correct order?
-
+                InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getY(), velocity.getX());
+                
                 shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(result.speed()-6));
-
+                
                 if (ShooterCalculator.isFar(distance)) {
-                arm.getIO().setVoltage(1);
+                    arm.getIO().setVoltage(1);
                 } else {
                 arm.getIO().stopMotor();
-                }
-
-                if (readyToShoot.getAsBoolean()) {
-                    shoot.getIO().setFeedVoltage(8.0);
-                    transfer.getIO().setVoltage(5.0);
-                } else {
-                    shoot.getIO().stopFeed();
-                    transfer.getIO().stopMotor();
-                }
-                // if (ShooterCalculator.isFar(distance)) {
+            }
+            
+            if (readyToShoot.getAsBoolean()) {
+                shoot.getIO().setFeedVoltage(8.0);
+                transfer.getIO().setVoltage(5.0);
+            } else {
+                shoot.getIO().stopFeed();
+                transfer.getIO().stopMotor();
+            }
+            // if (ShooterCalculator.isFar(distance)) {
                 // arm.getIO().setVoltage(1);
                 // } else {
-                // arm.getIO().stopMotor();
-                // }
-
-            }
-
-            @Override
+                    // arm.getIO().stopMotor();
+                    // }
+                    
+                }
+                
+                @Override
             public void end(boolean interrupted) {
                 shoot.getIO().stopBoth();
                 transfer.getIO().stopMotor();
             }
-
+            
             @Override
             public boolean isFinished() {
                 return false;
@@ -198,4 +194,56 @@ public class SuperCommands {
         };
     }
     
+    public Command autoShootToHub() {
+        readyToShoot = false;
+        return new Command() {
+            {
+                addRequirements(shoot, arm, transfer);
+            }
+    
+            @Override
+            public void initialize() {
+                shoot.getIO().setHoodSetpoint(tuneSpeed.get());
+                readyToShoot = false;
+            }
+    
+            @Override
+            public void execute() { 
+                double distance = swerve.getDistanceFromHub();
+                shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(distance));
+                if (ShooterCalculator.isFar(distance)) {
+                arm.getIO().setVoltage(1);
+                } else {
+                arm.getIO().stopMotor();
+                }
+    
+                if (!readyToShoot && shoot.getIO().atGoalHood()) {
+                    shoot.getIO().setFeedVoltage(8.0);
+                    transfer.getIO().setVoltage(5.0);
+                    readyToShoot = true;
+                } else {
+                    shoot.getIO().stopFeed();
+                    transfer.getIO().stopMotor();
+                }
+                if (ShooterCalculator.isFar(distance)) {
+                arm.getIO().setVoltage(1);
+                } else {
+                arm.getIO().stopMotor();
+                }
+    
+            }
+    
+            @Override
+            public void end(boolean interrupted) {
+                shoot.getIO().stopBoth();
+                transfer.getIO().stopMotor();
+                readyToShoot = false;
+            }
+    
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+    }
 }

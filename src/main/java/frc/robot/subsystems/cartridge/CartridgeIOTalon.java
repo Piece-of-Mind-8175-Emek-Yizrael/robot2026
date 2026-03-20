@@ -44,9 +44,7 @@ public class CartridgeIOTalon implements CartridgeIO {
         config.CurrentLimits.StatorCurrentLimit = CURRENT_LIMIT;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; // TODO need to check if Clockwise or
-                                                                        // CounterClockwise
-
+        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         resetIfPressed();
     }
 

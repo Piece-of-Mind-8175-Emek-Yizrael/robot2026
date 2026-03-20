@@ -56,7 +56,7 @@ public class GyroIOPigeon2 implements GyroIO {
     }
 
     @Override
-    public AngularVelocity getGyroAngularVelocity() { // TODO verify it return the correct axis
+    public AngularVelocity getGyroAngularVelocity() { 
         return AngularVelocity.ofBaseUnits(
                 Units.degreesToRadians(pigeon.getAngularVelocityZWorld().getValueAsDouble()),
                 RadiansPerSecond);

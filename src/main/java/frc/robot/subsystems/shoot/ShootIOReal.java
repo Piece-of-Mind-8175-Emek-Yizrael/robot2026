@@ -9,10 +9,8 @@ import static frc.robot.util.SparkUtil.tryUntilOk;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -202,7 +200,7 @@ public class ShootIOReal implements ShootIO {
     }
 
     @Override
-    public boolean atGoalHood() {//FIXME not working after one use
+    public boolean atGoalHood() {
         if(rightAtGoal || leftAtGoal){
 
         }

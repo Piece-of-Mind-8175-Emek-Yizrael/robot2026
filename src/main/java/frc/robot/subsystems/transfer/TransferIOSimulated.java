@@ -1,7 +1,6 @@
 package frc.robot.subsystems.transfer;
 
 public class TransferIOSimulated implements TransferIO {
-    // TODO: implement the simulated transferIO
 
     @Override
     public void updateInputs(TransferIOInputs inputs) {

@@ -2,8 +2,6 @@ package frc.robot.subsystems.shooterArm;
 
 import static frc.robot.subsystems.shooterArm.ShooterArmConstants.*;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
@@ -13,7 +11,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.Timer;
 import frc.robot.POM_lib.Motors.POMSparkMax;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
 
@@ -72,14 +69,7 @@ public class ShooterArmIOReal implements ShooterArmIO {
     public void resetIfPrees() {
         if(sensor.get()){
             zeroPosition();
-            // feedforward.setKg(0.5);
         } 
-        // else if (encoder.getPosition() < 0.7){
-        //     feedforward.setKg(kg);
-        // } else {
-        //     feedforward.setKg(kg + 0.4);
-        // }
-
     }
 
     @Override

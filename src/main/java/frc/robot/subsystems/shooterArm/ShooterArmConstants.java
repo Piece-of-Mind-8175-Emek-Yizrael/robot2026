@@ -23,7 +23,7 @@ public class ShooterArmConstants {
     public static final double ks = 0.0;
     public static final double kv = 0.0;
     public static final double kg = 0.7;//0.7
-    public static final double CLOSE_POS = Units.degreesToRadians(-54);//FIXME: find actual values for these
+    public static final double CLOSE_POS = Units.degreesToRadians(-54);
     public static final double OPEN_POS = 2.548;
 
 }

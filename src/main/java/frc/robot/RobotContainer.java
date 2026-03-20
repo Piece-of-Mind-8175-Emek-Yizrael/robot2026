@@ -20,6 +20,7 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -88,7 +89,6 @@ public class RobotContainer {
         private final TransferCommands transferCommands;
         private final CartridgeCommands cartridgeCommands;
         private final ShooterArmCommands armCommands;
-        private final LEDsCommands ledsCommands;
 
         // Controller
         private final PomXboxController driverController = new PomXboxController(0);
@@ -136,7 +136,12 @@ public class RobotContainer {
                                 transferCommands = new TransferCommands(transfer);
                                 cartridgeCommands = new CartridgeCommands(cartridge);
                                 armCommands = new ShooterArmCommands(arm);
-                                ledsCommands = new LEDsCommands();
+
+                                NamedCommands.registerCommand("intakeFuel", superCommands.intakeFuel());
+                                NamedCommands.registerCommand("shootToHub", superCommands.autoShootToHub());
+                                NamedCommands.registerCommand("turnToHub", SwerveCommands.turnToHub(swerve));
+                                NamedCommands.registerCommand("shakeCartridge", cartridgeCommands.shakeCartridge());
+                                // NamedCommands.registerCommand("delevary", null);// TODO add delevary command
 
                                 break;
 
@@ -156,7 +161,6 @@ public class RobotContainer {
                                 transferCommands = null;
                                 cartridgeCommands = null;
                                 armCommands = null;
-                                ledsCommands = null;
                                 this.driveSimulation = new SwerveDriveSimulation(
                                                 Swerve.maplesimConfig,
                                                 new Pose2d(0, 0, new Rotation2d(0)));
@@ -184,7 +188,6 @@ public class RobotContainer {
                                 leds = null;
 
                                 superCommands = null;
-                                ledsCommands = null;
                                 intakeCommands = null;
                                 shootCommands = null;
                                 transferCommands = null;

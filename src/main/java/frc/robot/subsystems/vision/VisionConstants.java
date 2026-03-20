@@ -17,9 +17,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Unit;
 
-// TODO: replace last years variables with this year's variables (2025 to 2026)
 public class VisionConstants {
 
     public static enum TargetType {

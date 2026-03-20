@@ -16,7 +16,7 @@ public class CartridgeCommands extends Command {
         this.cartridge = cartridge;
     }
 
-    public Command stop(){
+    public Command stop() {
         return Commands.runOnce(cartridge.getIO()::stop, cartridge);
     }
 
@@ -25,16 +25,17 @@ public class CartridgeCommands extends Command {
     }
 
     public Command setVoltage(DoubleSupplier voltage) {
-        return Commands.runEnd(() -> cartridge.getIO().setVoltage(voltage.getAsDouble()), cartridge.getIO()::stop, cartridge);
+        return Commands.runEnd(() -> cartridge.getIO().setVoltage(voltage.getAsDouble()), cartridge.getIO()::stop,
+                cartridge);
     }
 
     public Command openOrCloseManual(DoubleSupplier voltage) {
         DoubleSupplier volt = () -> {
             double result = Math.copySign(Math.pow(voltage.getAsDouble(), 2) * 5.0, voltage.getAsDouble());
-            if(cartridge.getIO().isOuterPressed()){
+            if (cartridge.getIO().isOuterPressed()) {
                 result = Math.min(result, 0);
             }
-            if(cartridge.getIO().isInnerPressed()){
+            if (cartridge.getIO().isInnerPressed()) {
                 result = Math.max(result, 0);
             }
             return result;
@@ -45,7 +46,7 @@ public class CartridgeCommands extends Command {
     public Command setOpenVoltage(double voltage) {
         return setVoltage(voltage).until(cartridge.getIO()::isOuterPressed);
     }
-    
+
     public Command setCloseVoltage(double voltage) {
         return setVoltage(voltage).until(cartridge.getIO()::isInnerPressed);
     }
@@ -68,11 +69,19 @@ public class CartridgeCommands extends Command {
                 .withName("close cartridge");
     }
 
-    public Command openAndCloseCartridge(){
+    public Command openAndCloseCartridge() {
         return new ConditionalCommand(
-            closeCartridge(), 
-            openCartridge(), 
-            cartridge.getIO()::isInnerPressed);
+                closeCartridge(),
+                openCartridge(),
+                cartridge.getIO()::isInnerPressed);
+    }
+
+    public Command shakeCartridge() {
+        return Commands.sequence(
+                setVoltage(-2.0).withTimeout(0.4),
+                setVoltage(1).withTimeout(0.4))
+                .repeatedly()
+                .withName("Continuous Shake");
     }
 
 }

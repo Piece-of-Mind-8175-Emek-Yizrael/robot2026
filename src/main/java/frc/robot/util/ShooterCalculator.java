@@ -1,6 +1,5 @@
 package frc.robot.util;
 
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 public class ShooterCalculator {
@@ -25,13 +24,13 @@ public class ShooterCalculator {
         farSpeeds.put(3.0, 52.0);
         farSpeeds.put(3.2, 53.0);
         farSpeeds.put(3.5, 56.0);
-        // farSpeeds.put(3.7, 58.0);//TODO need to change
-        // farSpeeds.put(4.0, 59.0);//TODO need to change
-        // farSpeeds.put(4.2, 61.0);//TODO need to change
-        // farSpeeds.put(4.5, 61.0);//TODO need to change
-        // farSpeeds.put(4.7, 62.0);
-        // farSpeeds.put(5.0, 63.0);
-        // farSpeeds.put(5.2, 65.0);
+        farSpeeds.put(3.7, 58.0);
+        farSpeeds.put(4.0, 59.0);
+        farSpeeds.put(4.2, 61.0);
+        farSpeeds.put(4.5, 61.0);
+        farSpeeds.put(4.7, 62.0);
+        farSpeeds.put(5.0, 63.0);
+        farSpeeds.put(5.2, 65.0);
 
         flyTime = new InterpolatingDoubleTreeMap();
         flyTime.put(43.0,0.72);
@@ -43,12 +42,6 @@ public class ShooterCalculator {
         flyTime.put(52.0,1.21);
         flyTime.put(53.0,1.17);
         flyTime.put(56.0,1.32);
-        // flyTime.put(58.0,0.0);//TODO need to change
-        // flyTime.put(59.0,0.0);//TODO need to change
-        // flyTime.put(61.0,0.0);//TODO need to change
-        // flyTime.put(62.0,0.0);
-        // flyTime.put(63.0,0.0);
-        // flyTime.put(65.0,0.0);
     }
     public static boolean isFar(double distance) {
         return distance > FAR_MIN_DISTANCE;

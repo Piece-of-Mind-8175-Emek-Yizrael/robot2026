@@ -36,7 +36,7 @@ public class ShooterArmCommands {
 
             @Override
             public void end(boolean interrupted) {
-                arm.getIO().stopMotor();// TODO decide if we want to stop motor or hold position
+                arm.getIO().stopMotor();
             }
 
             @Override
