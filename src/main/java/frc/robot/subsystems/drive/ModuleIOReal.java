@@ -111,7 +111,8 @@ private final Rotation2d zeroRotation;
         var driveConfig = new TalonFXConfiguration();
         driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         Slot0Configs driveMotorGains = new Slot0Configs()
-                .withKP(driveKp).withKI(driveKi).withKS(driveKs).withKV(driveKv);
+                .withKP(driveKp).withKI(0).withKS(driveKs).withKV(0);
+                // .withKP(driveKp).withKI(driveKi).withKS(driveKs).withKV(driveKv);
         driveConfig.Slot0 = driveMotorGains;
         driveConfig.Feedback.SensorToMechanismRatio = driveEncoderPositionFactor;
         driveConfig.TorqueCurrent.PeakForwardTorqueCurrent = driveSlipCurrent;
@@ -146,7 +147,8 @@ private final Rotation2d zeroRotation;
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .positionWrappingEnabled(true)
                 .positionWrappingInputRange(turnPIDMinInput, turnPIDMaxInput)
-                .pid(turnKp, 0.00, turnKd).outputRange(-turnPIDMaxOutput, turnPIDMaxOutput);
+                .pid(turnKp, 0.00, 0).outputRange(-turnPIDMaxOutput, turnPIDMaxOutput);
+                // .pid(turnKp, 0.00, turnKd).outputRange(-turnPIDMaxOutput, turnPIDMaxOutput);
 
         turnConfig.signals
                 .primaryEncoderPositionAlwaysOn(true)
