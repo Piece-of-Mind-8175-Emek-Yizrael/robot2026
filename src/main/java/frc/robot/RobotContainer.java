@@ -137,7 +137,7 @@ public class RobotContainer {
                                 cartridgeCommands = new CartridgeCommands(cartridge);
                                 armCommands = new ShooterArmCommands(arm);
 
-                                NamedCommands.registerCommand("intakeFuel", superCommands.intakeFuel());
+                                NamedCommands.registerCommand("iontakeFuel", superCommands.intakeFuel());
                                 NamedCommands.registerCommand("shootToHub", superCommands.autoShootToHub());
                                 NamedCommands.registerCommand("turnToHub", SwerveCommands.turnToHub(swerve));
                                 NamedCommands.registerCommand("shakeCartridge", cartridgeCommands.shakeCartridge());
