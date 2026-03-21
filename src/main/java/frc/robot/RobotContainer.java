@@ -137,7 +137,7 @@ public class RobotContainer {
                                 cartridgeCommands = new CartridgeCommands(cartridge);
                                 armCommands = new ShooterArmCommands(arm);
 
-                                NamedCommands.registerCommand("iontakeFuel", superCommands.intakeFuel());
+                                NamedCommands.registerCommand("intakeFuel", superCommands.intakeFuel());
                                 NamedCommands.registerCommand("shootToHub", superCommands.autoShootToHub());
                                 NamedCommands.registerCommand("turnToHub", SwerveCommands.turnToHub(swerve));
                                 NamedCommands.registerCommand("shakeCartridge", cartridgeCommands.shakeCartridge());
@@ -253,6 +253,7 @@ public class RobotContainer {
                 driverController.x().onTrue(SwerveCommands.stopWithX(swerve));
                 driverController.y().onTrue(superCommands.shootToHub(driverController.rightTrigger()));// הכנה של ירי
                 driverController.PovUp().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm()));// עצירת ירי
+                driverController.PovDown().whileTrue(superCommands.shakeCartridge());// עצירת ירי
 
                 // operatorController
 

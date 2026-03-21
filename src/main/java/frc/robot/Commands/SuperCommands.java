@@ -246,4 +246,12 @@ public class SuperCommands {
             }
         };
     }
+
+    public Command shakeCartridge() {
+        return Commands.parallel(
+            cartridgeCommands.shakeCartridge(),
+            intakeCommands.intake()
+        );
+    }
+    
 }

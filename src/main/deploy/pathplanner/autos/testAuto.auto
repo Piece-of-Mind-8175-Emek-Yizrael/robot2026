@@ -5,28 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "driveAtStraightLine"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intakeFuel"
-                }
-              }
-            ]
+            "name": "intakeFuel"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }
