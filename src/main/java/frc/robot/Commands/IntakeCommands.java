@@ -1,4 +1,5 @@
 package frc.robot.Commands;
+
 import static frc.robot.subsystems.intake.IntakeConstants.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,18 +14,21 @@ public class IntakeCommands {
         this.intake = intake;
     }
 
-    public Command intake(){ 
+    public Command intake() {
         return Commands.runEnd(
-            () -> intake.getIO().setVoltage(INTAKE_VOLTS) ,
-            () -> intake.getIO().stopMotor(), 
-            intake);
+                () -> intake.getIO().setVoltage(INTAKE_VOLTS),
+                () -> intake.getIO().stopMotor(),
+                intake);
     }
 
-    public Command outake(){ {
+    public Command outake() {
         return Commands.runEnd(
-            () -> intake.getIO().setVoltage(OUTAKE_VOLTS),
-            () -> intake.getIO().stopMotor(),
-            intake);
+                () -> intake.getIO().setVoltage(OUTAKE_VOLTS),
+                () -> intake.getIO().stopMotor(),
+                intake);
     }
-}
+
+    public Command stopIntake() {
+        return Commands.run(intake.getIO()::stopMotor, intake);
+    }
 }

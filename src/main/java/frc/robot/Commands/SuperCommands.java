@@ -140,60 +140,6 @@ public class SuperCommands {
         };
     }
     
-    public Command shootToHubInMovement(BooleanSupplier readyToShoot) {
-        return new Command() {
-            {
-                addRequirements(shoot, arm, transfer);
-            }
-            
-            @Override
-            public void initialize() {
-                shoot.getIO().setHoodSetpoint(tuneSpeed.get());
-            }
-
-            @Override
-            public void execute() { 
-                double distance = swerve.getDistanceFromHub();
-                
-                Translation2d velocity = getHubCentricVelocity(swerve);
-                InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getY(), velocity.getX());
-                
-                shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(result.speed()-6));
-                
-                if (ShooterCalculator.isFar(distance)) {
-                    arm.getIO().setVoltage(1);
-                } else {
-                arm.getIO().stopMotor();
-            }
-            
-            if (readyToShoot.getAsBoolean()) {
-                shoot.getIO().setFeedVoltage(8.0);
-                transfer.getIO().setVoltage(5.0);
-            } else {
-                shoot.getIO().stopFeed();
-                transfer.getIO().stopMotor();
-            }
-            // if (ShooterCalculator.isFar(distance)) {
-                // arm.getIO().setVoltage(1);
-                // } else {
-                    // arm.getIO().stopMotor();
-                    // }
-                    
-                }
-                
-                @Override
-            public void end(boolean interrupted) {
-                shoot.getIO().stopBoth();
-                transfer.getIO().stopMotor();
-            }
-            
-            @Override
-            public boolean isFinished() {
-                return false;
-            }
-        };
-    }
-    
     public Command autoShootToHub() {
         readyToShoot = false;
         return new Command() {

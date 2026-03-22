@@ -138,9 +138,9 @@ public class RobotContainer {
                                 armCommands = new ShooterArmCommands(arm);
 
                                 NamedCommands.registerCommand("intakeFuel", superCommands.intakeFuel());
+                                NamedCommands.registerCommand("stopIntake", intakeCommands.stopIntake());
                                 NamedCommands.registerCommand("shootToHub", superCommands.autoShootToHub());
                                 NamedCommands.registerCommand("turnToHub", SwerveCommands.turnToHub(swerve));
-                                NamedCommands.registerCommand("shakeCartridge", cartridgeCommands.shakeCartridge());
                                 NamedCommands.registerCommand("openCartridge", cartridgeCommands.openCartridge());
                                 NamedCommands.registerCommand("driveIntakeSlow", SwerveCommands.joystickDriveRobotRelative(swerve, ()-> - 0.2, ()-> 0, ()-> 0));
                                 // NamedCommands.registerCommand("delevary", null);// TODO add delevary command
@@ -250,11 +250,11 @@ public class RobotContainer {
                 driverController.a().whileTrue(SwerveCommands.driveFaceToHub(swerve,
                 () -> driverController.getLeftY() * 0.5,
                 () -> driverController.getLeftX() * 0.5));
-                // driverController.PovDown().onTrue(swerve.resetGyroCommand());
+                driverController.PovDown().onTrue(swerve.resetGyroCommand());
                 driverController.x().whileTrue(SwerveCommands.stopWithX(swerve));
                 driverController.y().onTrue(superCommands.shootToHub(driverController.rightTrigger()));// הכנה של ירי
                 driverController.PovUp().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm()));// עצירת ירי
-                driverController.PovDown().whileTrue(superCommands.shakeCartridge());// TODO double povdown usage עצירת ירי 
+                driverController.rightTrigger().whileTrue(superCommands.shakeCartridge()); 
 
                 // operatorController
 
