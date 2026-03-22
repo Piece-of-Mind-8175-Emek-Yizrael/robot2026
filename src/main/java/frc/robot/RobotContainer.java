@@ -142,8 +142,8 @@ public class RobotContainer {
                                 NamedCommands.registerCommand("shootToHub", superCommands.autoShootToHub());
                                 NamedCommands.registerCommand("turnToHub", SwerveCommands.turnToHub(swerve));
                                 NamedCommands.registerCommand("openCartridge", cartridgeCommands.openCartridge());
+                                NamedCommands.registerCommand("shakeCartridge", cartridgeCommands.shakeCartridge());
                                 NamedCommands.registerCommand("driveIntakeSlow", SwerveCommands.joystickDriveRobotRelative(swerve, ()-> - 0.2, ()-> 0, ()-> 0));
-                                // NamedCommands.registerCommand("delevary", null);// TODO add delevary command
 
                                 break;
 

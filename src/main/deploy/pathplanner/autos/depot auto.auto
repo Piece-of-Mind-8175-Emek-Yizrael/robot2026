@@ -66,9 +66,22 @@
                 }
               },
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "shootToHub"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "shootToHub"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "shakeCartridge"
+                      }
+                    }
+                  ]
                 }
               }
             ]
