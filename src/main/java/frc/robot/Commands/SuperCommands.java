@@ -1,8 +1,6 @@
 package frc.robot.Commands;
 
 import java.util.function.BooleanSupplier;
-import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.util.InterpolatorResult;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,8 +12,6 @@ import frc.robot.subsystems.shoot.Shoot;
 import frc.robot.subsystems.shooterArm.ShooterArm;
 import frc.robot.subsystems.transfer.Transfer;
 import frc.robot.util.ShooterCalculator;
-
-import static frc.robot.Commands.SwerveCommands.getHubCentricVelocity;
 
 public class SuperCommands {
 
@@ -35,9 +31,6 @@ public class SuperCommands {
     private TransferCommands transferCommands;
     private SwerveCommands swerveCommands;
 
-    private final double farArmAngle = 0.1;
-    private final double farShootSpeed = 55.0;
-    LoggedNetworkNumber tuneSpeed = new LoggedNetworkNumber("farShootSpeed", farShootSpeed);
     private boolean readyToShoot = false;
 
     public SuperCommands(Cartridge cartridge, Intake intake, Shoot shoot, ShooterArm arm, Transfer transfer,
@@ -55,7 +48,7 @@ public class SuperCommands {
         this.armCommands = new ShooterArmCommands(arm);
         this.transferCommands = new TransferCommands(transfer);
         shootCommands = new ShootCommands(shoot);
-                
+
     }
 
     public Command intakeFuel() {
@@ -92,6 +85,45 @@ public class SuperCommands {
     }
 
     public Command shootToHub(BooleanSupplier readyToShoot) {
+        if (swerve.getDistanceFromHub() > 3.0) { // get the right d
+            return new Command() {
+                {
+                    addRequirements(shoot, arm, transfer);
+                }
+
+                @Override
+                public void initialize() {
+                    shoot.getIO().setHoodSetpoint(55.0);
+                }
+
+                @Override
+                public void execute() {
+                    shoot.getIO().setHoodSetpoint(55.0);
+                    arm.getIO().setVoltage(1);
+                    
+
+                    if (readyToShoot.getAsBoolean()) {
+                        shoot.getIO().setFeedVoltage(8.0);
+                        transfer.getIO().setVoltage(5.0);
+                    } else {
+                        shoot.getIO().stopFeed();
+                        transfer.getIO().stopMotor();
+                    }
+                }
+
+                @Override
+                public void end(boolean interrupted) {
+                    shoot.getIO().stopBoth();
+                    transfer.getIO().stopMotor();
+                }
+
+                @Override
+                public boolean isFinished() {
+                    return false;
+                }
+            };
+        }
+
         return new Command() {
             {
                 addRequirements(shoot, arm, transfer);
@@ -99,17 +131,17 @@ public class SuperCommands {
 
             @Override
             public void initialize() {
-                shoot.getIO().setHoodSetpoint(tuneSpeed.get());
+                shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(swerve.getDistanceFromHub()));
             }
 
             @Override
-            public void execute() { 
+            public void execute() {
                 double distance = swerve.getDistanceFromHub();
                 shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(distance));
                 if (ShooterCalculator.isFar(distance)) {
-                arm.getIO().setVoltage(1);
+                    arm.getIO().setVoltage(1);
                 } else {
-                arm.getIO().stopMotor();
+                    arm.getIO().stopMotor();
                 }
 
                 if (readyToShoot.getAsBoolean()) {
@@ -120,9 +152,9 @@ public class SuperCommands {
                     transfer.getIO().stopMotor();
                 }
                 if (ShooterCalculator.isFar(distance)) {
-                arm.getIO().setVoltage(1);
+                    arm.getIO().setVoltage(1);
                 } else {
-                arm.getIO().stopMotor();
+                    arm.getIO().stopMotor();
                 }
 
             }
@@ -139,30 +171,30 @@ public class SuperCommands {
             }
         };
     }
-    
+
     public Command autoShootToHub() {
         readyToShoot = false;
         return new Command() {
             {
                 addRequirements(shoot, arm, transfer);
             }
-    
+
             @Override
             public void initialize() {
-                shoot.getIO().setHoodSetpoint(tuneSpeed.get());
+                shoot.getIO().setHoodSetpoint(swerve.getDistanceFromHub());
                 readyToShoot = false;
             }
-    
+
             @Override
-            public void execute() { 
+            public void execute() {
                 double distance = swerve.getDistanceFromHub();
                 shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(distance));
                 if (ShooterCalculator.isFar(distance)) {
-                arm.getIO().setVoltage(1);
+                    arm.getIO().setVoltage(1);
                 } else {
-                arm.getIO().stopMotor();
+                    arm.getIO().stopMotor();
                 }
-    
+
                 if (!readyToShoot && shoot.getIO().atGoalHood()) {
                     shoot.getIO().setFeedVoltage(8.0);
                     transfer.getIO().setVoltage(5.0);
@@ -172,20 +204,20 @@ public class SuperCommands {
                     transfer.getIO().stopMotor();
                 }
                 if (ShooterCalculator.isFar(distance)) {
-                arm.getIO().setVoltage(1);
+                    arm.getIO().setVoltage(1);
                 } else {
-                arm.getIO().stopMotor();
+                    arm.getIO().stopMotor();
                 }
-    
+
             }
-    
+
             @Override
             public void end(boolean interrupted) {
                 shoot.getIO().stopBoth();
                 transfer.getIO().stopMotor();
                 readyToShoot = false;
             }
-    
+
             @Override
             public boolean isFinished() {
                 return false;
@@ -195,9 +227,8 @@ public class SuperCommands {
 
     public Command shakeCartridge() {
         return Commands.parallel(
-            cartridgeCommands.shakeCartridge(),
-            intakeCommands.intake()
-        );
+                cartridgeCommands.shakeCartridge(),
+                intakeCommands.intake());
     }
-    
+
 }
