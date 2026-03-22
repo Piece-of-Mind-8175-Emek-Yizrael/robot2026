@@ -2,6 +2,7 @@ package frc.robot.subsystems.cartridge;
 
 import static frc.robot.subsystems.cartridge.CartridgeConstants.*;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -21,6 +22,7 @@ public class CartridgeIOTalon implements CartridgeIO {
     private final ElevatorFeedforward ff;
     private final CartridgeTuning tuning;
     private final TalonFXConfiguration config;
+    private boolean outerResetted, innerResetted;
 
     public CartridgeIOTalon() {
         motor = new POMTalonFX(MOTOR_ID);
@@ -34,7 +36,7 @@ public class CartridgeIOTalon implements CartridgeIO {
 
         ff = new ElevatorFeedforward(Ks, Kg, Kv);
 
-        tuning = new CartridgeTuning();
+        tuning = new CartridgeTuning(); //
 
         config = new TalonFXConfiguration();
 
@@ -44,12 +46,16 @@ public class CartridgeIOTalon implements CartridgeIO {
         config.CurrentLimits.StatorCurrentLimit = CURRENT_LIMIT;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+
+        motor.getConfigurator().apply(config);
+
         resetIfPressed();
     }
 
     @Override
     public void updateInputs(CartridgeIOInputs inputs) {
+        var cartridgeStatus = BaseStatusSignal.refreshAll();
         inputs.voltage = motor.getMotorVoltage().getValueAsDouble();
         inputs.output = motor.getDutyCycle().getValueAsDouble();
         inputs.velocity = motor.getVelocity().getValueAsDouble();
@@ -57,19 +63,25 @@ public class CartridgeIOTalon implements CartridgeIO {
         inputs.isInnerPressed = isInnerPressed();
         inputs.isOuterPressed = isOuterPressed();
         inputs.atGoal = atGoal();
-        setPIDValues();
+        // setPIDValues();
         resetIfPressed();
     }
 
     @Override
     public void resetIfPressed() {
-        if (isInnerPressed()) {
+        if (isInnerPressed() && !innerResetted) {
             motor.setPosition(CLOSE_CARTRIDGE_POS);
-            
+            innerResetted = true;
         }
-
-        if (isOuterPressed()) {
+        else{
+            innerResetted = false;
+        }
+        if (isOuterPressed() && !outerResetted) {
             motor.setPosition(OPEN_CARTRIDGE_POS);
+            outerResetted = true;
+        }
+        else{
+            outerResetted = false;
         }
     }
 

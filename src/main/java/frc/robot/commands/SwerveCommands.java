@@ -689,7 +689,7 @@ public class SwerveCommands {
         }
 
         public static Command stopWithX(Swerve drive){
-                return Commands.runOnce(() -> drive.stopWithX(), drive);
+                return Commands.run(() -> drive.stopWithX(), drive);
         }
 
 }
