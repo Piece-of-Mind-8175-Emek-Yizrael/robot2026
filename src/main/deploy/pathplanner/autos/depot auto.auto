@@ -5,7 +5,7 @@
     "data": {
       "commands": [
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -30,12 +30,6 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "driveIntakeSlow"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
                   "name": "intakeFuel"
                 }
               },
@@ -49,9 +43,35 @@
           }
         },
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "depot to shoot position"
+            "commands": [
+              {
+                "type": "race",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "turnToHub"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shootToHub"
+                }
+              }
+            ]
           }
         }
       ]
