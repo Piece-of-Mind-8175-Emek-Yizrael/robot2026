@@ -142,6 +142,7 @@ public class RobotContainer {
                                 NamedCommands.registerCommand("turnToHub", SwerveCommands.turnToHub(swerve));
                                 NamedCommands.registerCommand("shakeCartridge", cartridgeCommands.shakeCartridge());
                                 NamedCommands.registerCommand("openCartridge", cartridgeCommands.openCartridge());
+                                NamedCommands.registerCommand("driveIntakeSlow", SwerveCommands.joystickDriveRobotRelative(swerve, ()-> - 0.2, ()-> 0, ()-> 0));
                                 // NamedCommands.registerCommand("delevary", null);// TODO add delevary command
 
                                 break;
@@ -243,17 +244,17 @@ public class RobotContainer {
                                 () -> driverController.getLeftX() * 0.5,
                                 () -> driverController.getRightX() * 0.5));
 
-                driverController.leftTrigger().whileTrue(superCommands.intakeFuel());
+                driverController.leftTrigger().whileTrue(superCommands.intakeFuelWithTransfer());
                 driverController.RB().whileTrue(superCommands.closeCartridge());
                 driverController.b().whileTrue(superCommands.outtakeFuel());
-                driverController.rightTrigger().whileTrue(SwerveCommands.driveFaceToHub(swerve,
+                driverController.a().whileTrue(SwerveCommands.driveFaceToHub(swerve,
                 () -> driverController.getLeftY() * 0.5,
                 () -> driverController.getLeftX() * 0.5));
-                driverController.PovDown().onTrue(swerve.resetGyroCommand());
-                driverController.x().onTrue(SwerveCommands.stopWithX(swerve));
+                // driverController.PovDown().onTrue(swerve.resetGyroCommand());
+                driverController.x().whileTrue(SwerveCommands.stopWithX(swerve));
                 driverController.y().onTrue(superCommands.shootToHub(driverController.rightTrigger()));// הכנה של ירי
                 driverController.PovUp().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm()));// עצירת ירי
-                driverController.PovDown().whileTrue(superCommands.shakeCartridge());// עצירת ירי
+                driverController.PovDown().whileTrue(superCommands.shakeCartridge());// TODO double povdown usage עצירת ירי 
 
                 // operatorController
 
