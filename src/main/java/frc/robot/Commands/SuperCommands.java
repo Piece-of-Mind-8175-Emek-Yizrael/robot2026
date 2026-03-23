@@ -1,6 +1,8 @@
 package frc.robot.Commands;
 
 import java.util.function.BooleanSupplier;
+
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -61,7 +63,7 @@ public class SuperCommands {
         return Commands.parallel(
                 cartridgeCommands.openCartridge(),
                 intakeCommands.intake(),
-                transferCommands.setVoltage(4));
+                transferCommands.setVoltage(2));
     }
 
     public Command outtakeFuel() {
@@ -100,7 +102,6 @@ public class SuperCommands {
                 public void execute() {
                     shoot.getIO().setHoodSetpoint(55.0);
                     arm.getIO().setVoltage(1);
-                    
 
                     if (readyToShoot.getAsBoolean()) {
                         shoot.getIO().setFeedVoltage(8.0);
@@ -146,7 +147,7 @@ public class SuperCommands {
 
                 if (readyToShoot.getAsBoolean()) {
                     shoot.getIO().setFeedVoltage(8.0);
-                    transfer.getIO().setVoltage(5.0);
+                    transfer.getIO().setVoltage(3.0);
                 } else {
                     shoot.getIO().stopFeed();
                     transfer.getIO().stopMotor();
@@ -156,6 +157,8 @@ public class SuperCommands {
                 } else {
                     arm.getIO().stopMotor();
                 }
+
+                Logger.recordOutput("shoot_speed", ShooterCalculator.getTargetSpeed(distance));
 
             }
 

@@ -119,17 +119,17 @@ public class RobotContainer {
                                 leds = new LEDs(new LEDsIOReal());
 
                                 ApriltagVisionIOReal[] cameras = {
-                                // new ApriltagVisionIOReal("first_camera",
-                                // VisionConstants.InitialRobotToBackCameraTranslation),
-                                new ApriltagVisionIOReal("seconde_camera",
-                                VisionConstants.InitialRobotToShooterCameraTranslation),
+                                                // new ApriltagVisionIOReal("first_camera",
+                                                // VisionConstants.InitialRobotToBackCameraTranslation),
+                                                new ApriltagVisionIOReal("seconde_camera",
+                                                                VisionConstants.InitialRobotToShooterCameraTranslation),
                                 };
 
                                 vision = new VisionSubsystem(swerve::addVisionMeasurement, cameras, null,
-                                cartridge.getIO()::getCartridgePose, Optional.empty());
+                                                cartridge.getIO()::getCartridgePose, Optional.empty());
 
                                 superCommands = new SuperCommands(cartridge, intake, shoot, arm, transfer,
-                                swerve);
+                                                swerve);
 
                                 intakeCommands = new IntakeCommands(intake);
                                 shootCommands = new ShootCommands(shoot);
@@ -143,7 +143,8 @@ public class RobotContainer {
                                 NamedCommands.registerCommand("turnToHub", SwerveCommands.turnToHub(swerve));
                                 NamedCommands.registerCommand("openCartridge", cartridgeCommands.openCartridge());
                                 NamedCommands.registerCommand("shakeCartridge", cartridgeCommands.shakeCartridge());
-                                NamedCommands.registerCommand("driveIntakeSlow", SwerveCommands.joystickDriveRobotRelative(swerve, ()-> - 0.2, ()-> 0, ()-> 0));
+                                NamedCommands.registerCommand("driveIntakeSlow", SwerveCommands
+                                                .joystickDriveRobotRelative(swerve, () -> -0.2, () -> 0, () -> 0));
 
                                 break;
 
@@ -168,7 +169,7 @@ public class RobotContainer {
                                                 new Pose2d(0, 0, new Rotation2d(0)));
 
                                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-                                
+
                                 swerve = new Swerve(
                                                 new GyroIOSim(this.driveSimulation.getGyroSimulation()),
                                                 new ModuleIOSim(this.driveSimulation.getModules()[0]),
@@ -206,11 +207,7 @@ public class RobotContainer {
                 // new LoggedDashboardChooser<>("Auto Choices", c); // TODO use auto builder
                 // autoChooser.addDefaultOption("nothing", null);
 
-
                 SmartDashboard.putData("autoChooser", autoChooser);
-
-
-
 
                 // Set up SysId routines
 
@@ -235,9 +232,9 @@ public class RobotContainer {
                 // driverController
                 swerve.setDefaultCommand(
                                 SwerveCommands.joystickDrive(swerve,
-                                                () -> driverController.getLeftY() * 0.5,
-                                                () -> driverController.getLeftX() * 0.5,
-                                                () -> driverController.getRightX() * 0.5));
+                                                () -> driverController.getLeftY() * 0.75,
+                                                () -> driverController.getLeftX() * 0.75,
+                                                () -> driverController.getRightX() * 0.6));
 
                 driverController.LB().whileTrue(SwerveCommands.joystickDrive(swerve,
                                 () -> driverController.getLeftY() * 0.5,
@@ -248,18 +245,18 @@ public class RobotContainer {
                 driverController.RB().whileTrue(superCommands.closeCartridge());
                 driverController.b().whileTrue(superCommands.outtakeFuel());
                 driverController.a().whileTrue(SwerveCommands.driveFaceToHub(swerve,
-                () -> driverController.getLeftY() * 0.5,
-                () -> driverController.getLeftX() * 0.5));
+                                () -> driverController.getLeftY() * 0.5,
+                                () -> driverController.getLeftX() * 0.5));
                 driverController.PovDown().onTrue(swerve.resetGyroCommand());
                 driverController.x().whileTrue(SwerveCommands.stopWithX(swerve));
                 driverController.y().onTrue(superCommands.shootToHub(driverController.rightTrigger()));// הכנה של ירי
                 driverController.PovUp().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm()));// עצירת ירי
-                driverController.rightTrigger().whileTrue(superCommands.shakeCartridge()); 
+                driverController.PovLeft().whileTrue(superCommands.shakeCartridge());
 
                 // operatorController
 
                 operatorController.cross().whileTrue(shootCommands.setHoodVoltage());// ירי
-                operatorController.triangle().whileTrue(shootCommands.setFeedVoltage());//הזנה
+                operatorController.triangle().whileTrue(shootCommands.setFeedVoltage());// הזנה
 
                 operatorController.circle().whileTrue(cartridgeCommands.openCartridge());// פתיחת מחסנית
                 operatorController.square().whileTrue(cartridgeCommands.closeCartridge());// סגירת מחסנית
@@ -267,15 +264,15 @@ public class RobotContainer {
                 operatorController.povRight().whileTrue(armCommands.openArmManual());// פתיחת שינוי זווית
                 operatorController.povLeft().whileTrue(armCommands.closeArmManual());// סגירת שינוי זווית
 
-                operatorController.povUp().whileTrue(transferCommands.setForwoard());//טרנספר קדימה
-                operatorController.povDown().whileTrue(transferCommands.setBackward());//טרנספר אחורה
+                operatorController.povUp().whileTrue(transferCommands.setForwoard());// טרנספר קדימה
+                operatorController.povDown().whileTrue(transferCommands.setBackward());// טרנספר אחורה
 
                 operatorController.R2().whileTrue(intakeCommands.intake());// איסוף
                 operatorController.L2().whileTrue(intakeCommands.outake());// פליטה
 
                 operatorController.R1().onTrue(superCommands.shootToHub(driverController.rightTrigger()));// הכנה של ירי
-                operatorController.R2().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm()));// עצירת ירי
-                
+                operatorController.L1().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm()));// עצירת ירי
+
         }
 
         public void displaySimFieldToAdvantageScope() {
