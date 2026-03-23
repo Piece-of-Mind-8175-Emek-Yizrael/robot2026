@@ -70,17 +70,15 @@ public class CartridgeIOTalon implements CartridgeIO {
     @Override
     public void resetIfPressed() {
         if (isInnerPressed() && !innerResetted) {
-            motor.setPosition(CLOSE_CARTRIDGE_POS);
+            motor.setPosition(openCartridgePos);
             innerResetted = true;
-        }
-        else{
+        } else {
             innerResetted = false;
         }
         if (isOuterPressed() && !outerResetted) {
-            motor.setPosition(OPEN_CARTRIDGE_POS);
+            motor.setPosition(closeCartridgePos);
             outerResetted = true;
-        }
-        else{
+        } else {
             outerResetted = false;
         }
     }

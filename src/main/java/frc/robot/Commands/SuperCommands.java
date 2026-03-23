@@ -7,12 +7,16 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.subsystems.cartridge.Cartridge;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shoot.Shoot;
+import static frc.robot.subsystems.shoot.ShootConstants.*;
 import frc.robot.subsystems.shooterArm.ShooterArm;
+import static frc.robot.subsystems.shooterArm.ShooterArmConstants.*;
 import frc.robot.subsystems.transfer.Transfer;
+import static frc.robot.subsystems.transfer.TransferConstants.*;
 import frc.robot.util.ShooterCalculator;
 
 public class SuperCommands {
@@ -26,6 +30,7 @@ public class SuperCommands {
     private Swerve swerve;
 
     // commands
+
     private CartridgeCommands cartridgeCommands;
     private IntakeCommands intakeCommands;
     private ShootCommands shootCommands;
@@ -34,6 +39,7 @@ public class SuperCommands {
     private SwerveCommands swerveCommands;
 
     private boolean readyToShoot = false;
+    private double hubDistance = 3.0;
 
     public SuperCommands(Cartridge cartridge, Intake intake, Shoot shoot, ShooterArm arm, Transfer transfer,
             Swerve swerve) {
@@ -53,7 +59,7 @@ public class SuperCommands {
 
     }
 
-    public Command intakeFuel() {
+    public Command intakeFuelWithOutTransfer() {
         return Commands.parallel(
                 cartridgeCommands.openCartridge(),
                 intakeCommands.intake());
@@ -63,14 +69,21 @@ public class SuperCommands {
         return Commands.parallel(
                 cartridgeCommands.openCartridge(),
                 intakeCommands.intake(),
-                transferCommands.setVoltage(2));
+                transferCommands.setVoltage(transferIntakeVolt));
+    }
+
+    public Command intakeFuel(BooleanSupplier isShooting) {
+        return new ConditionalCommand(
+                intakeFuelWithOutTransfer(),
+                intakeFuelWithTransfer(),
+                isShooting);
     }
 
     public Command outtakeFuel() {
         return Commands.parallel(
                 cartridgeCommands.openCartridge(),
                 intakeCommands.outake(),
-                transferCommands.setVoltage(-4));
+                transferCommands.setVoltage(transferOuttakeVolt));
     }
 
     public Command closeCartridge() {
@@ -79,15 +92,8 @@ public class SuperCommands {
                 intakeCommands.intake());
     }
 
-    public Command closeCartridgeWithTransfer() {
-        return Commands.parallel(
-                cartridgeCommands.closeCartridge(),
-                intakeCommands.intake(),
-                transferCommands.setVoltage(4));
-    }
-
     public Command shootToHub(BooleanSupplier readyToShoot) {
-        if (swerve.getDistanceFromHub() > 3.0) { // get the right d
+        if (swerve.getDistanceFromHub() > hubDistance) {
             return new Command() {
                 {
                     addRequirements(shoot, arm, transfer);
@@ -95,17 +101,17 @@ public class SuperCommands {
 
                 @Override
                 public void initialize() {
-                    shoot.getIO().setHoodSetpoint(55.0);
+                    shoot.getIO().setHoodSetpoint(deliveryVelocity);
                 }
 
                 @Override
                 public void execute() {
-                    shoot.getIO().setHoodSetpoint(55.0);
-                    arm.getIO().setVoltage(1);
+                    shoot.getIO().setHoodSetpoint(deliveryVelocity);
+                    arm.getIO().setVoltage(openArmVolt);
 
                     if (readyToShoot.getAsBoolean()) {
-                        shoot.getIO().setFeedVoltage(8.0);
-                        transfer.getIO().setVoltage(5.0);
+                        shoot.getIO().setFeedVoltage(feedVol);
+                        transfer.getIO().setVoltage(transferIntakeVolt);
                     } else {
                         shoot.getIO().stopFeed();
                         transfer.getIO().stopMotor();
@@ -140,25 +146,23 @@ public class SuperCommands {
                 double distance = swerve.getDistanceFromHub();
                 shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(distance));
                 if (ShooterCalculator.isFar(distance)) {
-                    arm.getIO().setVoltage(1);
+                    arm.getIO().setVoltage(openArmVolt);
                 } else {
                     arm.getIO().stopMotor();
                 }
 
                 if (readyToShoot.getAsBoolean()) {
-                    shoot.getIO().setFeedVoltage(8.0);
-                    transfer.getIO().setVoltage(3.0);
+                    shoot.getIO().setFeedVoltage(feedVol);
+                    transfer.getIO().setVoltage(transferIntakeVolt);
                 } else {
                     shoot.getIO().stopFeed();
                     transfer.getIO().stopMotor();
                 }
                 if (ShooterCalculator.isFar(distance)) {
-                    arm.getIO().setVoltage(1);
+                    arm.getIO().setVoltage(openArmVolt);
                 } else {
                     arm.getIO().stopMotor();
                 }
-
-                Logger.recordOutput("shoot_speed", ShooterCalculator.getTargetSpeed(distance));
 
             }
 
@@ -193,21 +197,21 @@ public class SuperCommands {
                 double distance = swerve.getDistanceFromHub();
                 shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(distance));
                 if (ShooterCalculator.isFar(distance)) {
-                    arm.getIO().setVoltage(1);
+                    arm.getIO().setVoltage(openArmVolt);
                 } else {
                     arm.getIO().stopMotor();
                 }
 
                 if (!readyToShoot && shoot.getIO().atGoalHood()) {
-                    shoot.getIO().setFeedVoltage(8.0);
-                    transfer.getIO().setVoltage(5.0);
+                    shoot.getIO().setFeedVoltage(feedVol);
+                    transfer.getIO().setVoltage(transferIntakeVolt);
                     readyToShoot = true;
                 } else {
                     shoot.getIO().stopFeed();
                     transfer.getIO().stopMotor();
                 }
                 if (ShooterCalculator.isFar(distance)) {
-                    arm.getIO().setVoltage(1);
+                    arm.getIO().setVoltage(openArmVolt);
                 } else {
                     arm.getIO().stopMotor();
                 }

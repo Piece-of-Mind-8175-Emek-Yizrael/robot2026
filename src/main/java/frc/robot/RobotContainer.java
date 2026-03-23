@@ -137,7 +137,7 @@ public class RobotContainer {
                                 cartridgeCommands = new CartridgeCommands(cartridge);
                                 armCommands = new ShooterArmCommands(arm);
 
-                                NamedCommands.registerCommand("intakeFuel", superCommands.intakeFuel());
+                                NamedCommands.registerCommand("intakeFuel", superCommands.intakeFuelWithTransfer());
                                 NamedCommands.registerCommand("stopIntake", intakeCommands.stopIntake());
                                 NamedCommands.registerCommand("shootToHub", superCommands.autoShootToHub());
                                 NamedCommands.registerCommand("turnToHub", SwerveCommands.turnToHub(swerve));
@@ -241,17 +241,15 @@ public class RobotContainer {
                                 () -> driverController.getLeftX() * 0.5,
                                 () -> driverController.getRightX() * 0.5));
 
-                driverController.leftTrigger().whileTrue(superCommands.intakeFuelWithTransfer());
+                driverController.leftTrigger().whileTrue(superCommands.intakeFuel(driverController.rightTrigger()));
                 driverController.RB().whileTrue(superCommands.closeCartridge());
                 driverController.b().whileTrue(superCommands.outtakeFuel());
                 driverController.a().whileTrue(SwerveCommands.driveFaceToHub(swerve,
                                 () -> driverController.getLeftY() * 0.5,
                                 () -> driverController.getLeftX() * 0.5));
                 driverController.PovDown().onTrue(swerve.resetGyroCommand());
-                driverController.x().whileTrue(SwerveCommands.stopWithX(swerve));
-                driverController.y().onTrue(superCommands.shootToHub(driverController.rightTrigger()));// הכנה של ירי
+                driverController.a().onTrue(superCommands.shootToHub(driverController.rightTrigger()));// הכנה של ירי
                 driverController.PovUp().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm()));// עצירת ירי
-                driverController.PovLeft().whileTrue(superCommands.shakeCartridge());
 
                 // operatorController
 
@@ -270,7 +268,7 @@ public class RobotContainer {
                 operatorController.R2().whileTrue(intakeCommands.intake());// איסוף
                 operatorController.L2().whileTrue(intakeCommands.outake());// פליטה
 
-                operatorController.R1().onTrue(superCommands.shootToHub(driverController.rightTrigger()));// הכנה של ירי
+                operatorController.R1().whileTrue(cartridgeCommands.shakeCartridge());// הכנה של ירי
                 operatorController.L1().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm()));// עצירת ירי
 
         }

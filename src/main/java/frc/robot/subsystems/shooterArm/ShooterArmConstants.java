@@ -15,15 +15,18 @@ public class ShooterArmConstants {
     public static final boolean INVERTED = false;
 
     public static final double TOLERANCE = 0.05; // radians
-    public static final double MAX_VELOCITY = 10;//50
-    public static final double MAX_ACCELERATION = 10;//50
-    public static final double kp = 0.9;//2.0
+    public static final double MAX_VELOCITY = 10;// 50
+    public static final double MAX_ACCELERATION = 10;// 50
+    public static final double kp = 0.9;// 2.0
     public static final double ki = 0.0;
     public static final double kd = 0.0;
     public static final double ks = 0.0;
     public static final double kv = 0.0;
-    public static final double kg = 0.7;//0.7
+    public static final double kg = 0.7;// 0.7
     public static final double CLOSE_POS = Units.degreesToRadians(-54);
     public static final double OPEN_POS = 2.548;
+
+    public static final double openArmVolt = 1.5;
+    public static final double closeArmVolt = -1.5;
 
 }

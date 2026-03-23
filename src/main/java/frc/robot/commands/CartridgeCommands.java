@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.robot.subsystems.cartridge.Cartridge;
+import static frc.robot.subsystems.cartridge.CartridgeConstants.*;
 
 public class CartridgeCommands extends Command {
 
@@ -24,25 +25,6 @@ public class CartridgeCommands extends Command {
         return Commands.runEnd(() -> cartridge.getIO().setVoltage(voltage), cartridge.getIO()::stop, cartridge);
     }
 
-    public Command setVoltage(DoubleSupplier voltage) {
-        return Commands.runEnd(() -> cartridge.getIO().setVoltage(voltage.getAsDouble()), cartridge.getIO()::stop,
-                cartridge);
-    }
-
-    public Command openOrCloseManual(DoubleSupplier voltage) {
-        DoubleSupplier volt = () -> {
-            double result = Math.copySign(Math.pow(voltage.getAsDouble(), 2) * 5.0, voltage.getAsDouble());
-            if (cartridge.getIO().isOuterPressed()) {
-                result = Math.min(result, 0);
-            }
-            if (cartridge.getIO().isInnerPressed()) {
-                result = Math.max(result, 0);
-            }
-            return result;
-        };
-        return setVoltage(volt);
-    }
-
     public Command setOpenVoltage(double voltage) {
         return setVoltage(voltage).until(cartridge.getIO()::isOuterPressed);
     }
@@ -51,35 +33,20 @@ public class CartridgeCommands extends Command {
         return setVoltage(voltage).until(cartridge.getIO()::isInnerPressed);
     }
 
-    public Command goToPosition(double postion) {
-        return new FunctionalCommand(() -> cartridge.getIO().resetPID(),
-                () -> cartridge.getIO().goToPos(postion), bool -> {
-                    cartridge.getIO().stop();
-                },
-                () -> cartridge.getIO().atGoal(), cartridge);
-    }
-
     public Command openCartridge() {
-        return setOpenVoltage(2)
+        return setOpenVoltage(openCartridgeVolt)
                 .withName("open cartridge");
     }
 
     public Command closeCartridge() {
-        return setCloseVoltage(-1.5)
+        return setCloseVoltage(closeCartridgeVolt)
                 .withName("close cartridge");
-    }
-
-    public Command openAndCloseCartridge() {
-        return new ConditionalCommand(
-                closeCartridge(),
-                openCartridge(),
-                cartridge.getIO()::isInnerPressed);
     }
 
     public Command shakeCartridge() {
         return Commands.sequence(
-                setVoltage(-2.0).withTimeout(0.4),
-                setVoltage(1).withTimeout(0.4))
+                setVoltage(shakeCloseCartridgeVolt).withTimeout(shakeTimeOut),
+                setVoltage(shakeOpenCartridgeVolt).withTimeout(shakeTimeOut))
                 .repeatedly()
                 .withName("Continuous Shake");
     }

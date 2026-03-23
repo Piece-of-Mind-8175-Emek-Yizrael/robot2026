@@ -78,11 +78,11 @@ public class CartridgeIOSpark implements CartridgeIO {
     @Override
     public void resetIfPressed() {
         if (isInnerPressed()) {
-            encoder.setPosition(CLOSE_CARTRIDGE_POS);
+            encoder.setPosition(openCartridgePos);
         }
 
         if (isOuterPressed()) {
-            encoder.setPosition(OPEN_CARTRIDGE_POS);
+            encoder.setPosition(closeCartridgePos);
         }
     }
 
@@ -107,7 +107,7 @@ public class CartridgeIOSpark implements CartridgeIO {
     }
 
     @Override
-    public void goToPos(double goal) { 
+    public void goToPos(double goal) {
         if (goal > encoder.getPosition()) {
             if (encoder.getPosition() < 0.1 || motor.getAppliedOutput() < 0.2) {
                 ff.setKs(Ks + 2);

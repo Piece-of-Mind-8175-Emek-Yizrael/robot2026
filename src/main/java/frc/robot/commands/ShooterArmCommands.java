@@ -9,7 +9,7 @@ import frc.robot.subsystems.shooterArm.ShooterArm;
 public class ShooterArmCommands {
     private ShooterArm arm;
 
-    public ShooterArmCommands(ShooterArm arm){
+    public ShooterArmCommands(ShooterArm arm) {
         this.arm = arm;
     }
 
@@ -47,37 +47,12 @@ public class ShooterArmCommands {
     }
 
     public Command closeArmManual() {
-        return setVoltage(-1.0)
+        return setVoltage(closeArmVolt)
                 .until(arm.getIO()::getSensor);
     }
 
     public Command openArmManual() {
-        return setVoltage(1.0);
-    }
-
-    public Command closeArm() {
-        return goToPosition(0.0).andThen(setVoltage(-1.0))
-                .until(arm.getIO()::getSensor);
-    }
-
-    public Command openArm() {
-        return goToPosition(OPEN_POS);
-    }
-
-    public Command nearHub() {
-        return goToPosition(0.0);
-    }
-
-    public Command FarFromHub() {
-        return goToPosition(0.0);
-    }
-
-    public Command ressistGravity() {
-        return Commands.run(() -> arm.getIO().resistGravity(), arm);
-    }
-    
-    public Command resetPos() {
-        return Commands.run(arm.getIO()::resetIfPrees, arm);
+        return setVoltage(openArmVolt);
     }
 
 }

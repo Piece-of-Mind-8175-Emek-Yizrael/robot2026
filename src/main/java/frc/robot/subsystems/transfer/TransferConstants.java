@@ -6,4 +6,7 @@ public class TransferConstants {
     public static final int SMART_CURRENT_LIMIT = 70;
     public static final boolean INVERTED = true;
 
+    public static final double transferIntakeVolt = 3.0;
+    public static final double transferOuttakeVolt = -4.0;
+
 }
