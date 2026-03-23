@@ -142,7 +142,7 @@ public class RobotContainer {
                                 NamedCommands.registerCommand("shootToHub", superCommands.autoShootToHub());
                                 NamedCommands.registerCommand("turnToHub", SwerveCommands.turnToHub(swerve));
                                 NamedCommands.registerCommand("openCartridge", cartridgeCommands.openCartridge());
-                                NamedCommands.registerCommand("shakeCartridge", cartridgeCommands.shakeCartridge());
+                                NamedCommands.registerCommand("shakeCartridge", superCommands.shakeCartridge());
                                 NamedCommands.registerCommand("driveIntakeSlow", SwerveCommands
                                                 .joystickDriveRobotRelative(swerve, () -> -0.2, () -> 0, () -> 0));
 
@@ -269,7 +269,7 @@ public class RobotContainer {
                 operatorController.L2().whileTrue(intakeCommands.outake());// פליטה
 
                 operatorController.R1()
-                                .whileTrue(cartridgeCommands.shakeCartridge().alongWith(intakeCommands.intake()));// הכנה
+                                .whileTrue(superCommands.shakeCartridge());// הכנה
                                                                                                                   // של
                                                                                                                   // ירי
                 operatorController.L1().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm()));// עצירת ירי
