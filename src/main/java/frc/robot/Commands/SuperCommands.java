@@ -5,6 +5,7 @@ import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -37,6 +38,7 @@ public class SuperCommands {
     private ShooterArmCommands armCommands;
     private TransferCommands transferCommands;
     private SwerveCommands swerveCommands;
+    private Timer timer = new Timer();
 
     private boolean readyToShoot = false;
     private double hubDistance = 3.0;
@@ -93,7 +95,7 @@ public class SuperCommands {
     }
 
     public Command shootToHub(BooleanSupplier readyToShoot) {
-        if (swerve.getDistanceFromHub() > hubDistance) {
+        if (false) {
             return new Command() {
                 {
                     addRequirements(shoot, arm, transfer);
@@ -190,6 +192,8 @@ public class SuperCommands {
             public void initialize() {
                 shoot.getIO().setHoodSetpoint(swerve.getDistanceFromHub());
                 readyToShoot = false;
+                timer.reset();
+                timer.start();
             }
 
             @Override
@@ -202,10 +206,9 @@ public class SuperCommands {
                     arm.getIO().stopMotor();
                 }
 
-                if (!readyToShoot && shoot.getIO().atGoalHood()) {
+                if (timer.get() > 1.0) {
                     shoot.getIO().setFeedVoltage(feedVol);
                     transfer.getIO().setVoltage(transferIntakeVolt);
-                    readyToShoot = true;
                 } else {
                     shoot.getIO().stopFeed();
                     transfer.getIO().stopMotor();

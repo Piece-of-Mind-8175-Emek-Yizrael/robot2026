@@ -268,7 +268,10 @@ public class RobotContainer {
                 operatorController.R2().whileTrue(intakeCommands.intake());// איסוף
                 operatorController.L2().whileTrue(intakeCommands.outake());// פליטה
 
-                operatorController.R1().whileTrue(cartridgeCommands.shakeCartridge());// הכנה של ירי
+                operatorController.R1()
+                                .whileTrue(cartridgeCommands.shakeCartridge().alongWith(intakeCommands.intake()));// הכנה
+                                                                                                                  // של
+                                                                                                                  // ירי
                 operatorController.L1().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm()));// עצירת ירי
 
         }

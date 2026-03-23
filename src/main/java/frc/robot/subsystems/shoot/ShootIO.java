@@ -7,24 +7,24 @@ public interface ShootIO {
     @AutoLog
     public static class ShootIOInputs {
         public boolean bothAtGoal = false;
-        
-        //left hood motor
+
+        // left hood motor
         public boolean leftHoodConnected = false;
         public double leftVoltage = 0.0;
         public double leftVelocity = 0.0;
         public double leftAppliedVoltage = 0.0;
         public boolean leftAtGoal = false;
         public double leftGoal = 0.0;
-        
-        //right hood motor
+
+        // right hood motor
         public boolean rightHoodConnected = false;
         public double rightVoltage = 0.0;
         public double rightVelocity = 0.0;
         public double rightAppliedVoltage = 0.0;
         public boolean rightAtGoal = false;
         public double rightGoal = 0.0;
-        
-        //transfer motor
+
+        // transfer motor
         public boolean feedConnected = false;
         public double feedVoltage = 0.0;
         public double feedVelocity = 0.0;
@@ -55,22 +55,26 @@ public interface ShootIO {
     public default void stopBoth() {
     }
 
-    public default void setHoodSetpoint(double goal){
+    public default void setHoodSetpoint(double goal) {
     }
 
-    public default boolean atGoalHood(){
+    public default boolean atGoalHood() {
         return false;
     }
 
-    public default void setFeedSetpoint(double goal){
-    }
-
-    public default boolean atGoalFeed(){
+    public default boolean rightAtGoal() {
         return false;
     }
 
-    public default void resetCommand(){
+    public default void setFeedSetpoint(double goal) {
+    }
+
+    public default boolean atGoalFeed() {
+        return false;
+    }
+
+    public default void resetCommand() {
 
     }
-    
+
 }
