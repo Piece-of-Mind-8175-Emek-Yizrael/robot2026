@@ -665,27 +665,50 @@ public class SwerveCommands {
                 return rotateToAngle(drive, () -> angleToHub(drive));
         }
 
+//        public static Translation2d getHubCentricVelocity(Swerve swerve) {
+//            // TODO: check whether the directions of the chassis speeds are the same as I was expecting, or do I need to put a minus or flip by 180 degrees
+//            ChassisSpeeds robotCentricSpeeds = swerve.getChassisSpeeds();
+//            Translation2d speedsTranslation = new Translation2d(-robotCentricSpeeds.vxMetersPerSecond, robotCentricSpeeds.vyMetersPerSecond);
+//            speedsTranslation.rotateBy(swerve.getPose().getRotation());
+//            speedsTranslation.rotateBy(angleToHub(swerve));
+//            return speedsTranslation;
+//        }
         public static Translation2d getHubCentricVelocity(Swerve swerve) {
-            // TODO: check whether the directions of the chassis speeds are the same as I was expecting, or do I need to put a minus or flip by 180 degrees
-            ChassisSpeeds robotCentricSpeeds = swerve.getChassisSpeeds();
-            Translation2d speedsTranslation = new Translation2d(-robotCentricSpeeds.vxMetersPerSecond, robotCentricSpeeds.vyMetersPerSecond);
-            speedsTranslation.rotateBy(swerve.getPose().getRotation());
-            speedsTranslation.rotateBy(angleToHub(swerve));
-            return speedsTranslation;
+            ChassisSpeeds robot = swerve.getChassisSpeeds();
+
+            // Robot-relative -> field/blue-relative velocity
+            Rotation2d robotHeading = swerve.getRobotPoseAsBlue().getRotation();
+            Translation2d vField = new Translation2d(robot.vxMetersPerSecond, robot.vyMetersPerSecond)
+                    .rotateBy(robotHeading);
+
+            // Unit vectors in field frame
+            Rotation2d hubDir = angleToHub(swerve); // robot -> hub
+            double c = Math.cos(hubDir.getRadians());
+            double s = Math.sin(hubDir.getRadians());
+
+            // Define signs explicitly:
+            double vTowardHub = vField.getX() * c + vField.getY() * s;
+            double vLeftOfHubLine = -vField.getX() * s + vField.getY() * c;
+
+            // If ShooterCalculator expects radial positive AWAY from hub, negate first component.
+            double radialVelocity = -vTowardHub;
+            double parallelVelocity = vLeftOfHubLine;
+
+            return new Translation2d(radialVelocity, parallelVelocity);
         }
+
 
         public static Command driveFaceToHub(Swerve drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
                 return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> angleToHub(drive));
         }
 
         public static Command driveFaceToHubWithVelocity(Swerve drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
-            double distance = drive.getDistanceFromHub();
-
-            Translation2d velocity = getHubCentricVelocity(drive);
-            InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getX(), velocity.getY());
-
-            return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> angleToHub(drive).plus(Rotation2d.fromRadians(result.rotation()).plus(Rotation2d.fromRadians(result.rotation()))));
-
+            return joystickDriveAtAngle(drive, xSupplier, ySupplier, () -> {
+                double distance = drive.getDistanceFromHub();
+                Translation2d velocity = getHubCentricVelocity(drive);
+                InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getX(), velocity.getY());
+                return angleToHub(drive).plus(Rotation2d.fromRadians(result.rotation()));
+            });
         }
 
         public static Command stopWithX(Swerve drive){

@@ -2,6 +2,12 @@ package frc.robot.util;
 
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
+//void main() {
+//    ShooterCalculator.init();
+//    InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(3,0,0);
+//    System.out.println(result);
+//}
+
 public class ShooterCalculator {
     private static InterpolatingDoubleTreeMap farSpeeds, closeSpeeds;
     private static InterpolatingDoubleTreeMap flyTime;
@@ -56,21 +62,28 @@ public class ShooterCalculator {
         return closeSpeeds.get(distance);
     }
 
-    public static InterpolatorResult getTargetSpeedAndRotation(double radialDistance, double radialVelocity,
-            double perpendicularVelocity) {
-        double radialError = flyTime.get(farSpeeds.get(radialDistance)) * radialVelocity;
-        radialDistance += radialError;
+    public static InterpolatorResult getTargetSpeedAndRotation(
+            double radialDistance, double radialVelocity, double parallelVelocity) {
 
-        double flightTime = flyTime.get(farSpeeds.get(radialDistance));
+        double speed = getTargetSpeed(radialDistance);
+        double angle = 0.0;
 
-        double perpendicularError = perpendicularVelocity * flightTime;
+        for (int i = 0; i < 4; i++) {
+            double t = flyTime.get(speed);
 
-        double normalizedDistance = Math
-                .sqrt(perpendicularError * perpendicularError + radialDistance * radialDistance);
+            double predictedRadial = radialDistance + radialVelocity * t;
+            double predictedParallel = parallelVelocity * t;
 
-        double angle = Math.atan2(perpendicularError, radialDistance);
-        double velocity = farSpeeds.get(normalizedDistance);
+            // Optional safety: if target crosses behind shooter in prediction, clamp.
+            if (predictedRadial < 0.05) predictedRadial = 0.05;
 
-        return new InterpolatorResult(velocity, angle);
+            double aimDistance = Math.hypot(predictedRadial, predictedParallel);
+
+            speed = getTargetSpeed(aimDistance);
+            angle = Math.atan2(predictedParallel, predictedRadial);
+        }
+
+        return new InterpolatorResult(speed, angle);
     }
+
 }
