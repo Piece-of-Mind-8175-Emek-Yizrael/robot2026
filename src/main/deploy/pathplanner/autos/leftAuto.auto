@@ -11,7 +11,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -21,22 +21,15 @@
                 }
               },
               {
-                "type": "race",
+                "type": "wait",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "intakeFuel"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 6.0
-                      }
-                    }
-                  ]
+                  "waitTime": 5.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeFuel"
                 }
               }
             ]

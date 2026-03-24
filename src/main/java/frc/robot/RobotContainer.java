@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.Commands.CartridgeCommands;
@@ -227,7 +228,7 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
-                leds.setDefaultCommand(LEDsCommands.rainbow(leds));
+                leds.setDefaultCommand(LEDsCommands.setAll(leds, Color.kPurple));
 
                 // driverController
                 swerve.setDefaultCommand(
