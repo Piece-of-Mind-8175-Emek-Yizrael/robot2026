@@ -657,9 +657,17 @@ public class SwerveCommands {
         }
 
 
+        // public static Rotation2d angleToHub(Swerve swerve){
+        //         return BLUE_HUB_CENTER_POINT.minus(swerve.getRobotPoseAsBlue().getTranslation()).getAngle();
+        // }
+
         public static Rotation2d angleToHub(Swerve swerve){
-                return HUB_CENTER_POINT.minus(swerve.getRobotPoseAsBlue().getTranslation()).getAngle();
+                if(swerve.isRedAlliance()){
+                        return BLUE_HUB_CENTER_POINT.minus(swerve.getPose().getTranslation()).getAngle();
+                }
+                return BLUE_HUB_CENTER_POINT.minus(swerve.getRobotPoseAsBlue().getTranslation()).getAngle();
         }
+        
 
         public static Command turnToHub(Swerve drive) {
                 return rotateToAngle(drive, () -> angleToHub(drive));
