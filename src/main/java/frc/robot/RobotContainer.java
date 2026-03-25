@@ -205,6 +205,7 @@ public class RobotContainer {
 
                 // Set up auto routines
                 autoChooser = AutoBuilder.buildAutoChooser();
+                
                 // new LoggedDashboardChooser<>("Auto Choices", c); // TODO use auto builder
                 // autoChooser.addDefaultOption("nothing", null);
 
@@ -233,8 +234,8 @@ public class RobotContainer {
                 // driverController
                 swerve.setDefaultCommand(
                                 SwerveCommands.joystickDrive(swerve,
-                                                () -> driverController.getLeftY() * 0.75,
-                                                () -> driverController.getLeftX() * 0.75,
+                                                () -> driverController.getLeftY() * 0.7,
+                                                () -> driverController.getLeftX() * 0.7,
                                                 () -> driverController.getRightX() * 0.6));
 
                 driverController.LB().whileTrue(SwerveCommands.joystickDrive(swerve,
@@ -246,8 +247,8 @@ public class RobotContainer {
                 driverController.RB().whileTrue(superCommands.closeCartridge());
                 driverController.b().whileTrue(superCommands.outtakeFuel());
                 driverController.a().whileTrue(SwerveCommands.driveFaceToHubWithVelocity(swerve,
-                                () -> driverController.getLeftY() * 0.5,
-                                () -> driverController.getLeftX() * 0.5));
+                                () -> driverController.getLeftY() * 0.7,
+                                () -> driverController.getLeftX() * 0.7));
                 driverController.PovDown().onTrue(swerve.resetGyroCommand());
                 driverController.a().onTrue(superCommands.shootToHubWithVelocity(driverController.rightTrigger()));// הכנה של ירי
                 driverController.PovUp().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm()));// עצירת ירי

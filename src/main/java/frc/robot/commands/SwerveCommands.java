@@ -707,7 +707,7 @@ public class SwerveCommands {
                 double distance = drive.getDistanceFromHub();
                 Translation2d velocity = getHubCentricVelocity(drive);
                 InterpolatorResult result = ShooterCalculator.getTargetSpeedAndRotation(distance, velocity.getX(), velocity.getY());
-                return angleToHub(drive).plus(Rotation2d.fromRadians(result.rotation()));
+                return angleToHub(drive).minus(Rotation2d.fromRadians(result.rotation()));
             });
         }
 
