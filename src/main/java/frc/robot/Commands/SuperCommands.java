@@ -181,19 +181,16 @@ public class SuperCommands {
         };
     }
 
-    public Command autoShootToHub() {
-        readyToShoot = false;
+    public Command autoPreShootToHub() {
         return new Command() {
             {
-                addRequirements(shoot, arm, transfer);
+                addRequirements(shoot, arm);
             }
 
             @Override
             public void initialize() {
-                shoot.getIO().setHoodSetpoint(swerve.getDistanceFromHub());
+                shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(swerve.getDistanceFromHub()));
                 readyToShoot = false;
-                timer.reset();
-                timer.start();
             }
 
             @Override
@@ -205,13 +202,46 @@ public class SuperCommands {
                 } else {
                     arm.getIO().stopMotor();
                 }
-
-                if (timer.get() > 1.0) {
-                    shoot.getIO().setFeedVoltage(feedVol);
-                    transfer.getIO().setVoltage(transferIntakeVolt);
+                if (ShooterCalculator.isFar(distance)) {
+                    arm.getIO().setVoltage(openArmVolt);
                 } else {
-                    shoot.getIO().stopFeed();
-                    transfer.getIO().stopMotor();
+                    arm.getIO().stopMotor();
+                }
+
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+    }
+
+    public Command autoShootToHub() {
+        readyToShoot = false;
+        return new Command() {
+            {
+                addRequirements(shoot, arm, transfer);
+            }
+
+            @Override
+            public void initialize() {
+                shoot.getIO().setHoodSetpoint(swerve.getDistanceFromHub());
+                readyToShoot = false;
+            }
+
+            @Override
+            public void execute() {
+                double distance = swerve.getDistanceFromHub();
+                shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeed(distance));
+
+                shoot.getIO().setFeedVoltage(feedVol);
+                transfer.getIO().setVoltage(transferIntakeVolt);
+
+                if (ShooterCalculator.isFar(distance)) {
+                    arm.getIO().setVoltage(openArmVolt);
+                } else {
+                    arm.getIO().stopMotor();
                 }
                 if (ShooterCalculator.isFar(distance)) {
                     arm.getIO().setVoltage(openArmVolt);

@@ -140,6 +140,7 @@ public class RobotContainer {
 
                                 NamedCommands.registerCommand("intakeFuel", superCommands.intakeFuelWithTransfer());
                                 NamedCommands.registerCommand("stopIntake", intakeCommands.stopIntake());
+                                NamedCommands.registerCommand("preShootToHub", superCommands.autoPreShootToHub());
                                 NamedCommands.registerCommand("shootToHub", superCommands.autoShootToHub());
                                 NamedCommands.registerCommand("turnToHub", SwerveCommands.turnToHub(swerve));
                                 NamedCommands.registerCommand("openCartridge", cartridgeCommands.openCartridge());
@@ -237,11 +238,7 @@ public class RobotContainer {
                                                 () -> driverController.getLeftX() * 0.75,
                                                 () -> driverController.getRightX() * 0.6));
 
-                driverController.LB().whileTrue(SwerveCommands.joystickDrive(swerve,
-                                () -> driverController.getLeftY() * 0.5,
-                                () -> driverController.getLeftX() * 0.5,
-                                () -> driverController.getRightX() * 0.5));
-
+                driverController.LB().whileTrue(superCommands.shakeCartridge());
                 driverController.leftTrigger().whileTrue(superCommands.intakeFuel(driverController.rightTrigger()));
                 driverController.RB().whileTrue(superCommands.closeCartridge());
                 driverController.b().whileTrue(superCommands.outtakeFuel());

@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LeftDriveToIntake"
+                  "pathName": "fullRoundIntake"
                 }
               },
               {
@@ -47,60 +47,34 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "leftDriveBackFromIntke"
+                  "name": "preShootToHub"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "turnToHub"
                 }
               }
             ]
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "race",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "turnToHub"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "preShootToHub"
-                      }
-                    }
-                  ]
+                  "name": "shakeCartridge"
                 }
               },
               {
-                "type": "parallel",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "shootToHub"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "shakeCartridge"
-                      }
-                    }
-                  ]
+                  "name": "shootToHub"
                 }
               }
             ]
