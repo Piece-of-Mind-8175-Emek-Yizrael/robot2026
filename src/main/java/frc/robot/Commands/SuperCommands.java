@@ -2,6 +2,7 @@ package frc.robot.Commands;
 
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
@@ -13,6 +14,8 @@ import frc.robot.subsystems.cartridge.Cartridge;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shoot.Shoot;
+
+import static frc.robot.Commands.SwerveCommands.getHubCentricVelocity;
 import static frc.robot.subsystems.shoot.ShootConstants.*;
 import frc.robot.subsystems.shooterArm.ShooterArm;
 import static frc.robot.subsystems.shooterArm.ShooterArmConstants.*;
@@ -92,6 +95,58 @@ public class SuperCommands {
         return Commands.parallel(
                 cartridgeCommands.closeCartridge(),
                 intakeCommands.intake());
+    }
+
+    public Command shootToHubWithVelocity(BooleanSupplier readyToShoot) {
+        return new Command() {
+            {
+                addRequirements(shoot, arm, transfer);
+            }
+
+            @Override
+            public void initialize() {
+                Translation2d velocity = getHubCentricVelocity(swerve);
+
+                shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeedAndRotation(swerve.getDistanceFromHub(), velocity.getX(), velocity.getY()).speed());
+            }
+
+            @Override
+            public void execute() {
+                double distance = swerve.getDistanceFromHub();
+                Translation2d velocity = getHubCentricVelocity(swerve);
+                shoot.getIO().setHoodSetpoint(ShooterCalculator.getTargetSpeedAndRotation(swerve.getDistanceFromHub(), velocity.getX(), velocity.getY()).speed());
+                if (ShooterCalculator.isFar(distance)) {
+                    arm.getIO().setVoltage(openArmVolt);
+                } else {
+                    arm.getIO().stopMotor();
+                }
+
+                if (readyToShoot.getAsBoolean()) {
+                    shoot.getIO().setFeedVoltage(feedVol);
+                    transfer.getIO().setVoltage(transferIntakeVolt);
+                } else {
+                    shoot.getIO().stopFeed();
+                    transfer.getIO().stopMotor();
+                }
+                if (ShooterCalculator.isFar(distance)) {
+                    arm.getIO().setVoltage(openArmVolt);
+                } else {
+                    arm.getIO().stopMotor();
+                }
+
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                shoot.getIO().stopBoth();
+                transfer.getIO().stopMotor();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
     }
 
     public Command shootToHub(BooleanSupplier readyToShoot) {

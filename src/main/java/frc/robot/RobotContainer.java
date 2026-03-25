@@ -245,11 +245,11 @@ public class RobotContainer {
                 driverController.leftTrigger().whileTrue(superCommands.intakeFuel(driverController.rightTrigger()));
                 driverController.RB().whileTrue(superCommands.closeCartridge());
                 driverController.b().whileTrue(superCommands.outtakeFuel());
-                driverController.a().whileTrue(SwerveCommands.driveFaceToHub(swerve,
+                driverController.a().whileTrue(SwerveCommands.driveFaceToHubWithVelocity(swerve,
                                 () -> driverController.getLeftY() * 0.5,
                                 () -> driverController.getLeftX() * 0.5));
                 driverController.PovDown().onTrue(swerve.resetGyroCommand());
-                driverController.a().onTrue(superCommands.shootToHub(driverController.rightTrigger()));// הכנה של ירי
+                driverController.a().onTrue(superCommands.shootToHubWithVelocity(driverController.rightTrigger()));// הכנה של ירי
                 driverController.PovUp().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm()));// עצירת ירי
 
                 // operatorController
