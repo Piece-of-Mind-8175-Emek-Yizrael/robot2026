@@ -55,7 +55,7 @@ public class CartridgeIOTalon implements CartridgeIO {
 
     @Override
     public void updateInputs(CartridgeIOInputs inputs) {
-        var cartridgeStatus = BaseStatusSignal.refreshAll();
+        // var cartridgeStatus = BaseStatusSignal.refreshAll();
         inputs.voltage = motor.getMotorVoltage().getValueAsDouble();
         inputs.output = motor.getDutyCycle().getValueAsDouble();
         inputs.velocity = motor.getVelocity().getValueAsDouble();
