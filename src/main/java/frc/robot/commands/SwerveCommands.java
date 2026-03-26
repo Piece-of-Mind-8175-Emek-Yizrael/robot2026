@@ -663,8 +663,9 @@ public class SwerveCommands {
 
         public static Rotation2d angleToHub(Swerve swerve){
                 if(swerve.isRedAlliance()){
-                        return BLUE_HUB_CENTER_POINT.minus(swerve.getPose().getTranslation()).getAngle();
+                        return RED_HUB_CENTER_POINT.minus(swerve.getPose().getTranslation()).getAngle();
                 }
+
                 return BLUE_HUB_CENTER_POINT.minus(swerve.getRobotPoseAsBlue().getTranslation()).getAngle();
         }
         

@@ -30,7 +30,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.CartridgeCommands;
 import frc.robot.Commands.IntakeCommands;
 import frc.robot.Commands.LEDsCommands;
@@ -93,6 +95,7 @@ public class RobotContainer {
 
         // Controller
         private final PomXboxController driverController = new PomXboxController(0);
+
         private final CommandPS5Controller operatorController = new CommandPS5Controller(1);
 
         // Dashboard inputs
@@ -120,10 +123,10 @@ public class RobotContainer {
                                 leds = new LEDs(new LEDsIOReal());
 
                                 ApriltagVisionIOReal[] cameras = {
-                                                // new ApriltagVisionIOReal("first_camera",
-                                                // VisionConstants.InitialRobotToBackCameraTranslation),
-                                                new ApriltagVisionIOReal("seconde_camera",
-                                                                VisionConstants.InitialRobotToShooterCameraTranslation),
+                                                new ApriltagVisionIOReal("first_camera",
+                                                        VisionConstants.InitialRobotToShooterCameraTranslation),
+                                                // new ApriltagVisionIOReal("seconde_camera",
+                                                //                 VisionConstants.InitialRobotToShooterCameraTranslation),
                                 };
 
                                 vision = new VisionSubsystem(swerve::addVisionMeasurement, cameras, null,
@@ -249,6 +252,12 @@ public class RobotContainer {
                 driverController.a().onTrue(superCommands.shootToHub(driverController.rightTrigger()));// הכנה של ירי
                 driverController.PovUp().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm()));// עצירת ירי
 
+                Trigger readyToShoot = new Trigger(()->{
+                        return Math.abs(swerve.getRotation().minus(SwerveCommands.angleToHub(swerve)).getDegrees() % 360) <= 5 &&
+                        Math.abs(shoot.getInputs().rightGoal - shoot.getInputs().rightVelocity) < 2 && shoot.getInputs().rightVelocity > 0.5 &&
+                        arm.getInputs().motorVoltage > 0.0;
+                });
+                readyToShoot.whileTrue(Commands.runEnd(()-> driverController.rumbleBothSides(0.5),()-> driverController.rumbleBothSides(0)));
                 // operatorController
 
                 operatorController.cross().whileTrue(shootCommands.setHoodVoltage());// ירי

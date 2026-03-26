@@ -10,7 +10,7 @@ public interface ShooterArmIO {
         public double armPosition = 0.0;
         public double armVelocity = 0.0;
         public double motorVoltage = 0.0;
-        public double motorAppliedVoltage = 0.0;
+        public double motorAppliedOutput = 0.0;
         public boolean atGoal = false;
         public boolean sensor = false;
     }

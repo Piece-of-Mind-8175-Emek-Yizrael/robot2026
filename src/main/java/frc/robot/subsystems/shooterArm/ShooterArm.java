@@ -26,4 +26,8 @@ public class ShooterArm extends SubsystemBase {
         return io;
     }
 
+    public ShooterArmIOInputsAutoLogged getInputs(){
+        return inputs;
+    }
+
 }

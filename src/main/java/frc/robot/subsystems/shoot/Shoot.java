@@ -22,5 +22,9 @@ public class Shoot extends SubsystemBase{
     public ShootIO getIO(){
         return io;
     }
+
+    public ShootIOInputsAutoLogged getInputs(){
+        return inputs;
+    }
     
 }

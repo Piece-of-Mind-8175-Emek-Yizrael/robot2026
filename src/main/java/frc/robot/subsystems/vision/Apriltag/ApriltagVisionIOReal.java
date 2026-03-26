@@ -57,8 +57,9 @@ public class ApriltagVisionIOReal implements ApriltagVisionIO {
     Set<Short> tagIds = new HashSet<>();
     List<PoseObservation> poseObservations = new LinkedList<>();
 
-    if (toggle) {
+    if (true) {
       for (var result : camera.getAllUnreadResults()) {
+
         // Update latest target observation
         if (result.hasTargets()) {
           inputs.latestTargetObservation = new TargetObservation(
