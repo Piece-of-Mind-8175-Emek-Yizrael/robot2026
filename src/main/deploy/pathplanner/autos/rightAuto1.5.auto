@@ -11,7 +11,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -21,7 +21,7 @@
                 }
               },
               {
-                "type": "race",
+                "type": "parallel",
                 "data": {
                   "commands": [
                     {
@@ -33,7 +33,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 6.0
+                        "waitTime": 5.0
                       }
                     }
                   ]
@@ -85,7 +85,7 @@
                 }
               },
               {
-                "type": "parallel",
+                "type": "race",
                 "data": {
                   "commands": [
                     {
@@ -95,9 +95,28 @@
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "sequential",
                       "data": {
-                        "name": "shakeCartridge"
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 1.0
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "shakeCartridge"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 4.0
                       }
                     }
                   ]
@@ -111,15 +130,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "intakeFuel"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "RightDriveToIntake2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeFuel"
                 }
               }
             ]

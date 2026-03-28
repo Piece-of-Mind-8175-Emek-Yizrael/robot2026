@@ -237,8 +237,8 @@ public class RobotContainer {
                 // driverController
                 swerve.setDefaultCommand(
                                 SwerveCommands.joystickDrive(swerve,
-                                                () -> driverController.getLeftY() * 0.75,
-                                                () -> driverController.getLeftX() * 0.75,
+                                                () -> driverController.getLeftY() * 0.8,
+                                                () -> driverController.getLeftX() * 0.8,
                                                 () -> driverController.getRightX() * 0.6));
 
                 driverController.LB().whileTrue(superCommands.shakeCartridge());
