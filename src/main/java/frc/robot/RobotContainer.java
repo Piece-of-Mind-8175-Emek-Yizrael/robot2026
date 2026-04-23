@@ -97,6 +97,7 @@ public class RobotContainer {
         private final PomXboxController driverController = new PomXboxController(0);
 
         private final CommandPS5Controller operatorController = new CommandPS5Controller(1);
+        private final CommandPS5Controller hasifaController = new CommandPS5Controller(2);
 
         // Dashboard inputs
         private final SendableChooser<Command> autoChooser;
@@ -150,6 +151,7 @@ public class RobotContainer {
                                 NamedCommands.registerCommand("shakeCartridge", superCommands.shakeCartridge());
                                 NamedCommands.registerCommand("driveIntakeSlow", SwerveCommands
                                                 .joystickDriveRobotRelative(swerve, () -> -0.2, () -> 0, () -> 0));
+                                NamedCommands.registerCommand("stopShoot",shootCommands.stopBoth().alongWith(armCommands.stopArm()));
 
                                 break;
 
@@ -236,10 +238,10 @@ public class RobotContainer {
 
                 // driverController
                 swerve.setDefaultCommand(
-                                SwerveCommands.joystickDrive(swerve,
-                                                () -> driverController.getLeftY() * 0.8,
-                                                () -> driverController.getLeftX() * 0.8,
-                                                () -> driverController.getRightX() * 0.6));
+                                SwerveCommands.joystickDriveRobotRelative(swerve,
+                                                () -> driverController.getLeftY() * 0.4,
+                                                () -> driverController.getLeftX() * 0.4,
+                                                () -> driverController.getRightX() * 0.35));
 
                 driverController.LB().whileTrue(superCommands.shakeCartridge());
                 driverController.leftTrigger().whileTrue(superCommands.intakeFuel(driverController.rightTrigger()));
@@ -258,6 +260,7 @@ public class RobotContainer {
                         arm.getInputs().motorVoltage > 0.0;
                 });
                 readyToShoot.whileTrue(Commands.runEnd(()-> driverController.rumbleBothSides(0.5),()-> driverController.rumbleBothSides(0)));
+                
                 // operatorController
 
                 operatorController.cross().whileTrue(shootCommands.setHoodVoltage());// ירי

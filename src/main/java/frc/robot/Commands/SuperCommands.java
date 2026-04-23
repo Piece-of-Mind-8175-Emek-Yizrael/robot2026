@@ -95,44 +95,6 @@ public class SuperCommands {
     }
 
     public Command shootToHub(BooleanSupplier readyToShoot) {
-        if (false) {
-            return new Command() {
-                {
-                    addRequirements(shoot, arm, transfer);
-                }
-
-                @Override
-                public void initialize() {
-                    shoot.getIO().setHoodSetpoint(deliveryVelocity);
-                }
-
-                @Override
-                public void execute() {
-                    shoot.getIO().setHoodSetpoint(deliveryVelocity);
-                    arm.getIO().setVoltage(openArmVolt);
-
-                    if (readyToShoot.getAsBoolean()) {
-                        shoot.getIO().setFeedVoltage(feedVol);
-                        transfer.getIO().setVoltage(transferIntakeVolt);
-                    } else {
-                        shoot.getIO().stopFeed();
-                        transfer.getIO().stopMotor();
-                    }
-                }
-
-                @Override
-                public void end(boolean interrupted) {
-                    shoot.getIO().stopBoth();
-                    transfer.getIO().stopMotor();
-                }
-
-                @Override
-                public boolean isFinished() {
-                    return false;
-                }
-            };
-        }
-
         return new Command() {
             {
                 addRequirements(shoot, arm, transfer);
