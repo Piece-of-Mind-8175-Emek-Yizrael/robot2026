@@ -14,6 +14,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -155,6 +156,9 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+      Logger.recordOutput("shift time", DriverStation.getMatchTime() + 1);
+      Logger.recordOutput("is our shift", true);
+
   }
 
   /** This function is called once when teleop is enabled. */
@@ -173,6 +177,28 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    DriverStation.getMatchTime();
+    if(DriverStation.getMatchTime() > 130){
+      Logger.recordOutput("shift time", DriverStation.getMatchTime() - 130 + 1);
+      Logger.recordOutput("is our shift", true);
+    }
+    else if(DriverStation.getMatchTime() > 105){
+      Logger.recordOutput("shift time", DriverStation.getMatchTime() - 105 + 1);
+      Logger.recordOutput("is our shift", false);
+    }
+    else if(DriverStation.getMatchTime() > 80){
+      Logger.recordOutput("shift time", DriverStation.getMatchTime() - 80 + 1);
+      Logger.recordOutput("is our shift", true);
+    }
+    else if(DriverStation.getMatchTime() > 55){
+      Logger.recordOutput("shift time", DriverStation.getMatchTime() - 55 + 1);
+      Logger.recordOutput("is our shift", false);
+    }
+    else {
+      Logger.recordOutput("shift time", DriverStation.getMatchTime() + 1);
+      Logger.recordOutput("is our shift", true);
+    }
+    
   }
 
   /** This function is called once when test mode is enabled. */

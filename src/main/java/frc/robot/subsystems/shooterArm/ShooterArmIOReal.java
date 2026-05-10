@@ -57,8 +57,8 @@ public class ShooterArmIOReal implements ShooterArmIO {
         inputs.motorConnected = motor.getFirmwareVersion() != 0;
         inputs.armPosition = encoder.getPosition();
         inputs.armVelocity = encoder.getVelocity();
-        inputs.motorVoltage = motor.getAppliedOutput();
-        inputs.motorAppliedVoltage = motor.getAppliedOutput() * motor.getBusVoltage();
+        inputs.motorAppliedOutput = motor.getAppliedOutput();
+        inputs.motorVoltage = motor.getAppliedOutput() * motor.getBusVoltage();
         inputs.atGoal = atGoal();
         inputs.sensor = sensor.get();
         resetIfPrees();

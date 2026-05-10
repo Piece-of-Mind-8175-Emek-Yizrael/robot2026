@@ -3,6 +3,7 @@ package frc.robot.POM_lib.Joysticks;
 import static frc.robot.POM_lib.Joysticks.JoystickConstants.*;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -452,5 +453,9 @@ public class PomXboxController implements PomController {
   @Override
   public double getRightTriggerAxis() {
     return controller.getRightTriggerAxis();
+  }
+
+  public void rumbleBothSides(double percent){
+    controller.setRumble(RumbleType.kBothRumble, percent);
   }
 }

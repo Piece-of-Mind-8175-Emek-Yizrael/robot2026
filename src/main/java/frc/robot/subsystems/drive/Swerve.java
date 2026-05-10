@@ -54,6 +54,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.Mode;
+import frc.robot.Commands.SwerveCommands;
 import frc.robot.util.LocalADStarAK;
 
 import static frc.robot.subsystems.drive.FieldConstants.Hub.*;
@@ -186,6 +187,7 @@ public class Swerve extends SubsystemBase {
             Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
         }
         Logger.recordOutput("good vision", goodVision);
+        Logger.recordOutput("HubData/deltaToHub",this.getRotation().minus(SwerveCommands.angleToHub(this)).getDegrees() % 360);
 
         // Update odometry
         double[] sampleTimestamps = modules[0].getOdometryTimestamps(); // All signals are sampled together
@@ -529,7 +531,7 @@ public class Swerve extends SubsystemBase {
         @AutoLogOutput(key = "Odometry/distance from hub")
         public double getDistanceFromHub() {
             if(isRedAlliance()){
-                return BLUE_HUB_CENTER_POINT.getDistance(getPose().getTranslation());
+                return RED_HUB_CENTER_POINT.getDistance(getPose().getTranslation());
             }
             return BLUE_HUB_CENTER_POINT.getDistance(getRobotPoseAsBlue().getTranslation());
         }

@@ -26,7 +26,7 @@ public class ShooterArmConstants {
     public static final double CLOSE_POS = Units.degreesToRadians(-54);
     public static final double OPEN_POS = 2.548;
 
-    public static final double openArmVolt = 1.5;
+    public static final double openArmVolt = 2;
     public static final double closeArmVolt = -1.5;
 
 }

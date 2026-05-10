@@ -101,12 +101,12 @@ public class DriveConstants {
         public static final double driveSimKv = 0.0;
 
         public static final double driveSlipCurrent = 70.0;
-        public static final double driveRampRate = 1;
+        public static final double driveRampRate = 0.3;
 
         // Turn motor configuration
         public static final boolean turnInverted = true;
         public static final int turnMotorCurrentLimit = 0;
-        public static final double turnMotorRampRate = 0.5;
+        public static final double turnMotorRampRate = 0.3;
         public static final double turnMotorReduction = 396.0 / 35.0;
         public static final DCMotor turnGearbox = DCMotor.getNEO(1);
 

@@ -42,6 +42,6 @@ public class ShootConstants {
 
     public static final double FEED_SHOOT_SETPOINT = 1.0; // rotations per second
 
-    public static final double feedVol = 8.0;
+    public static final double feedVol = 6.0;
     public static final double deliveryVelocity = 55.0;
 }
