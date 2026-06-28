@@ -237,7 +237,7 @@ public class RobotContainer {
 
                 // driverController
                 swerve.setDefaultCommand(
-                                SwerveCommands.joystickDriveRobotRelative(swerve,
+                                SwerveCommands.joystickDrive(swerve,
                                                 () -> driverController.getLeftY() * 0.4,
                                                 () -> driverController.getLeftX() * 0.4,
                                                 () -> driverController.getRightX() * 0.35));
