@@ -15,7 +15,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Right drive to intake (trench)"
+                        "pathName": "Right drive to intake (both)"
                       }
                     },
                     {
@@ -118,7 +118,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "go back to centre (trench)"
+                  "pathName": "Right go back to centre (trench)"
                 }
               }
             ]
