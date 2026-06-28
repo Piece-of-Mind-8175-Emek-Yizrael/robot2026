@@ -1,11 +1,7 @@
 package frc.robot.Commands;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.robot.subsystems.cartridge.Cartridge;
 import static frc.robot.subsystems.cartridge.CartridgeConstants.*;
 

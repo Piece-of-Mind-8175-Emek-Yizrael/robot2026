@@ -2,7 +2,6 @@ package frc.robot.subsystems.cartridge;
 
 import static frc.robot.subsystems.cartridge.CartridgeConstants.*;
 
-import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.InvertedValue;

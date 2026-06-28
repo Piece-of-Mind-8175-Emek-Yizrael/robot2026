@@ -97,7 +97,6 @@ public class RobotContainer {
         private final PomXboxController driverController = new PomXboxController(0);
 
         private final CommandPS5Controller operatorController = new CommandPS5Controller(1);
-        private final CommandPS5Controller hasifaController = new CommandPS5Controller(2);
 
         // Dashboard inputs
         private final SendableChooser<Command> autoChooser;
@@ -254,11 +253,11 @@ public class RobotContainer {
                 driverController.a().onTrue(superCommands.shootToHub(driverController.rightTrigger()));// הכנה של ירי
                 driverController.PovUp().onTrue(shootCommands.stopBoth().alongWith(armCommands.stopArm()));// עצירת ירי
 
-                Trigger readyToShoot = new Trigger(()->{
-                        return Math.abs(swerve.getRotation().minus(SwerveCommands.angleToHub(swerve)).getDegrees() % 360) <= 5 &&
+                Trigger readyToShoot = new Trigger(()->(
+                        Math.abs(swerve.getRotation().minus(SwerveCommands.angleToHub(swerve)).getDegrees() % 360) <= 5 &&
                         Math.abs(shoot.getInputs().rightGoal - shoot.getInputs().rightVelocity) < 2 && shoot.getInputs().rightVelocity > 0.5 &&
-                        arm.getInputs().motorVoltage > 0.0;
-                });
+                        arm.getInputs().motorVoltage > 0.0
+                ));
                 readyToShoot.whileTrue(Commands.runEnd(()-> driverController.rumbleBothSides(0.5),()-> driverController.rumbleBothSides(0)));
                 
                 // operatorController
