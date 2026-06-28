@@ -5,93 +5,17 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "openCartridge"
-          }
-        },
-        {
-          "type": "race",
+          "type": "sequential",
           "data": {
             "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "RightDriveToIntake"
-                }
-              },
               {
                 "type": "parallel",
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "path",
                       "data": {
-                        "name": "intakeFuel"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 5.0
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "rightDriveBackFromIntke"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "race",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "turnToHub"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "preShootToHub"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "race",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "shootToHub"
+                        "pathName": "Right drive to intake (trench)"
                       }
                     },
                     {
@@ -101,7 +25,63 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 1.0
+                              "waitTime": 2.0
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "intakeFuel"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right drive from intake (trench)"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "preShootToHub"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "turnToHub"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.5
+                      }
+                    },
+                    {
+                      "type": "deadline",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 6.0
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "shootToHub"
                             }
                           },
                           {
@@ -112,33 +92,33 @@
                           }
                         ]
                       }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "stopShoot"
+                      }
                     },
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
-                        "waitTime": 4.0
+                        "name": "openCartridge"
                       }
                     }
                   ]
                 }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
+              },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RightDriveToIntake2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intakeFuel"
+                  "pathName": "go back to centre (trench)"
                 }
               }
             ]

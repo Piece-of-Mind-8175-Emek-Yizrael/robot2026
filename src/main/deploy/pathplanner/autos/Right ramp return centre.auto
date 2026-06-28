@@ -15,7 +15,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "RightDriveToIntakeAvoidWhite"
+                        "pathName": "Right drive to intake (trench)"
                       }
                     },
                     {
@@ -43,7 +43,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right return from intake ramp"
+                  "pathName": "Right return from intake (ramp)"
                 }
               },
               {
@@ -118,7 +118,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "go back to centre ramp"
+                  "pathName": "go back to centre (ramp)"
                 }
               }
             ]

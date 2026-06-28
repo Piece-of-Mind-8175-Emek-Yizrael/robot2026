@@ -8,36 +8,36 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.102564298707277,
-        "y": 2.202845970595342
+        "x": 7.554248891044427,
+        "y": 2.1774295033988746
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.040746987951807,
-        "y": 0.9096746987951816
+        "x": 6.479256410256412,
+        "y": 0.7558461538461541
       },
       "prevControl": {
-        "x": 6.425171631364789,
-        "y": 1.5562070536261041
+        "x": 7.33974358974359,
+        "y": 0.7674743589743582
       },
       "nextControl": {
-        "x": 5.80033734939759,
-        "y": 0.5053493975903622
+        "x": 4.733596560897995,
+        "y": 0.7322561558818531
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.133975903614458,
-        "y": 0.7348313253012042
+        "x": 3.0838205128205147,
+        "y": 0.7558461538461541
       },
       "prevControl": {
-        "x": 2.78262835842921,
-        "y": 0.7050232646268358
+        "x": 2.7720544361738115,
+        "y": 0.792331091933064
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,14 +47,28 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.1796264855687444,
-      "rotationDegrees": 0.0
+      "rotationDegrees": 89.14562191025017
     },
     {
-      "waypointRelativePos": 1.7745331069609498,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 1.6881720430107496,
+      "rotationDegrees": 90.0
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.1958433253397285,
+      "maxWaypointRelativePos": 1.5571542765787374,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
