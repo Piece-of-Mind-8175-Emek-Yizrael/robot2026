@@ -9,15 +9,9 @@
           "data": {
             "commands": [
               {
-                "type": "parallel",
+                "type": "race",
                 "data": {
                   "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Right drive to intake (both)"
-                      }
-                    },
                     {
                       "type": "sequential",
                       "data": {
@@ -25,25 +19,44 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 2.0
+                              "waitTime": 0.5
                             }
                           },
                           {
-                            "type": "named",
+                            "type": "path",
                             "data": {
-                              "name": "intakeFuel"
+                              "pathName": "Right drive to intake (both)"
                             }
                           }
                         ]
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intakeFuel"
                       }
                     }
                   ]
                 }
               },
               {
-                "type": "path",
+                "type": "race",
                 "data": {
-                  "pathName": "Right return from intake (ramp)"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Right return from intake (ramp)"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "openCartridge"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -118,7 +131,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "go back to centre (ramp)"
+                  "pathName": "Right go back to centre (ramp)"
                 }
               }
             ]

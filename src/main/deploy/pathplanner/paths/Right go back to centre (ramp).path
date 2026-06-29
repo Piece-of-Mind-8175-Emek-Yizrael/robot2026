@@ -12,7 +12,7 @@
         "y": 2.65124358974359
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "right ready to shoot ramp"
     },
     {
       "anchor": {
@@ -53,7 +53,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 35.607968985308936
+    "rotation": 36.3788768249769
   },
   "useDefaultConstraints": true
 }

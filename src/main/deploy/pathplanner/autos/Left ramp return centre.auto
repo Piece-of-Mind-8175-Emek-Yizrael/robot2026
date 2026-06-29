@@ -25,7 +25,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "Right drive to intake (both)"
+                              "pathName": "Left drive to intake (both)"
                             }
                           }
                         ]
@@ -47,7 +47,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Right drive from intake (trench)"
+                        "pathName": "Left return from intake (ramp)"
                       }
                     },
                     {
@@ -122,7 +122,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "openCartridge"
+                        "name": "intakeFuel"
                       }
                     }
                   ]
@@ -131,7 +131,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right go back to centre (trench)"
+                  "pathName": "Left return to centre (ramp)"
                 }
               }
             ]
