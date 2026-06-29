@@ -3,49 +3,40 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.2465897435897455,
-        "y": 5.395499999999999
+        "x": 2.25,
+        "y": 4.000115384615385
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2465897435897455,
-        "y": 5.395499999999999
+        "x": 3.11870512820513,
+        "y": 4.023371794871795
       },
       "isLocked": false,
-      "linkedName": "left ready to shoot ramp"
+      "linkedName": "NEW middle shoot"
     },
     {
       "anchor": {
-        "x": 6.351346153846155,
-        "y": 5.395499999999999
+        "x": 0.5023589743589756,
+        "y": 0.6628205128205127
       },
       "prevControl": {
-        "x": 5.351346153846155,
-        "y": 5.395499999999999
+        "x": 0.9558589743589756,
+        "y": 0.7558461538461541
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "NEW outpost"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.3411397345823545,
-      "rotationDegrees": 0.0
-    },
-    {
-      "waypointRelativePos": 0.7985948477751813,
-      "rotationDegrees": 0.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.24425287356321645,
-      "maxWaypointRelativePos": 0.6465517241379304,
+      "minWaypointRelativePos": 0.6522988505747058,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 4.0,
-        "maxAcceleration": 5.0,
+        "maxVelocity": 1.5,
+        "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -71,7 +62,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -39.47245984834385
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

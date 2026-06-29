@@ -66,13 +66,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "preShootToHub"
+                        "name": "turnToHub"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "turnToHub"
+                        "name": "preShootToHub"
                       }
                     },
                     {

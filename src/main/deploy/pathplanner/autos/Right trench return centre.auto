@@ -127,11 +127,24 @@
                     }
                   ]
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
               {
                 "type": "path",
                 "data": {
                   "pathName": "Right go back to centre (trench)"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeFuel"
                 }
               }
             ]
