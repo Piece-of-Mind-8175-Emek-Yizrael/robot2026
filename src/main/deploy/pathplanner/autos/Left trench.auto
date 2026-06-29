@@ -41,7 +41,7 @@
                 }
               },
               {
-                "type": "race",
+                "type": "deadline",
                 "data": {
                   "commands": [
                     {
@@ -64,21 +64,28 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "deadline",
                       "data": {
-                        "name": "preShootToHub"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "turnToHub"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.5
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 1.5
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "preShootToHub"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "turnToHub"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -108,25 +115,6 @@
                     }
                   ]
                 }
-              },
-              {
-                "type": "parallel",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "stopShoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "intakeFuel"
-                      }
-                    }
-                  ]
-                }
               }
             ]
           }
@@ -145,6 +133,12 @@
                 "type": "named",
                 "data": {
                   "name": "intakeFuel"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "stopShoot"
                 }
               }
             ]

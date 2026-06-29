@@ -64,21 +64,28 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "deadline",
                       "data": {
-                        "name": "preShootToHub"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "turnToHub"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.5
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 1.5
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "preShootToHub"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "turnToHub"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -114,6 +121,12 @@
                 "data": {
                   "commands": [
                     {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Right go back to centre (ramp)"
+                      }
+                    },
+                    {
                       "type": "named",
                       "data": {
                         "name": "stopShoot"
@@ -126,12 +139,6 @@
                       }
                     }
                   ]
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Right go back to centre (ramp)"
                 }
               }
             ]

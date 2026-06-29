@@ -25,7 +25,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "Right drive to intake (both)"
+                              "pathName": "Left drive to intake (both)"
                             }
                           }
                         ]
@@ -41,13 +41,13 @@
                 }
               },
               {
-                "type": "race",
+                "type": "deadline",
                 "data": {
                   "commands": [
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Right drive from intake (trench)"
+                        "pathName": "Left return from intake (ramp)"
                       }
                     },
                     {
@@ -64,21 +64,28 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "deadline",
                       "data": {
-                        "name": "preShootToHub"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "turnToHub"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.5
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 1.5
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "turnToHub"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "preShootToHub"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -124,27 +131,14 @@
                       "data": {
                         "name": "openCartridge"
                       }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Left return to centre (ramp)"
+                      }
                     }
                   ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Right go back to centre (trench)"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intakeFuel"
                 }
               }
             ]
