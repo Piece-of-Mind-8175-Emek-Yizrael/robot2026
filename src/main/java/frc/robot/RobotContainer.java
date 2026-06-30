@@ -263,8 +263,7 @@ public class RobotContainer {
                 
                 // operatorController
 
-                operatorController.cross().whileTrue(shootCommands.setHoodVoltage());// ירי
-                operatorController.triangle().whileTrue(shootCommands.setFeedVoltage());// הזנה
+                operatorController.cross().whileTrue(shootCommands.setVoltage(8.0,7.7));// ירי
 
                 operatorController.circle().whileTrue(cartridgeCommands.openCartridge());// פתיחת מחסנית
                 operatorController.square().whileTrue(cartridgeCommands.closeCartridge());// סגירת מחסנית
