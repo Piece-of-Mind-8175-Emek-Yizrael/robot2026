@@ -101,7 +101,7 @@ public class DriveConstants {
         public static final double driveSimKv = 0.0;
 
         public static final double driveSlipCurrent = 70.0;
-        public static final double driveRampRate = 0.3;
+        public static final double driveRampRate = 0.15;
 
         // Turn motor configuration
         public static final boolean turnInverted = true;

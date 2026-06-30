@@ -30,8 +30,8 @@ public class CartridgeConstants {
     public static final double closeCartridgeVolt = -1.5;
     public static final double openCartridgeVolt = 2.0;
 
-    public static final double shakeCloseCartridgeVolt = -2.0;
-    public static final double shakeOpenCartridgeVolt = 1.0;
+    public static final double shakeCloseCartridgeVolt = -3.0;
+    public static final double shakeOpenCartridgeVolt = 2.0;
     public static final double shakeTimeOut = 0.4;
 
 }

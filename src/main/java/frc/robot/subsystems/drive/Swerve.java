@@ -84,7 +84,7 @@ public class Swerve extends SubsystemBase {
                     new SwerveModulePosition()
             };
     private SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, rawGyroRotation,
-            lastModulePositions, new Pose2d(0, 0, new Rotation2d()));//FIXME 0
+            lastModulePositions, new Pose2d(0, 0, new Rotation2d()));
 
     public Swerve(GyroIO gyroIO, ModuleIO flModuleIO, ModuleIO frModuleIO, ModuleIO blModuleIO, ModuleIO brModuleIO) {
         this.gyroIO = gyroIO;
