@@ -84,7 +84,7 @@ public class Swerve extends SubsystemBase {
                     new SwerveModulePosition()
             };
     private SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, rawGyroRotation,
-            lastModulePositions, new Pose2d(0, 0, new Rotation2d()));
+            lastModulePositions, new Pose2d(0, 0, new Rotation2d()));//FIXME 0
 
     public Swerve(GyroIO gyroIO, ModuleIO flModuleIO, ModuleIO frModuleIO, ModuleIO blModuleIO, ModuleIO brModuleIO) {
         this.gyroIO = gyroIO;
@@ -260,6 +260,7 @@ public class Swerve extends SubsystemBase {
         // && !(DriverStation.isEnabled() &&
         // visionPose.getTranslation().getDistance(getPose().getTranslation()) > 0.5)) {
         ) {
+            System.out.println("good");
             poseEstimator.addVisionMeasurement(visionPose, timestamp);
         }
     }
