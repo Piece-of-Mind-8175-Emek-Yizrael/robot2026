@@ -27,8 +27,8 @@ public class CartridgeConstants {
     public static final double closeCartridgePos = 1.0;
     public static final double openCartridgePos = 0.0;
 
-    public static final double closeCartridgeVolt = -1.5;
-    public static final double openCartridgeVolt = 2.0;
+    public static final double closeCartridgeVolt = -2.5;
+    public static final double openCartridgeVolt = 1.5;
 
     public static final double shakeCloseCartridgeVolt = -3.0;
     public static final double shakeOpenCartridgeVolt = 2.0;

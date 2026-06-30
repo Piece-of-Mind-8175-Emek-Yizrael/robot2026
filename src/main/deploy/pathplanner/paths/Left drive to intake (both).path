@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.165320512820513,
-        "y": 7.372294871794873
+        "x": 8.514192307692309,
+        "y": 7.360666666666666
       },
       "isLocked": false,
       "linkedName": null
@@ -28,7 +28,16 @@
       "linkedName": "finish intake left"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.18065003779289626,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 0.6084656084656104,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -48,7 +57,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 1.0050860052541375
   },
   "useDefaultConstraints": true
 }

@@ -13,22 +13,9 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "sequential",
+                      "type": "path",
                       "data": {
-                        "commands": [
-                          {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 0.5
-                            }
-                          },
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "Right drive to intake (both)"
-                            }
-                          }
-                        ]
+                        "pathName": "Right drive to intake (both)"
                       }
                     },
                     {
