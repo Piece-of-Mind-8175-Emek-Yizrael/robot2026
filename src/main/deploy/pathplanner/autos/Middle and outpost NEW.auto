@@ -113,12 +113,6 @@
                 "data": {
                   "name": "shootToHub"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "shakeCartridge"
-                }
               }
             ]
           }
