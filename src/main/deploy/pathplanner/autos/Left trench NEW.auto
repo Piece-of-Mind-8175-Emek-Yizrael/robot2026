@@ -5,30 +5,23 @@
     "data": {
       "commands": [
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.75
+          }
+        },
+        {
           "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "race",
+                "type": "deadline",
                 "data": {
                   "commands": [
                     {
-                      "type": "sequential",
+                      "type": "path",
                       "data": {
-                        "commands": [
-                          {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 0.5
-                            }
-                          },
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "Right drive to intake (both)"
-                            }
-                          }
-                        ]
+                        "pathName": "Left drive to intake (both)"
                       }
                     },
                     {
@@ -41,13 +34,13 @@
                 }
               },
               {
-                "type": "race",
+                "type": "deadline",
                 "data": {
                   "commands": [
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Right drive from intake (trench)"
+                        "pathName": "Left drive from intake (trench)"
                       }
                     },
                     {
@@ -76,13 +69,13 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "turnToHub"
+                              "name": "preShootToHub"
                             }
                           },
                           {
                             "type": "named",
                             "data": {
-                              "name": "preShootToHub"
+                              "name": "turnToHub"
                             }
                           }
                         ]
@@ -126,7 +119,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right go back to centre (trench)"
+                  "pathName": "Left return to centre (trench)"
                 }
               },
               {

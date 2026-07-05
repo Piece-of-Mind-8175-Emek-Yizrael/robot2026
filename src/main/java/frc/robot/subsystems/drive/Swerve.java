@@ -260,6 +260,7 @@ public class Swerve extends SubsystemBase {
         // && !(DriverStation.isEnabled() &&
         // visionPose.getTranslation().getDistance(getPose().getTranslation()) > 0.5)) {
         ) {
+            System.out.println("good");
             poseEstimator.addVisionMeasurement(visionPose, timestamp);
         }
     }
