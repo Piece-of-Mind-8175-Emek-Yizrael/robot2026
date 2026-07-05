@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.subsystems.cartridge.Cartridge;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.IntakeConstants.*;
 import frc.robot.subsystems.shoot.Shoot;
 import static frc.robot.subsystems.shoot.ShootConstants.*;
 import frc.robot.subsystems.shooterArm.ShooterArm;
