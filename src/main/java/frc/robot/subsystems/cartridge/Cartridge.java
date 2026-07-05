@@ -3,8 +3,9 @@ package frc.robot.subsystems.cartridge;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.cartridge.CartridgeIO;
 
-public class Cartridge extends SubsystemBase {
+public class Cartridge extends SubsystemBase{
     private final CartridgeIOInputsAutoLogged inputs = new CartridgeIOInputsAutoLogged();
     private CartridgeIO io;
     
@@ -23,5 +24,4 @@ public class Cartridge extends SubsystemBase {
         Logger.processInputs("cartridge", inputs);
         Logger.recordOutput("current command", getCurrentCommand() == null ? "null" : getCurrentCommand().getName());
     }
-
 }

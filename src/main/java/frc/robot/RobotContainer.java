@@ -45,7 +45,7 @@ import frc.robot.POM_lib.Joysticks.PomXboxController;
 import frc.robot.subsystems.LEDs.LEDs;
 import frc.robot.subsystems.LEDs.LEDsIOReal;
 import frc.robot.subsystems.cartridge.Cartridge;
-import frc.robot.subsystems.cartridge.CartridgeIOTalon;
+import frc.robot.subsystems.cartridge.CartridgeIOReal;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIOReal;
@@ -118,7 +118,7 @@ public class RobotContainer {
                                 intake = new Intake(new IntakeIOReal());
                                 shoot = new Shoot(new ShootIOReal());
                                 transfer = new Transfer(new TransferIOReal());
-                                cartridge = new Cartridge(new CartridgeIOTalon());
+                                cartridge = new Cartridge(new CartridgeIOReal());
                                 arm = new ShooterArm(new ShooterArmIOReal());
                                 leds = new LEDs(new LEDsIOReal());
 

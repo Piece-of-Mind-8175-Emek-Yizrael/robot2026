@@ -1,9 +1,10 @@
 package frc.robot.Commands;
 
+import static frc.robot.subsystems.cartridge.CartridgeConstants.*;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.cartridge.Cartridge;
-import static frc.robot.subsystems.cartridge.CartridgeConstants.*;
 
 public class CartridgeCommands extends Command {
 
@@ -22,11 +23,11 @@ public class CartridgeCommands extends Command {
     }
 
     public Command setOpenVoltage(double voltage) {
-        return setVoltage(voltage).until(cartridge.getIO()::isOuterPressed);
+        return setVoltage(voltage).until(cartridge.getIO()::isOpenPressed);
     }
 
     public Command setCloseVoltage(double voltage) {
-        return setVoltage(voltage).until(cartridge.getIO()::isInnerPressed);
+        return setVoltage(voltage).until(cartridge.getIO()::isClosePressed);
     }
 
     public Command openCartridge() {
