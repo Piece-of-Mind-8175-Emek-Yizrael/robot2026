@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.subsystems.cartridge.Cartridge;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeConstants.*;
 import frc.robot.subsystems.shoot.Shoot;
 import static frc.robot.subsystems.shoot.ShootConstants.*;
 import frc.robot.subsystems.shooterArm.ShooterArm;
@@ -115,9 +116,11 @@ public class SuperCommands {
                 if (readyToShoot.getAsBoolean()) {
                     shoot.getIO().setFeedVoltage(feedVol);
                     transfer.getIO().setVoltage(transferIntakeShotterVolt);
+                    intake.getIO().setVoltage(8.0);
                 } else {
                     shoot.getIO().stopFeed();
                     transfer.getIO().stopMotor();
+                    intake.getIO().stopMotor();
                 }
                 if (ShooterCalculator.isFar(distance)) {
                     arm.getIO().setVoltage(openArmVolt);

@@ -8,13 +8,11 @@ public interface CartridgeIO {
 
     @AutoLog
     public static class CartridgeIOInputs {
-        public double voltage;
-        public double velocity;
-        public double output;
-        public double postion;
-        public boolean isInnerPressed;
-        public boolean isOuterPressed;
-        public boolean atGoal;
+        public double voltage = 0;
+        public double velocity = 0;
+        public double output = 0;
+        public boolean isClosePressed = false;
+        public boolean isOpenPressed = false;
     }
 
     public default void updateInputs(CartridgeIOInputs inputs) {
@@ -26,36 +24,15 @@ public interface CartridgeIO {
     public default void stop() {
     }
 
-    public default boolean isInnerPressed() {
+    public default boolean isClosePressed() {
         return false;
     }
 
-    public default boolean isOuterPressed() {
+    public default boolean isOpenPressed() {
         return false;
     }
 
-    public default void goToPos(double goal) {
+    public default CartridgePose getCartridgePose(){
+        return CartridgePose.IN_MOVEMENT;
     }
-
-    public default boolean atGoal() {
-        return false;
-    }
-
-    public default double getPos() {
-        return 0;
-    }
-
-    public default void resetPID() {
-    }
-
-    public default void setPIDValues() {
-    }
-
-    public default void resetIfPressed() {
-    }
-
-    public default CartridgePose getCartridgePose() {
-        return null;
-    }
-
 }
