@@ -20,12 +20,12 @@ public class TransferCommands {
     }
 
     public Command setForwoard() {
-        double voltage = 5.0;
+        double voltage = 8.0;
         return setVoltage(voltage);
     }
 
     public Command setBackward() {
-        double voltage = -5.0;
+        double voltage = -8.0;
         return setVoltage(voltage);
     }
 
