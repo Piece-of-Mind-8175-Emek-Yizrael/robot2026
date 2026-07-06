@@ -115,7 +115,7 @@ public class SuperCommands {
                 if (readyToShoot.getAsBoolean()) {
                     shoot.getIO().setFeedVoltage(feedVol);
                     transfer.getIO().setVoltage(transferIntakeShotterVolt);
-                    intake.getIO().setVoltage(8.0);
+                    intake.getIO().setVoltage(-8.0);
                 } else {
                     shoot.getIO().stopFeed();
                     transfer.getIO().stopMotor();
