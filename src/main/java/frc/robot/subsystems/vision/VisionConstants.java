@@ -43,7 +43,7 @@ public class VisionConstants {
 
     // Robot to camera transforms
     // (Not used by Limelight, configure in web UI instead)2921
-    public static Transform3d InitialRobotToShooterCameraTranslation = new Transform3d(0.2, 0.0, 0.515,
+    public static Transform3d InitialRobotToShooterCameraTranslation = new Transform3d(0.35, 0.0, 0.515,
             new Rotation3d(0, Units.degreesToRadians(-35.0), 0));// TODO change the X value in camera calibration
     // public static Transform3d InitialRobotToShooterCameraTranslation = new
     // Transform3d(0.2921, 0.0,0.515, new Rotation3d(0,
