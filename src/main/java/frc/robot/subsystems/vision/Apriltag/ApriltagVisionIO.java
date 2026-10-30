@@ -35,7 +35,7 @@ public interface ApriltagVisionIO {
   public static enum PoseObservationType {
     MEGATAG_1,
     MEGATAG_2,
-    PHOTONVISION
+    LUMENVISION
   }
 
   public String getPipelineName();

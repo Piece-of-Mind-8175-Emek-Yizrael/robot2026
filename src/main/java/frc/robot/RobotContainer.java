@@ -61,7 +61,8 @@ import frc.robot.subsystems.transfer.Transfer;
 import frc.robot.subsystems.transfer.TransferIOReal;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionSubsystem;
-import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIOReal;
+import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIO;
+import frc.robot.subsystems.vision.Apriltag.Lumen.ApriltagIORealLumen;
 import frc.robot.util.ShooterCalculator;
 
 /**
@@ -122,10 +123,10 @@ public class RobotContainer {
                                 arm = new ShooterArm(new ShooterArmIOReal());
                                 leds = new LEDs(new LEDsIOReal());
 
-                                ApriltagVisionIOReal[] cameras = {
-                                                new ApriltagVisionIOReal("first_camera",
+                                ApriltagVisionIO[] cameras = {
+                                                new ApriltagIORealLumen("first_camera",
                                                         VisionConstants.InitialRobotToShooterCameraTranslation),
-                                                // new ApriltagVisionIOReal("seconde_camera",
+                                                // new ApriltagIORealLumen("seconde_camera",
                                                 //                 VisionConstants.InitialRobotToShooterCameraTranslation),
                                 };
 
