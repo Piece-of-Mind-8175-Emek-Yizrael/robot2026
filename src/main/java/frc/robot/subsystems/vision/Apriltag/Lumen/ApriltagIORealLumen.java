@@ -9,12 +9,12 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.littletonrobotics.junction.Logger;
-import org.lumenvision.lib.LumenDetector;
+import org.lumenvision.lib.LumenAprilTagDetector;
+import org.lumenvision.lib.LumenAprilTagResult;
+import org.lumenvision.lib.LumenAprilTagTarget;
 import org.lumenvision.lib.LumenMultiTagResult;
-import org.lumenvision.lib.LumenPipelineResult;
 import org.lumenvision.lib.LumenPoseEstimator;
 import org.lumenvision.lib.LumenRobotPose;
-import org.lumenvision.lib.LumenTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,7 +23,7 @@ import frc.robot.subsystems.vision.Apriltag.ApriltagVisionIO;
 
 /** IO implementation for an AprilTag detector node on a LumenVision coprocessor. */
 public class ApriltagIORealLumen implements ApriltagVisionIO {
-    protected final LumenDetector detector;
+    protected final LumenAprilTagDetector detector;
     // composes the coprocessor's multi-tag solve (the camera's field pose) with the camera mount
     private final LumenPoseEstimator poseEstimator;
     protected Transform3d robotToCamera;
@@ -34,7 +34,7 @@ public class ApriltagIORealLumen implements ApriltagVisionIO {
      * @param robotToCamera The camera's position relative to the robot.
      */
     public ApriltagIORealLumen(String name, Transform3d robotToCamera) {
-        detector = new LumenDetector(name);
+        detector = new LumenAprilTagDetector(name);
         poseEstimator = new LumenPoseEstimator(aprilTagLayout, robotToCamera);
         this.robotToCamera = robotToCamera;
     }
@@ -48,11 +48,11 @@ public class ApriltagIORealLumen implements ApriltagVisionIO {
         List<PoseObservation> poseObservations = new ArrayList<>();
 
         // read every loop, so results queued while the detector was off are dropped instead of used once it is back on
-        List<LumenPipelineResult> results = detector.getAllUnreadResults();
+        List<LumenAprilTagResult> results = detector.getAllUnreadResults();
         if (enabled) {
-            for (LumenPipelineResult result : results) {
+            for (LumenAprilTagResult result : results) {
                 // Update latest target observation
-                Optional<LumenTrackedTarget> best = result.getBestTarget();
+                Optional<LumenAprilTagTarget> best = result.getBestTarget();
                 if (best.isPresent()) {
                     inputs.latestTargetObservation = new TargetObservation(
                             Rotation2d.fromDegrees(best.get().getYaw()),
@@ -67,11 +67,11 @@ public class ApriltagIORealLumen implements ApriltagVisionIO {
                 Optional<LumenRobotPose> multiTagPose = poseEstimator.estimateMultiTag(result);
                 if (multiTagPose.isPresent()) { // Multitag result
                     LumenMultiTagResult multiTag = result.getMultiTagResult().get();
-                    Logger.recordOutput(detector.getName() + "Target Yaw", best.map(LumenTrackedTarget::getYaw).orElse(0.0));
+                    Logger.recordOutput(detector.getName() + "Target Yaw", best.map(LumenAprilTagTarget::getYaw).orElse(0.0));
 
                     // Calculate average tag distance
                     double totalTagDistance = 0.0;
-                    for (LumenTrackedTarget target : result.getTargets()) {
+                    for (LumenAprilTagTarget target : result.getTargets()) {
                         totalTagDistance += target.getBestCameraToTarget().getTranslation().getNorm();
                     }
 
@@ -89,10 +89,10 @@ public class ApriltagIORealLumen implements ApriltagVisionIO {
                                     PoseObservationType.LUMENVISION)); // Observation type
 
                 } else if (result.hasTargets()) { // Single tag result
-                    LumenTrackedTarget target = result.getTargets().get(0);
+                    LumenAprilTagTarget target = result.getTargets().get(0);
 
-                    // A detector without a camera calibration solves no pose (identity transform, ambiguity -1)
-                    if (target.getPoseAmbiguity() < 0) continue;
+                    // A detector without a camera calibration solves no pose
+                    if (!target.hasPose()) continue;
 
                     // Calculate robot pose
                     var tagPose = aprilTagLayout.getTagPose(target.getFiducialId());

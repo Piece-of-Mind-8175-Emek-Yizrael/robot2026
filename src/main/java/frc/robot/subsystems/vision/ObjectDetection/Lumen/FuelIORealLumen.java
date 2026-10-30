@@ -5,10 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
-import org.lumenvision.lib.LumenDetector;
-import org.lumenvision.lib.LumenPipelineResult;
-import org.lumenvision.lib.LumenTargetCorner;
-import org.lumenvision.lib.LumenTrackedTarget;
+import org.lumenvision.lib.LumenDetectedObject;
+import org.lumenvision.lib.LumenObjectDetectionResult;
+import org.lumenvision.lib.LumenObjectDetector;
 
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -18,7 +17,7 @@ import frc.robot.subsystems.vision.ObjectDetection.ObjectDetectionVisionIO;
 
 /** IO implementation for a fuel object-detection node on a LumenVision coprocessor. */
 public class FuelIORealLumen implements ObjectDetectionVisionIO {
-    final LumenDetector detector;
+    final LumenObjectDetector detector;
     final String name;
     boolean toggle = true;
 
@@ -27,7 +26,7 @@ public class FuelIORealLumen implements ObjectDetectionVisionIO {
     /** @param name The object-detection node's name on the coprocessor. */
     public FuelIORealLumen(String name) {
         this.name = name;
-        detector = new LumenDetector(name);
+        detector = new LumenObjectDetector(name);
     }
 
     @Override
@@ -37,21 +36,16 @@ public class FuelIORealLumen implements ObjectDetectionVisionIO {
         if (!toggle) return;
 
         // no new frame since the last loop: keep the detections already in the inputs
-        List<LumenPipelineResult> allUnreadResults = detector.getAllUnreadResults();
+        List<LumenObjectDetectionResult> allUnreadResults = detector.getAllUnreadResults();
         if (allUnreadResults.isEmpty()) return;
-        LumenPipelineResult latestResult = allUnreadResults.get(allUnreadResults.size() - 1);
+        LumenObjectDetectionResult latestResult = allUnreadResults.get(allUnreadResults.size() - 1);
 
         List<Detection> detections = new ArrayList<>();
-        for (LumenTrackedTarget target : latestResult.getTargets()) {
-            if (target.getDetectedObjectClassID() != VisionConstants.TargetType.FUEL.getClassId()) continue;
-
-            // an object's corners are its bounding box
-            List<LumenTargetCorner> corners = sortCorners(target.getDetectedCorners());
-            if (corners.size() < 4) continue;
+        for (LumenDetectedObject target : latestResult.getTargetsOfClass(VisionConstants.TargetType.FUEL.getClassId())) {
             // TODO: fill in the actual value for these variables
-            // the corners run top left, top right, bottom right, bottom left with image y pointing down, so the differences are negative
-            double targetHeight = Math.abs(corners.get(1).y - corners.get(2).y);
-            double targetWidth = Math.abs(corners.get(0).x - corners.get(1).x);
+            double targetHeight = target.getBoxHeightPixels();
+            double targetWidth = target.getBoxWidthPixels();
+            if (targetWidth <= 0) continue;
 
             double distance = getDistanceToFuelMeters(targetWidth);
             double yawRad = Math.toRadians(target.getYaw());
@@ -81,29 +75,6 @@ public class FuelIORealLumen implements ObjectDetectionVisionIO {
     @Override
     public void togglePipeline(boolean on) {
         toggle = on;
-    }
-
-    // sorts corners by this order: top left, top right, bottom right, bottom left
-    private List<LumenTargetCorner> sortCorners(List<LumenTargetCorner> orgCorners) {
-        if (orgCorners == null || orgCorners.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        double cx = 0.0;
-        double cy = 0.0;
-        for (LumenTargetCorner c : orgCorners) {
-            cx += c.x;
-            cy += c.y;
-        }
-        cx /= orgCorners.size();
-        cy /= orgCorners.size();
-
-        List<LumenTargetCorner> sorted = new ArrayList<>(orgCorners);
-        double finalCy = cy;
-        double finalCx = cx;
-        sorted.sort(java.util.Comparator.comparingDouble(c -> Math.atan2(c.y - finalCy, c.x - finalCx)));
-
-        return sorted;
     }
 
     // calculated by dist = (focal length * real width) / perceived width
