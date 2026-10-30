@@ -1,7 +1,7 @@
 {
   "fileName": "lumenlib.json",
   "name": "LumenLib",
-  "version": "0.0.0-imagetest38",
+  "version": "0.0.0-imagetest39",
   "uuid": "44156e77-af12-4bf6-9d3a-78049043aa6b",
   "frcYear": "2026",
   "mavenUrls": [
@@ -12,7 +12,7 @@
     {
       "groupId": "org.lumenvision",
       "artifactId": "lumenlib-java",
-      "version": "0.0.0-imagetest38"
+      "version": "0.0.0-imagetest39"
     }
   ],
   "jniDependencies": [],
